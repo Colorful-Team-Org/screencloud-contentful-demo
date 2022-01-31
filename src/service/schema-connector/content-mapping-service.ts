@@ -173,8 +173,10 @@ export function useMappedData(
 ) {
   const { filterItems, refetchInterval} = options || {};
 
+  const selectedItemIds = useMemo(() => filterItems?.map(item => item.sys.id), [filterItems]);
+
   const queryString = mappingConfig
-    ? queryStringFromMappingConfig(mappingConfig, filterItems?.map(item => item.sys.id))
+    ? queryStringFromMappingConfig(mappingConfig, selectedItemIds)
     : undefined;
 
   const query =
@@ -199,9 +201,15 @@ export function useMappedData(
    */
   useEffect(() => {
     if (itemsLastUpdatedKey) {
-      setItems(mappingConfig && contentfulItems ? mapContent(mappingConfig, contentfulItems) : [])
+      if (!mappingConfig || !contentfulItems) {
+        setItems([]);
+        return;
+      }
+      const sortedItems = selectedItemIds ? selectedItemIds.map(sid => contentfulItems.find(c => c.sys.id === sid)) : contentfulItems;
+      // console.log(`sortedItems`, contentfulItems,)
+      setItems(mapContent(mappingConfig, sortedItems))
     }
-  }, [contentfulItems, itemsLastUpdatedKey, mappingConfig])
+  }, [contentfulItems, selectedItemIds, itemsLastUpdatedKey, mappingConfig])
 
   // useEffect(() => {
   //   if (contentfulItems) {
