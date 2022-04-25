@@ -98,7 +98,6 @@ export const ContentfulDataProvider: FunctionComponent<Props> = props => {
     return getAssetKeysFromMapping(mappingConfig.mapping);
   }, [mappingConfig?.mapping])
 
-
   
   const {
     queryResponse,
@@ -116,6 +115,7 @@ export const ContentfulDataProvider: FunctionComponent<Props> = props => {
 
   const templateName = mappingConfig?.name as TemplateName | undefined;
   const companyLogo = mappingConfig?.constants?.logoUrl;
+
 
   return (
     <ContentfulDataContext.Provider

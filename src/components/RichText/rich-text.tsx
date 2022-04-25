@@ -5,6 +5,7 @@ import { AssetType } from "./asset/fragments";
 import ImageAsset from "./asset/image-asset";
 import React, { CSSProperties } from "react";
 import styles from "./rich-text.module.css";
+import EmbeddedAssetBlock from "./asset/embedded-asset-block";
 
 export type EntryFragmentType = {
   __typename?: string;
@@ -31,15 +32,14 @@ export const RichText: React.FC<RichTextProps> = (props: RichTextProps) => {
       {documentToReactComponents(props.document, {
         renderNode: {
           [BLOCKS.EMBEDDED_ASSET]: (node) => {
-            const asset = findAsset(node.data.target.sys?.id);
-            if (!asset) {
-              console.warn(`Embedded Asset ${node.data.target} was not found.`);
-              return null;
-            }
+            // const asset = findAsset(node.data.target.sys?.id);
+            // if (!asset) {
+            //   console.warn(`Embedded Asset`, node.data.target,  `was not found.`);
+            //   return null;
+            // }
             return (
-              <div className="mb-8 last:mb-0">
-                <ImageAsset {...asset} />
-              </div>
+                /* <ImageAsset {...asset} /> */
+                <EmbeddedAssetBlock id={node.data.target.sys.id}  />
             );
           },
         },

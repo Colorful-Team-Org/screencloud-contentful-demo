@@ -1,3 +1,4 @@
+import { Image } from "@screencloud/alfie-alpha";
 import React, { FunctionComponent } from "react";
 import { AssetType } from "./fragments";
 
@@ -21,6 +22,7 @@ const ImageAsset: FunctionComponent<Props> = (props: Props) => {
         alt={props.description || undefined}
         title={props.title || undefined}
         className={props.className}
+        style={{ maxWidth: '100%' }}
       />
       {!props.disableCaption && props.title && (
         <figcaption className="text-gray-700 text-center">

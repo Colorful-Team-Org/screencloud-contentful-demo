@@ -23,16 +23,17 @@ const components = {
 export const SlideShow = () => {
     // console.log(`SlideShow()`);
     const { data } = useContentfulData();
+    // console.log(`useContentfulData`, data);
     const { appStarted } = useScreenCloudPlayer();
 
     const themedColor = "";
     const companyLogoUrl = data?.companyLogo;
     const isPortrait = false;
-    const items = data?.items;
+    const items = data?.items
     
     /** All image urls of items[] (for preloading). */
     const imgSrcs = useMemo(() => (
-      data?.assetFieldNames.reduce((keys, assetKey) => {
+      data?.assetFieldNames.reduce((imageFilenames, assetKey) => {
         if (!Array.isArray(items))
           return [];
         
@@ -52,7 +53,7 @@ export const SlideShow = () => {
           
         }, [] as any[])
   
-        return [...keys, ...itemImageFileNames];
+        return [...imageFilenames, ...itemImageFileNames];
         
         // Object.entries(items).reduce((itemImgSrcs, [itemKey, itemValue]) => (
         //   itemValue
