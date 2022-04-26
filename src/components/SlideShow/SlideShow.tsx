@@ -61,9 +61,8 @@ export const SlideShow = () => {
       }, [] as string [])
     ), [data?.assetFieldNames, items])
 
-    /** preloading all imare sources */
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const preloadedImages = useMemo(() => (
+    /** preloading all image sources */
+    useMemo(() => (
       imgSrcs?.map(src => {
         const image = new Image();
         image.src = src;

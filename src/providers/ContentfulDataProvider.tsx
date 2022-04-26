@@ -15,7 +15,7 @@ type TemplateName =
 export interface ContentfulBlogItem {
   title: string;
   link: string;
-  description: { json: types.Document };
+  description?: { json: types.Document };
   category?: string;
   author: string;
   image?: ImageAsset;

@@ -30,13 +30,15 @@ export const QuoteRightContent: FunctionComponent<Props> = (
           justifyContent="center"
           alignItems="center"
         >
-          <Text
-            type={TextSizes.H4}
-            wordBreak="break-word"
-            fontFamily={"sans-serif"}
-          >
-            <RichText document={item.text.json} />
-          </Text>
+          {item.text?.json && (
+            <Text
+              type={TextSizes.H4}
+              wordBreak="break-word"
+              fontFamily={"sans-serif"}
+            >
+              <RichText document={item.text.json} />
+            </Text>
+          )}
         </Flex>
       </Flex>
     </ContentWrapper>

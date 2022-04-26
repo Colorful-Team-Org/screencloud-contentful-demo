@@ -6,6 +6,7 @@ import {
 } from "@screencloud/alfie-alpha";
 import { BlogPostRightContent } from "./BlogPostRightContent";
 import { ContentfulBlogItem } from "../../../providers/ContentfulDataProvider";
+import FullGrey from "../../styling/FullGrey";
 
 interface Props {
   itemDurationSeconds: number;
@@ -39,10 +40,12 @@ export const BlogPostLayout: FunctionComponent<Props> = (
       isPortrait={isPortrait}
       borderColor={themeColor}
       leftContent={
-        <FullScreenImage
-          url={item.image?.url ? `${item.image?.url}?w=2048` : ""}
-          itemDurationSeconds={itemDurationSeconds}
-        />
+        item.image?.url ? (
+          <FullScreenImage
+            url={item.image?.url ? `${item.image?.url}?w=2048` : ""}
+            itemDurationSeconds={itemDurationSeconds}
+          />
+        ) : <FullGrey />
       }
       rightContent={
         <BlogPostRightContent

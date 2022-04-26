@@ -63,6 +63,7 @@ export const BlogPostRightContent: FunctionComponent<Props> = props => {
     return string ? `By ${string}` : undefined;
   }, [item.author, item.pubDate])
 
+  const itemDescriptionJson = item.description?.json;
   return (
     <ContentWrapper backgroundColor={theme.colors.white} key={key}>
       <Flex
@@ -112,7 +113,7 @@ export const BlogPostRightContent: FunctionComponent<Props> = props => {
         <Flex
           flexGrow={1}
           flexDirection="column"
-          justifyContent="center"
+          justifyContent={!!itemDescriptionJson ? 'center' : 'flex-start'}
           alignItems="left"
         >
           <Text
@@ -121,7 +122,9 @@ export const BlogPostRightContent: FunctionComponent<Props> = props => {
             fontFamily={"sans-serif"}
             paddingBottom={{ _: 2, lg: 7 }}
           >
-            <RichText document={item.description.json} />
+            {itemDescriptionJson && (
+              <RichText document={itemDescriptionJson} />
+            )}
           </Text>
 
           {footer && (

@@ -51,16 +51,18 @@ export const HeroRightContent: FunctionComponent<Props> = (
             <Logo url={companyLogoUrl} maxHeight={"160px"} maxWidth={"200px"} />
           )}
         </Flex>
-        <Text
-          type={TextSizes.H4}
-          color={theme.colors.black}
-          wordBreak="break-word"
-          fontFamily={"sans-serif"}
-          fontWeight={theme.fontWeights.black}
-          paddingBottom={{ _: 4, lg: 7 }}
-        >
-          {item.headline}
-        </Text>
+        {item.headline && (
+          <Text
+            type={TextSizes.H4}
+            color={theme.colors.black}
+            wordBreak="break-word"
+            fontFamily={"sans-serif"}
+            fontWeight={theme.fontWeights.black}
+            paddingBottom={{ _: 4, lg: 7 }}
+          >
+            {item.headline}
+          </Text>
+        )}
         {item.link && (
           <Flex
             width={"100%"}
