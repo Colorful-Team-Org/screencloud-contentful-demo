@@ -110,10 +110,10 @@ export function queryStringFromMappingConfig(config: ContentMappingConfig, ids?:
     return `${itemsString}${singleItemString} sys { id publishedAt }`;
   }, ``);
 
-  const idsFiler = ids?.length ? ` where: {sys:{id_in:["${ids.join(`","`)}"]}}` : '';
+  const idsFilter = ids?.length ? ` where: {sys:{id_in:["${ids.join(`","`)}"]}}` : '';
 
   const queryString = `query {
-    ${contentType}Collection(limit: 20${idsFiler}) {
+    ${contentType}Collection(limit: ${ids?.length || 20}${idsFilter}) {
       items {
         ${itemsQueryString}
       }
@@ -130,6 +130,7 @@ export function queryStringFromMappingConfig(config: ContentMappingConfig, ids?:
     title
     url
   }`;
+  // console.log(`queryString`, queryString);
   return queryString;
 }
 

@@ -26,6 +26,8 @@ export interface ContentfulQuoteItem {
   image?: ImageAsset;
   text: { json: types.Document };
   author: string;
+  imageLeftAligned?: boolean;
+  quoteCentered?: boolean; 
 }
 export interface ContentfulProductItem {
   id: string;

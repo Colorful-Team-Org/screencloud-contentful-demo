@@ -1,4 +1,4 @@
-import React, { ReactElement, FunctionComponent } from "react";
+import React, { ReactElement, FunctionComponent, useMemo } from "react";
 import {
   theme,
   SplitLayoutContainer,
@@ -27,8 +27,28 @@ export const QuoteLayout: FunctionComponent<Props> = (
     isPortrait,
     themedColor,
   } = props;
+  // console.log(`QuoteLayout`, props)
 
   const themeColor = themedColor || theme.colors.gray;
+
+  const imageContent = useMemo(() => {
+    const url = item.image?.url;
+    if (!url) return undefined;
+
+    return <FullScreenImage
+      url={`${url}?w=2048`}
+      itemDurationSeconds={itemDurationSeconds}
+    />
+  }, [item.image?.url, itemDurationSeconds]);
+
+  const textContent = useMemo(() => (
+    <QuoteRightContent
+      itemDurationSeconds={itemDurationSeconds}
+      item={item}
+      companyLogoUrl={companyLogoUrl}
+      progressBarColor={progressBarColor}
+    />
+  ), [companyLogoUrl, item, itemDurationSeconds, progressBarColor])
 
   return (
     <SplitLayoutContainer
@@ -36,20 +56,8 @@ export const QuoteLayout: FunctionComponent<Props> = (
       rightContentWidth={"50"}
       isPortrait={isPortrait}
       borderColor={themeColor}
-      leftContent={
-        <FullScreenImage
-          url={item.image?.url ? `${item.image?.url}?w=2048` : ""}
-          itemDurationSeconds={itemDurationSeconds}
-        />
-      }
-      rightContent={
-        <QuoteRightContent
-          itemDurationSeconds={itemDurationSeconds}
-          item={item}
-          companyLogoUrl={companyLogoUrl}
-          progressBarColor={progressBarColor}
-        />
-      }
+      leftContent={ !!item.imageLeftAligned ? imageContent : textContent}
+      rightContent={!!item.imageLeftAligned ? textContent : imageContent}
     />
   );
 };

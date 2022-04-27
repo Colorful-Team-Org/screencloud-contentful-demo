@@ -35,6 +35,7 @@ export const QuoteRightContent: FunctionComponent<Props> = (
               type={TextSizes.H4}
               wordBreak="break-word"
               fontFamily={"sans-serif"}
+              textAlign={!!props.item.quoteCentered ? 'center' : undefined}
             >
               <RichText document={item.text.json} />
             </Text>
