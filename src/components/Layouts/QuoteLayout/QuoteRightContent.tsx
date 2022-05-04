@@ -5,9 +5,12 @@ import {
   theme,
   Text,
   TextSizes,
+  Box,
 } from "@screencloud/alfie-alpha";
 import { ContentfulQuoteItem } from "../../../providers/ContentfulDataProvider";
 import { RichText } from "../../RichText/rich-text";
+import ImageAsset from "../../RichText/asset/image-asset";
+import { QuoteAuthor } from "./QuoteAuthor";
 
 interface Props {
   itemDurationSeconds: number;
@@ -19,6 +22,7 @@ interface Props {
 export const QuoteRightContent: FunctionComponent<Props> = (
   props: Props
 ): ReactElement<Props> => {
+  console.log('QuoteRightContent', props);
   const { item } = props;
 
   return (
@@ -30,7 +34,7 @@ export const QuoteRightContent: FunctionComponent<Props> = (
           justifyContent="center"
           alignItems="center"
         >
-          {item.text?.json && (
+          {!!item.text?.json && (
             <Text
               type={TextSizes.H4}
               wordBreak="break-word"
@@ -39,6 +43,13 @@ export const QuoteRightContent: FunctionComponent<Props> = (
             >
               <RichText document={item.text.json} />
             </Text>
+          )}
+
+          {!!item.authorImage?.url && (
+            <Box mt={100}>
+              <QuoteAuthor {...item}/>
+              {/* <ImageAsset {...item.authorImage} contentType="none" /> */}
+            </Box>
           )}
         </Flex>
       </Flex>

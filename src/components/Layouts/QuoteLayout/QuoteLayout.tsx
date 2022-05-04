@@ -51,13 +51,18 @@ export const QuoteLayout: FunctionComponent<Props> = (
   ), [companyLogoUrl, item, itemDurationSeconds, progressBarColor])
 
   return (
-    <SplitLayoutContainer
-      leftContentWidth={"50"}
-      rightContentWidth={"50"}
-      isPortrait={isPortrait}
-      borderColor={themeColor}
-      leftContent={ !!item.imageLeftAligned ? imageContent : textContent}
-      rightContent={!!item.imageLeftAligned ? textContent : imageContent}
-    />
+    <>
+      {!!imageContent ? (
+        <SplitLayoutContainer
+          leftContentWidth={"50"}
+          rightContentWidth={"50"}
+          isPortrait={isPortrait}
+          borderColor={themeColor}
+          leftContent={ !!item.imageLeftAligned ? imageContent : textContent}
+          rightContent={!!item.imageLeftAligned ? textContent : imageContent}
+        />
+
+      ) : textContent}
+    </>
   );
 };

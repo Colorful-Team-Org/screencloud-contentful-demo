@@ -11,6 +11,8 @@ import { ProductLayout } from "../Layouts/ProductLayout/ProductLayout";
 import { QuoteLayout } from "../Layouts/QuoteLayout/QuoteLayout";
 
 const ITEM_DELAY_SECONDS = DEFAULT_ITEM_DELAY_SECONDS;
+// const ITEM_DELAY_SECONDS = 60 * 60 * 24;
+// const ITEM_DELAY_SECONDS = 3;
 
 /** Maps TemplateNames to the corresponding render component. */
 const components = {

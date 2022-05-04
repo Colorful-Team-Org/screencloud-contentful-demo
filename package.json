@@ -6,6 +6,7 @@
     "@contentful/rich-text-react-renderer": "15.4.0",
     "@screencloud/alfie-alpha": "1.0.1",
     "@screencloud/apps-sdk": "1.1.0",
+    "clsx": "^1.1.1",
     "contentful": "9.0.0",
     "date-fns": "2.24.0",
     "graphql-request": "3.5.0",

@@ -80,8 +80,13 @@
       },
       {
         "name": "author",
-        "label": "Author",
+        "label": "Author name",
         "type": "string"
+      },
+      {
+        "name": "authorImage",
+        "label": "Author Image",
+        "type": "imageAsset"
       }
     ]
   },
