@@ -1,15 +1,11 @@
-import React, { ReactElement, FunctionComponent } from "react";
 import {
-  ContentWrapper,
-  Flex,
-  theme,
-  Text,
-  TextSizes,
-  Box,
+  Box, ContentWrapper,
+  Flex, Text,
+  TextSizes, theme
 } from "@screencloud/alfie-alpha";
+import React, { FunctionComponent, ReactElement } from "react";
 import { ContentfulQuoteItem } from "../../../providers/ContentfulDataProvider";
 import { RichText } from "../../RichText/rich-text";
-import ImageAsset from "../../RichText/asset/image-asset";
 import { QuoteAuthor } from "./QuoteAuthor";
 
 interface Props {
@@ -22,7 +18,6 @@ interface Props {
 export const QuoteRightContent: FunctionComponent<Props> = (
   props: Props
 ): ReactElement<Props> => {
-  console.log('QuoteRightContent', props);
   const { item } = props;
 
   return (
@@ -48,7 +43,6 @@ export const QuoteRightContent: FunctionComponent<Props> = (
           {!!item.authorImage?.url && (
             <Box mt={100}>
               <QuoteAuthor {...item}/>
-              {/* <ImageAsset {...item.authorImage} contentType="none" /> */}
             </Box>
           )}
         </Flex>
