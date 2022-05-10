@@ -239,10 +239,10 @@ export function useMappedData(
 // Utitliy functions:
 
 function mapLink(baseUrl?: string, slug?: string) {
-  if (!baseUrl || !slug) {
+  if (!baseUrl) {
     return {};
   }
-  return { link: `${baseUrl}/${slug}` };
+  return { link: `${baseUrl}${slug ? '/'+slug : ''}` };
 }
 
 export const capitalize = (str: string): string =>
