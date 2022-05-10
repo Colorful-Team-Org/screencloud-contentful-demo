@@ -3,6 +3,7 @@ import React, {
   FunctionComponent,
   useState,
   useEffect,
+  useMemo,
 } from "react";
 import {
   Box,
@@ -11,8 +12,12 @@ import {
   theme,
   Text,
   TextSizes,
+  Logo,
+  QRCode,
+  Progress,
 } from "@screencloud/alfie-alpha";
 import { ContentfulProductItem } from "../../../providers/ContentfulDataProvider";
+import { RichText } from "../../RichText/rich-text";
 
 interface Props {
   itemDurationSeconds: number;
@@ -24,13 +29,34 @@ interface Props {
 export const ProductRightContent: FunctionComponent<Props> = (
   props: Props
 ): ReactElement<Props> => {
-  const { item } = props;
+  const { item, companyLogoUrl, itemDurationSeconds, progressBarColor } = props;
+  // console.log('ProductRightContent',  props);
 
   const [key, setKey] = useState(Date.now());
 
   useEffect(() => {
     setKey(Date.now());
   }, [item]);
+
+  const description = useMemo(() => {
+    if (!item.description) return;
+    return (
+      <Text
+        type={TextSizes.SmallP}
+        wordBreak="break-word"
+        fontFamily={"sans-serif"}
+        paddingBottom={{ _: 2, lg: 7 }}
+      >
+        {typeof item.description === 'string' ? item.description : (
+          !!item.description.json ? (
+            <RichText document={item.description.json} />
+          ) : (
+            ''
+          )
+        )}
+      </Text>
+    )
+  }, [item.description])
 
   return (
     <ContentWrapper backgroundColor={theme.colors.white} key={key}>
@@ -40,128 +66,142 @@ export const ProductRightContent: FunctionComponent<Props> = (
         justifyContent="center"
         height="100%"
       >
+        {/* Brand & product type */}
         <Flex
-          flexGrow={1}
           overflow="hidden"
           flexDirection="row"
           justifyContent="left"
+          alignItems="flex-start"
           width="100%"
         >
-          <Text
-            type={TextSizes.H3}
-            color={theme.colors.black}
-            wordBreak="break-word"
-            fontFamily={theme.fonts.normal}
-            fontWeight={theme.fontWeights.bold}
-          >
-            {item.brand}
-          </Text>
-        </Flex>
+          <Flex flex="1" alignSelf="flex-end" flexDirection="column">
+            {item.brand && (
+              <Text
+                type={TextSizes.H3}
+                color={theme.colors.black}
+                wordBreak="break-word"
+                fontFamily={theme.fonts.normal}
+                fontWeight={theme.fontWeights.bold}
+              >
+                {item.brand}
+              </Text>
+            )} 
+            {item.type && (
+              <Text
+                type={TextSizes.SmallP}
+                color="#777"
+                wordBreak="break-word"
+                fontFamily={theme.fonts.normal}
+                fontWeight={theme.fontWeights.normal}
+              >
+                {item.type}
+              </Text>
+            )}
+          </Flex>
 
-        <Flex
-          overflow="hidden"
-          flexDirection="row"
-          justifyContent="left"
-          width="100%"
-        >
-          {item.name && (
-            <Text
-              type={TextSizes.H1}
-              color="#2d313b"
-              wordBreak="break-word"
-              fontFamily={theme.fonts.normal}
-              fontWeight={theme.fontWeights.bold}
-            >
-              {item.name.toUpperCase()}
-            </Text>
+          {companyLogoUrl && (
+            <Logo url={companyLogoUrl} maxHeight={"160px"} maxWidth={"150px"} />
           )}
         </Flex>
 
-        <Flex
-          overflow="hidden"
-          flexDirection="row"
-          justifyContent="left"
-          width="100%"
-          paddingBottom={{ _: 4, lg: 7 }}
-        >
-          <Box marginRight={{ _: 2 }}>
+        {/* middle */}
+        <Flex flex="1" flexDirection="column" alignItems="center" justifyContent="center">
+          {/* description */}
+          <Flex
+            overflow="hidden"
+            flexDirection="column"
+            justifyContent="left"
+            width="100%"
+          >
+            {item.name && (
+              <Text
+                type={TextSizes.H2}
+                color="#2d313b"
+                wordBreak="break-word"
+                fontFamily={theme.fonts.normal}
+                fontWeight={theme.fontWeights.black}
+              >
+                {item.name.toUpperCase()}
+              </Text>
+            )}
+            {!!description && (
+              <Box mt={4}>
+                {description}
+              </Box>
+            )}
+          </Flex>
+
+          {/* product ID */}
+          <Flex
+            overflow="hidden"
+            flexDirection="row"
+            justifyContent="left"
+            width="100%"
+            paddingBottom={{ _: 4, lg: 7 }}
+          >
             <Text
               type={TextSizes.SmallP}
               color="#777"
               wordBreak="break-word"
               fontFamily={theme.fonts.normal}
               fontWeight={theme.fontWeights.normal}
-              paddingBottom={{ _: 4, lg: 7 }}
             >
-              {item.type}
+              {item.id}
             </Text>
-          </Box>
-          <Text
-            type={TextSizes.SmallP}
-            color="#777"
-            wordBreak="break-word"
-            fontFamily={theme.fonts.normal}
-            fontWeight={theme.fontWeights.normal}
-            paddingBottom={{ _: 4, lg: 7 }}
-          >
-            {item.id}
-          </Text>
-        </Flex>
-
-        <Flex
-          flexGrow={1}
-          flexDirection="row"
-          flexWrap="wrap"
-          justifyContent="left"
-          alignItems="start"
-        >
-          <Flex
-            flexDirection="column"
-            flexWrap="wrap"
-            justifyContent="left"
-            alignItems="start"
-          >
-            <Text
-              type={TextSizes.H1}
-              wordBreak="break-word"
-              fontFamily={theme.fonts.normal}
-              fontWeight={theme.fontWeights.bold}
-              color="#2d313b"
-            >
-              £{item.price}
-            </Text>
-            {item.comparePrice > item.price && (
-              <Text
-                type={TextSizes.P}
-                wordBreak="break-word"
-                color="#777"
-                fontFamily={theme.fonts.normal}
-                fontWeight={theme.fontWeights.normal}
-              >
-                was £{item.comparePrice}
-              </Text>
-            )}
           </Flex>
 
-          {item.comparePrice > item.price && (
+          {/* price */}
+          {!!item.price && (
             <Flex
-              bg="#ffd900"
-              borderRadius="100%"
-              minWidth="175px"
-              minHeight="175px"
-              justifyContent="center"
-              alignItems="center"
-              marginLeft={{ _: 2 }}
+              justifyContent="left"
+              alignItems="end"
+              width="100%"
             >
+              {item.comparePrice && item.comparePrice !== item.price && (
+                <Text
+                  type={TextSizes.H2}
+                  wordBreak="break-word"
+                  fontFamily={theme.fonts.normal}
+                  fontWeight={theme.fontWeights.bold}
+                  color="#777"
+                  style={{ textDecoration: 'line-through', marginRight: 40 }}
+                >
+                  {item.comparePrice} €
+                </Text>
+              )}
               <Text
-                type={TextSizes.H4}
+                type={TextSizes.H1}
+                wordBreak="break-word"
                 fontFamily={theme.fonts.normal}
-                textAlign="center"
+                fontWeight={theme.fontWeights.bold}
+                color="#2d313b"
               >
-                save
-                <br />£{item.comparePrice - item.price}
+                {item.price} €
               </Text>
             </Flex>
+          )}
+        </Flex>
+        <Flex
+          width={"100%"}
+          justifyContent={"space-between"}
+          alignItems={"flex-end"}
+          flexDirection="row"
+        >
+          <Flex
+            width="100%"
+            height="100%"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Box width={"33%"}>
+              <Progress
+                duration={itemDurationSeconds}
+                barColor={progressBarColor}
+              />
+            </Box>
+          </Flex>
+          {item.link && (
+            <QRCode url={item.link} />
           )}
         </Flex>
       </Flex>

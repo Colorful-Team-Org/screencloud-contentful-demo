@@ -1,11 +1,9 @@
-import React, { ReactElement, FunctionComponent } from "react";
 import {
-  theme,
-  SplitLayoutContainer,
-  FullScreenImage,
+  FullScreenImage, SplitLayoutContainer, theme
 } from "@screencloud/alfie-alpha";
-import { ProductRightContent } from "./ProductRightContent";
+import React, { FunctionComponent, ReactElement } from "react";
 import { ContentfulProductItem } from "../../../providers/ContentfulDataProvider";
+import { ProductRightContent } from "./ProductRightContent";
 
 interface Props {
   itemDurationSeconds: number;
@@ -22,6 +20,7 @@ export const ProductLayout: FunctionComponent<Props> = (
   const {
     itemDurationSeconds,
     item,
+    companyLogoUrl,
     progressBarColor,
     isPortrait,
     themedColor,
@@ -46,6 +45,7 @@ export const ProductLayout: FunctionComponent<Props> = (
           itemDurationSeconds={itemDurationSeconds}
           item={item}
           progressBarColor={progressBarColor}
+          companyLogoUrl={companyLogoUrl}
         />
       }
     />

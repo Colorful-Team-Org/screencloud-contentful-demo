@@ -36,9 +36,10 @@ export interface ContentfulProductItem {
   price: number;
   comparePrice: number;
   type: string;
-  image: ImageAsset;
+  description?: string | { json: types.Document };
+  image?: ImageAsset;
   name: string;
-  link: string;
+  link?: string;
 }
 
 export interface ContentfulHeroItem {

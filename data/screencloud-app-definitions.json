@@ -93,7 +93,7 @@
   {
     "name": "products",
     "label": "Products",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "fields": [
       {
         "name": "id",
@@ -113,6 +113,11 @@
       {
         "name": "type",
         "label": "Type",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "label": "Description",
         "type": "string"
       },
       {
@@ -138,6 +143,12 @@
       {
         "name": "baseUrl",
         "label": "Base URL",
+        "type": "string",
+        "constant": true
+      },
+      {
+        "name": "logoUrl",
+        "label": "Logo URL",
         "type": "string",
         "constant": true
       }
