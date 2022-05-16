@@ -115,7 +115,7 @@ export const ProductRightContent: FunctionComponent<Props> = (
           >
             {item.name && (
               <Text
-                type={TextSizes.H2}
+                type={TextSizes.H3}
                 color="#2d313b"
                 wordBreak="break-word"
                 fontFamily={theme.fonts.normal}
