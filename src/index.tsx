@@ -39,6 +39,7 @@ ReactDOM.render(
                 <div className="app-container">
                   <App />
                 </div>
+                <div style={{ position: 'fixed', bottom: 10, right: 10, color: '#aaa' }}>v1.1.0</div>
               </ContentfulDataProvider>
             </ContentfulApiContext.Provider>
           </QueryClientProvider>
