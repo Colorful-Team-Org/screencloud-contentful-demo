@@ -28,7 +28,7 @@ type Input = {
   env?: string;
 };
 
-export async function gqlRequest<ReturnType>(
+async function gqlRequest<ReturnType>(
   spaceId: string,
   apiKey: string,
   query: string,

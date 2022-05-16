@@ -1,17 +1,19 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { createWebStoragePersistor } from "react-query/createWebStoragePersistor-experimental";
+import { persistQueryClient } from "react-query/persistQueryClient-experimental";
+import { config as devConfig } from "./config.development";
 import App from "./containers/AppContainer/AppContainer";
+import "./index.css";
+import { ContentfulDataProvider } from "./providers/ContentfulDataProvider";
 import {
   ScreenCloudPlayerContext,
-  ScreenCloudPlayerProvider,
+  ScreenCloudPlayerProvider
 } from "./providers/ScreenCloudPlayerProvider";
-import { ContentfulDataProvider } from "./providers/ContentfulDataProvider";
-import { config as devConfig } from "./config.development";
 import reportWebVitals from "./reportWebVitals";
-import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
-import { QueryClient, QueryClientProvider } from "react-query";
 import { ContentfulApiContext } from "./service/contentful-api/contentful-api-ctx";
+import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 
 /* 
 LAYOUTS
@@ -21,7 +23,18 @@ LAYOUTS
  - blog
 */
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      cacheTime: Infinity,
+    }
+  }
+});
+
+// persistQueryClient({
+//   queryClient,
+//   persistor: createWebStoragePersistor({ storage: window.localStorage})
+// })
 
 ReactDOM.render(
   <React.StrictMode>
