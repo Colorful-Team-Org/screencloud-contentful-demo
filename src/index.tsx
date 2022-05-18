@@ -31,10 +31,12 @@ const queryClient = new QueryClient({
   }
 });
 
-// persistQueryClient({
-//   queryClient,
-//   persistor: createWebStoragePersistor({ storage: window.localStorage})
-// })
+persistQueryClient({
+  queryClient,
+  persistor: createWebStoragePersistor({ storage: window.localStorage})
+})
+
+console.log(`version 1.1.0`);
 
 ReactDOM.render(
   <React.StrictMode>
