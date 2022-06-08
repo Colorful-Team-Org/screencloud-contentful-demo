@@ -1,4 +1,4 @@
-## Contentful Demo app
+## Screencloud Contentful Demo app
 
 To run the app locally:
 
