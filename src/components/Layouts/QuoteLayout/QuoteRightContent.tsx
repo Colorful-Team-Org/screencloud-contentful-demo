@@ -22,9 +22,7 @@ interface Props {
 }
 
 export const QuoteRightContent: FunctionComponent<Props> = (props: Props): ReactElement<Props> => {
-  console.log('QuoteRightContent', props);
-  useEffect(( ) => () => console.log('unmount'), []);
-
+  // console.log('QuoteRightContent', props);
   const { item, showAuthorImage, itemDurationSeconds, progressBarColor } = props;
   const { author, authorImage, authorLocation } = item;
 

@@ -1,13 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
-import {
-  ContentfulCollection,
-  useGqlQuery
-} from "../contentful-api/contentful-graphql-service";
+import { useEffect, useMemo, useState } from 'react';
+import { ContentfulCollection, useGqlQuery } from '../contentful-api/contentful-graphql-service';
 import {
   ContentFeedGql,
   ContentMappingCollectionResponse,
-  ContentMappingConfig
-} from "./content-mapping.queries";
+  ContentMappingConfig,
+} from './content-mapping.queries';
 
 export interface ImageAsset {
   description: string;
@@ -23,7 +20,7 @@ export interface ImageAsset {
 /**
  * Expects a data object which is the response of a Contentful API call
  * and maps it to the schema defined in `mappingConfig`.
- * @param mappingConfig 
+ * @param mappingConfig
  * @param filterItems A list of ContentIds which should be included in the result
  * @param data Data as received from the Contentful API
  *  (which should be mapped according to `mappingConfig`)
@@ -31,29 +28,29 @@ export interface ImageAsset {
  */
 export function mapContent(
   mappingConfig: ContentMappingConfig,
-  data: Array<Record<string, any>>,
+  data: Array<Record<string, any>>
 ): any[] {
-  return data.map((dataItem) => {
+  return data.map(dataItem => {
     const mappingEntries = Object.entries(mappingConfig.mapping || {});
 
     /** for every mapping entry we get the data out of the contentful entry */
-    const mappedEntries = mappingEntries.reduce((acc, mapEntry) => {
-      const [fieldName, path] = mapEntry;
-      const pathSegments = path.split(".");
-      const value = pathSegments.reduce(
-        (dataItemSegment, pathSegment, i, arr) => {
+    const mappedEntries = mappingEntries.reduce(
+      (acc, mapEntry) => {
+        const [fieldName, path] = mapEntry;
+        const pathSegments = path.split('.');
+        const value = pathSegments.reduce((dataItemSegment, pathSegment, i, arr) => {
           if (!dataItemSegment) {
             return dataItemSegment;
           }
-          const [segmentName] = pathSegment.split(":");
+          const [segmentName] = pathSegment.split(':');
           // const isLast = i === arr.length - 1;
           return dataItemSegment[segmentName];
-        },
-        dataItem
-      );
+        }, dataItem);
 
-      return { ...acc, [fieldName]: value };
-    }, {} as any);
+        return { ...acc, [fieldName]: value };
+      },
+      { sys: dataItem.sys } as any
+    );
 
     return {
       ...mappedEntries,
@@ -71,41 +68,37 @@ export function queryStringFromMappingConfig(config: ContentMappingConfig, ids?:
 
   const itemsQueryString = entries?.reduce((itemsString, entry) => {
     const path = entry[1];
-    const segments = path.split(".");
+    const segments = path.split('.');
 
-    const singleItemString = [...segments]
-      .reverse()
-      .reduce((acc, segment, i, arr) => {
-        const [fieldName, type] = segment.split(`:`);
+    const singleItemString = [...segments].reverse().reduce((acc, segment, i, arr) => {
+      const [fieldName, type] = segment.split(`:`);
 
-        let str = fieldName;
-        if (acc) {
-          str = `${str} { ${acc} }`;
-        } else {
-          switch (type) {
-            case "RichText":
-              str = `${fieldName} { json }`;
-              break;
-            case "Asset":
-            case "ImageAsset":
-              str = `${fieldName} { ...Asset }`;
-              break;
-          }
+      let str = fieldName;
+      if (acc) {
+        str = `${str} { ${acc} }`;
+      } else {
+        switch (type) {
+          case 'RichText':
+            str = `${fieldName} { json }`;
+            break;
+          case 'Asset':
+          case 'ImageAsset':
+            str = `${fieldName} { ...Asset }`;
+            break;
         }
+      }
 
-        /** if parent has a type we wrap our field with an inline fragment: */
-        const item = i < arr.length - 1 ? arr[i + 1]?.split(`:`) : [];
-        const prevType = item[1];
-        if (prevType) {
-          const prevTypes = prevType.split(`|`);
-          str = prevTypes
-            .map((p) => `...on ${capitalize(p)} { ${str} }`)
-            .join(` `);
-          // str = `... on ${capitalize(prevType)} { ${str} }`;
-        }
+      /** if parent has a type we wrap our field with an inline fragment: */
+      const item = i < arr.length - 1 ? arr[i + 1]?.split(`:`) : [];
+      const prevType = item[1];
+      if (prevType) {
+        const prevTypes = prevType.split(`|`);
+        str = prevTypes.map(p => `...on ${capitalize(p)} { ${str} }`).join(` `);
+        // str = `... on ${capitalize(prevType)} { ${str} }`;
+      }
 
-        return str;
-      }, ``);
+      return str;
+    }, ``);
 
     return `${itemsString}${singleItemString} sys { id publishedAt }`;
   }, ``);
@@ -137,7 +130,7 @@ export function queryStringFromMappingConfig(config: ContentMappingConfig, ids?:
 /**
  * Simple graphql react query to get a contentFeed item from contentful.
  * @param options contentFeed id is required
- * @returns 
+ * @returns
  */
 export function useContentFeedQuery(options: {
   id: string;
@@ -146,33 +139,30 @@ export function useContentFeedQuery(options: {
 }) {
   const { id, skip, refetchInterval } = options;
   const key = `${useContentFeedQuery}:${id}`;
-  return useGqlQuery<ContentMappingCollectionResponse>(
-    ContentFeedGql,
-    {
-      key,
-      input: { id },
-      skip,
-      refetchInterval,
-    }
-  );
+  return useGqlQuery<ContentMappingCollectionResponse>(ContentFeedGql, {
+    key,
+    input: { id },
+    skip,
+    refetchInterval,
+  });
 }
 
 /**
  * Generates a graphql queryString out of a mappingConfig
  * and requests the Contentful Api.
- * @param mappingConfig 
+ * @param mappingConfig
  * @param filterItems A list of Content IDs which should be included in the results.
- *  When not provided all items will be included. 
+ *  When not provided all items will be included.
  * @returns React Query Object and resulting data (already mapped accorudng to `mappingConfig`)
  */
 export function useMappedData(
   mappingConfig?: ContentMappingConfig,
   options?: {
-    filterItems?: { sys: { id: string } }[]
-    refetchInterval?: number,
+    filterItems?: { sys: { id: string } }[];
+    refetchInterval?: number;
   }
 ) {
-  const { filterItems, refetchInterval} = options || {};
+  const { filterItems, refetchInterval } = options || {};
 
   const selectedItemIds = useMemo(() => filterItems?.map(item => item.sys.id), [filterItems]);
 
@@ -180,21 +170,24 @@ export function useMappedData(
     ? queryStringFromMappingConfig(mappingConfig, selectedItemIds)
     : undefined;
 
-  const query =
-    useGqlQuery<Record<string, ContentfulCollection<any>>>(
-      queryString,
-      { refetchInterval },
-    );
+  const query = useGqlQuery<Record<string, ContentfulCollection<any>>>(queryString, {
+    refetchInterval,
+  });
 
-  const contentfulItems = mappingConfig ? query.data?.[`${mappingConfig.contentType}Collection`].items : undefined;
+  const contentfulItems = mappingConfig
+    ? query.data?.[`${mappingConfig.contentType}Collection`].items
+    : undefined;
 
   /** Items already mapped, which are returned by this hook in the end. */
-  const [items, setItems] = useState(mappingConfig && contentfulItems ? mapContent(mappingConfig, contentfulItems) : []);
-  
+  const [items, setItems] = useState(
+    mappingConfig && contentfulItems ? mapContent(mappingConfig, contentfulItems) : []
+  );
+
   /** get a key which changes when a content item was changed in the backend. */
-  const itemsLastUpdatedKey = useMemo(() => (
-    contentfulItems?.map(item => item.sys?.publishedAt).join(',')
-  ), [contentfulItems])
+  const itemsLastUpdatedKey = useMemo(
+    () => contentfulItems?.map(item => item.sys?.publishedAt).join(','),
+    [contentfulItems]
+  );
 
   /**
    * only when `itemsLastUpdatedKey ` changed we map and update our items.
@@ -206,11 +199,13 @@ export function useMappedData(
         setItems([]);
         return;
       }
-      const sortedItems = selectedItemIds ? selectedItemIds.map(sid => contentfulItems.find(c => c.sys.id === sid)) : contentfulItems;
+      const sortedItems = selectedItemIds
+        ? selectedItemIds.map(sid => contentfulItems.find(c => c.sys.id === sid))
+        : contentfulItems;
       // console.log(`sortedItems`, contentfulItems,)
-      setItems(mapContent(mappingConfig, sortedItems))
+      setItems(mapContent(mappingConfig, sortedItems));
     }
-  }, [contentfulItems, selectedItemIds, itemsLastUpdatedKey, mappingConfig])
+  }, [contentfulItems, selectedItemIds, itemsLastUpdatedKey, mappingConfig]);
 
   // useEffect(() => {
   //   if (contentfulItems) {
@@ -232,7 +227,7 @@ export function useMappedData(
   //   }
   // // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [items]);
-  
+
   return { items, queryResponse: query };
 }
 
@@ -242,7 +237,7 @@ function mapLink(baseUrl?: string, slug?: string) {
   if (!baseUrl) {
     return {};
   }
-  return { link: `${baseUrl}${slug ? '/'+slug : ''}` };
+  return { link: `${baseUrl}${slug ? '/' + slug : ''}` };
 }
 
 export const capitalize = (str: string): string =>

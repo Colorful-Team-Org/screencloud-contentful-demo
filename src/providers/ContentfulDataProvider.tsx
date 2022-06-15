@@ -8,7 +8,14 @@ import {
 
 type TemplateName = 'blog' | 'quotes' | 'products' | 'heroes';
 
-export interface ContentfulBlogItem {
+type ContentfulItem = {
+  sys: {
+    id: string;
+    publishedAt: string;
+  }
+}
+
+export interface ContentfulBlogItem extends ContentfulItem {
   title: string;
   link: string;
   description?: { json: types.Document };
@@ -18,7 +25,7 @@ export interface ContentfulBlogItem {
   pubDate?: string;
 }
 
-export interface ContentfulQuoteItem {
+export interface ContentfulQuoteItem extends ContentfulItem {
   image?: ImageAsset;
   text: { json: types.Document };
   author: string;
@@ -27,7 +34,7 @@ export interface ContentfulQuoteItem {
   imageLeftAligned?: boolean;
   quoteCentered?: boolean;
 }
-export interface ContentfulProductItem {
+export interface ContentfulProductItem extends ContentfulItem {
   id: string;
   brand: string;
   price: number;
@@ -39,7 +46,7 @@ export interface ContentfulProductItem {
   link?: string;
 }
 
-export interface ContentfulHeroItem {
+export interface ContentfulHeroItem extends ContentfulItem {
   headline: string;
   image?: ImageAsset;
   paragraph?: { json: types.Document };

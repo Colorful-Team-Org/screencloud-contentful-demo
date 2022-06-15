@@ -29,8 +29,9 @@ export const QuoteLayout: FunctionComponent<Props> = (props: Props): ReactElemen
   const textContent = useMemo(
     () => (
       <QuoteRightContent
-        itemDurationSeconds={itemDurationSeconds}
+        key={item.sys.id}
         item={item}
+        itemDurationSeconds={itemDurationSeconds}
         companyLogoUrl={companyLogoUrl}
         progressBarColor={progressBarColor}
       />
