@@ -70,9 +70,9 @@ export const BlogPostRightContent: FunctionComponent<Props> = props => {
       <Flex
         overflow="hidden"
         flexDirection="column"
-        justifyContent="center"
+        justifyContent="stretch"
         height="100%"
-        padding={{ _: 0, md: 28 }}
+        padding={[0, 28]}
       >
         {/* Category and Logo */}
         <Flex justifyContent="space-between" alignItems="center">
@@ -90,7 +90,7 @@ export const BlogPostRightContent: FunctionComponent<Props> = props => {
           )}
           {companyLogoUrl && (
             <Box width="33%">
-              <img src={companyLogoUrl} style={{ maxWidth: '100%' }} alt="" />
+              <img src={companyLogoUrl} style={{ maxWidth: 200 }} alt="" />
             </Box>
           )}
         </Flex>
@@ -98,6 +98,7 @@ export const BlogPostRightContent: FunctionComponent<Props> = props => {
         <Flex
           flexGrow={1}
           flexDirection="column"
+          height="100%"
           // justifyContent={!!itemDescriptionJson ? 'center' : 'flex-start'}
           justifyContent="center"
           alignItems="left"
