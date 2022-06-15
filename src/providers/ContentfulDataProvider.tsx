@@ -1,16 +1,12 @@
-import * as types from "@contentful/rich-text-types";
-import React, { FunctionComponent, useContext, useMemo } from "react";
+import * as types from '@contentful/rich-text-types';
+import React, { FunctionComponent, useContext, useMemo } from 'react';
 import {
-  ImageAsset, useContentFeedQuery,
-  useMappedData
-} from "../service/schema-connector/content-mapping-service";
+  ImageAsset,
+  useContentFeedQuery,
+  useMappedData,
+} from '../service/schema-connector/content-mapping-service';
 
-
-type TemplateName =
-  | 'blog'
-  | 'quotes'
-  | 'products'
-  | 'heroes';
+type TemplateName = 'blog' | 'quotes' | 'products' | 'heroes';
 
 export interface ContentfulBlogItem {
   title: string;
@@ -27,8 +23,9 @@ export interface ContentfulQuoteItem {
   text: { json: types.Document };
   author: string;
   authorImage: ImageAsset;
+  authorLocation?: string;
   imageLeftAligned?: boolean;
-  quoteCentered?: boolean; 
+  quoteCentered?: boolean;
 }
 export interface ContentfulProductItem {
   id: string;
@@ -55,7 +52,7 @@ export type TemplateData<TN extends TemplateName, D> = {
   items: D[];
   companyLogo?: string;
   assetFieldNames: string[];
-}
+};
 
 export type ContentfulDataItem =
   | TemplateData<'blog', ContentfulBlogItem>
@@ -63,15 +60,11 @@ export type ContentfulDataItem =
   | TemplateData<'products', ContentfulProductItem>
   | TemplateData<'heroes', ContentfulHeroItem>;
 
-
-
 export const ContentfulDataContext = React.createContext({
-  data: undefined as ContentfulDataItem|undefined,
+  data: undefined as ContentfulDataItem | undefined,
   isLoading: false,
   error: undefined as unknown,
 });
-
-
 
 type Props = {
   contentFeedId?: string;
@@ -97,29 +90,23 @@ export const ContentfulDataProvider: FunctionComponent<Props> = props => {
   const itemIds = contentFeed?.entriesCollection.items;
 
   const assetFieldNames = useMemo(() => {
-    if (!mappingConfig?.mapping)
-      return [];
+    if (!mappingConfig?.mapping) return [];
     return getAssetKeysFromMapping(mappingConfig.mapping);
-  }, [mappingConfig?.mapping])
+  }, [mappingConfig?.mapping]);
 
-  
-  const {
-    queryResponse,
-    items = [],
-  } = useMappedData(
-    mappingConfig, {
-      filterItems: itemIds,
-      refetchInterval: props.refetchInterval
-    });
+  const { queryResponse, items = [] } = useMappedData(mappingConfig, {
+    filterItems: itemIds,
+    refetchInterval: props.refetchInterval,
+  });
 
   const isLoading = contentFeedQuery.isLoading || queryResponse.isLoading;
-  
-  let error: any = contentFeed === null ? `There is no ContentFeed with id "${props.contentFeedId}"` : undefined;
+
+  let error: any =
+    contentFeed === null ? `There is no ContentFeed with id "${props.contentFeedId}"` : undefined;
   if (!error) error = contentFeedQuery.error || queryResponse.error;
 
   const templateName = mappingConfig?.name as TemplateName | undefined;
   const companyLogo = mappingConfig?.constants?.logoUrl;
-
 
   return (
     <ContentfulDataContext.Provider
@@ -139,14 +126,12 @@ export const ContentfulDataProvider: FunctionComponent<Props> = props => {
   );
 };
 
-
 function getAssetKeysFromMapping(mapping: Record<string, string>) {
   return Object.entries(mapping).reduce(
-    (assetFields, [key, value]) => (
-      value.split(':').pop() === 'Asset' ? [...assetFields, key] : assetFields
-    ),
+    (assetFields, [key, value]) =>
+      value.split(':').pop() === 'Asset' ? [...assetFields, key] : assetFields,
     [] as string[]
-  )
+  );
 }
 
 export const useContentfulData = () => useContext(ContentfulDataContext);

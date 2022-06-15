@@ -1,5 +1,13 @@
-import { Box, ContentWrapper, Flex, Progress, Text, TextSizes, theme } from '@screencloud/alfie-alpha';
-import React, { FunctionComponent, ReactElement } from 'react';
+import {
+  Box,
+  ContentWrapper,
+  Flex,
+  Progress,
+  Text,
+  TextSizes,
+  theme,
+} from '@screencloud/alfie-alpha';
+import React, { FunctionComponent, ReactElement, useEffect } from 'react';
 import { ContentfulQuoteItem } from '../../../providers/ContentfulDataProvider';
 import { RichText } from '../../RichText/rich-text';
 import { QuoteAuthor } from './QuoteAuthor';
@@ -8,13 +16,17 @@ import { ReactComponent as QuoteSvg } from './assets/quote.svg';
 interface Props {
   itemDurationSeconds: number;
   item: ContentfulQuoteItem;
+  showAuthorImage?: boolean;
   companyLogoUrl?: string;
   progressBarColor?: string;
 }
 
 export const QuoteRightContent: FunctionComponent<Props> = (props: Props): ReactElement<Props> => {
   console.log('QuoteRightContent', props);
-  const { item, itemDurationSeconds, progressBarColor } = props;
+  useEffect(( ) => () => console.log('unmount'), []);
+
+  const { item, showAuthorImage, itemDurationSeconds, progressBarColor } = props;
+  const { author, authorImage, authorLocation } = item;
 
   return (
     <ContentWrapper backgroundColor={theme.colors.white}>
@@ -36,15 +48,20 @@ export const QuoteRightContent: FunctionComponent<Props> = (props: Props): React
               </Text>
             </>
           )}
-          {!!item.authorImage?.url && (
+          {!!item.author && (
             <Box mt={40}>
-              <QuoteAuthor author={item.author} centered={item.quoteCentered} />
+              <QuoteAuthor
+                author={author}
+                authorImage={!!showAuthorImage ? authorImage : undefined}
+                authorLocation={authorLocation}
+                centered={!showAuthorImage || item.quoteCentered}
+              />
             </Box>
           )}
         </Flex>
 
         <div>
-        <Box width={'33%'}>
+          <Box width="200px">
             <Progress duration={itemDurationSeconds} barColor={progressBarColor} />
           </Box>
         </div>

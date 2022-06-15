@@ -87,6 +87,11 @@
         "name": "authorImage",
         "label": "Author Image",
         "type": "imageAsset"
+      },
+      {
+        "name": "authorLocation",
+        "label": "Author location",
+        "type": "string"
       }
     ]
   },
