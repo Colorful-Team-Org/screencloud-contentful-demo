@@ -1,21 +1,16 @@
-import React, {
-  ReactElement,
-  FunctionComponent,
-  useState,
-  useEffect,
-  useMemo,
-} from "react";
 import {
+  Box,
   ContentWrapper,
   Flex,
-  theme,
+  Logo,
+  Progress,
+  QRCode,
   Text,
   TextSizes,
-  QRCode,
-  Logo,
-  Box,
-} from "@screencloud/alfie-alpha";
-import { ContentfulHeroItem } from "../../../providers/ContentfulDataProvider";
+  theme,
+} from '@screencloud/alfie-alpha';
+import { FunctionComponent, ReactElement, useEffect, useMemo, useState } from 'react';
+import { ContentfulHeroItem } from '../../../providers/ContentfulDataProvider';
 
 interface Props {
   itemDurationSeconds: number;
@@ -24,18 +19,21 @@ interface Props {
   progressBarColor?: string;
 }
 
-export const HeroRightContent: FunctionComponent<Props> = (
-  props: Props
-): ReactElement<Props> => {
+export const HeroRightContent: FunctionComponent<Props> = (props: Props): ReactElement<Props> => {
   // console.log(`props`, props)
-  const { item, companyLogoUrl } = props;
+  const { item, itemDurationSeconds, progressBarColor, companyLogoUrl } = props;
 
-  const color = useMemo(() => (
-    item.color?.match(/(#[0-9a-f]{6}|#[0-9a-f]{3})/gi)?.[0]?.toUpperCase() || theme.colors.white
-  ), [item])
+  // const color = useMemo(
+  //   () =>
+  //     item.color?.match(/(#[0-9a-f]{6}|#[0-9a-f]{3})/gi)?.[0]?.toUpperCase() || theme.colors.white,
+  //   [item]
+  // );
+
+  /** Will always be 'white' (currently we ignore the contentTypes color setting)  */
+  const color = theme.colors.white;
 
   const isDark = useMemo(() => {
-    switch(color) {
+    switch (color) {
       case '#000000':
       case '#000':
       case '#797979':
@@ -43,9 +41,9 @@ export const HeroRightContent: FunctionComponent<Props> = (
         return true;
     }
     return false;
-  }, [color])
+  }, [color]);
 
-  const textColor = useMemo(() => isDark ? theme.colors.white : theme.colors.black, [isDark]);
+  const textColor = useMemo(() => (isDark ? theme.colors.white : theme.colors.black), [isDark]);
 
   const [key, setKey] = useState(Date.now());
 
@@ -60,20 +58,19 @@ export const HeroRightContent: FunctionComponent<Props> = (
         flexDirection="column"
         justifyContent="space-between"
         height="100%"
+        padding={[40, 68]}
       >
-        <Box p={5} style={{ background: isDark ? theme.colors.white : 'transparent' }}>
-          {companyLogoUrl && (
-            <Logo url={companyLogoUrl} maxHeight={"160px"} maxWidth={"200px"} />
-          )}
+        <Box style={{ background: isDark ? theme.colors.white : 'transparent' }}>
+          {companyLogoUrl && <Logo url={companyLogoUrl} maxHeight={'160px'} maxWidth={'200px'} />}
         </Box>
 
-        <Box px={5}>
+        <Box>
           {item.headline && (
             <Text
               type={TextSizes.H4}
               color={textColor}
               wordBreak="break-word"
-              fontFamily={"sans-serif"}
+              fontFamily={'sans-serif'}
               fontWeight={theme.fontWeights.black}
               paddingBottom={{ _: 4, lg: 7 }}
             >
@@ -82,14 +79,12 @@ export const HeroRightContent: FunctionComponent<Props> = (
           )}
         </Box>
 
-        <Box mb={5} style={{ textAlign: 'center'}}>
-          {item.link && (
-            <Box
-              style={{ display: 'inline-block'}} background={theme.colors.white} p={1}>
-              <QRCode url={item.link} />
-            </Box>
-          )}
-        </Box>
+        <Flex width={'100%'} justifyContent={'space-between'} alignItems={'flex-end'}>
+          {item.link && <QRCode size={114} url={item.link} />}
+          <Box width={'33%'}>
+            <Progress duration={itemDurationSeconds} barColor={progressBarColor} />
+          </Box>
+        </Flex>
       </Flex>
     </ContentWrapper>
   );

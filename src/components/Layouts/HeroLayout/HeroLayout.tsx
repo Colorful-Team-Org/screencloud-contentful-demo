@@ -1,11 +1,7 @@
-import React, { ReactElement, FunctionComponent } from "react";
-import {
-  theme,
-  SplitLayoutContainer,
-  FullScreenImage,
-} from "@screencloud/alfie-alpha";
-import { HeroRightContent } from "./HeroRightContent";
-import { ContentfulHeroItem } from "../../../providers/ContentfulDataProvider";
+import React, { ReactElement, FunctionComponent } from 'react';
+import { theme, SplitLayoutContainer, FullScreenImage } from '@screencloud/alfie-alpha';
+import { HeroRightContent } from './HeroRightContent';
+import { ContentfulHeroItem } from '../../../providers/ContentfulDataProvider';
 
 interface Props {
   itemDurationSeconds: number;
@@ -16,24 +12,16 @@ interface Props {
   isPortrait: boolean;
 }
 
-export const HeroLayout: FunctionComponent<Props> = (
-  props: Props
-): ReactElement<Props> => {
-  const {
-    itemDurationSeconds,
-    companyLogoUrl,
-    item,
-    progressBarColor,
-    isPortrait,
-    themedColor,
-  } = props;
+export const HeroLayout: FunctionComponent<Props> = (props: Props): ReactElement<Props> => {
+  const { itemDurationSeconds, companyLogoUrl, item, progressBarColor, isPortrait, themedColor } =
+    props;
 
   const themeColor = themedColor || theme.colors.gray;
 
   return (
     <SplitLayoutContainer
-      leftContentWidth={"30"}
-      rightContentWidth={"70"}
+      leftContentWidth={'50%'}
+      rightContentWidth={'50%'}
       isPortrait={isPortrait}
       borderColor={themeColor}
       leftContent={
@@ -46,7 +34,7 @@ export const HeroLayout: FunctionComponent<Props> = (
       }
       rightContent={
         <FullScreenImage
-          url={item.image?.url ? `${item.image?.url}?w=2048` : ""}
+          url={item.image?.url ? `${item.image?.url}?w=2048` : ''}
           itemDurationSeconds={itemDurationSeconds}
         />
       }
