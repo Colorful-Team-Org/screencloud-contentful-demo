@@ -34,9 +34,10 @@ export const QuoteLayout: FunctionComponent<Props> = (props: Props): ReactElemen
         itemDurationSeconds={itemDurationSeconds}
         companyLogoUrl={companyLogoUrl}
         progressBarColor={progressBarColor}
+        showAuthorImage={!imageContent}
       />
     ),
-    [companyLogoUrl, item, itemDurationSeconds, progressBarColor]
+    [companyLogoUrl, imageContent, item, itemDurationSeconds, progressBarColor]
   );
 
   return (

@@ -26,9 +26,11 @@ export const QuoteRightContent: FunctionComponent<Props> = (props: Props): React
   const { item, showAuthorImage, itemDurationSeconds, progressBarColor } = props;
   const { author, authorImage, authorLocation } = item;
 
+  const textCentered = showAuthorImage || !!props.item.quoteCentered;
   return (
     <ContentWrapper backgroundColor={theme.colors.white}>
-      <Flex padding={[0, 28]} flexDirection="column" justifyContent="stretch" height="100%">
+      <Flex padding={[0, 28]} flexDirection="column" justifyContent="space-between" height="100%">
+
         {/* <Flex flexDirection="row" flexWrap="wrap" justifyContent="center" alignItems="center"> */}
         <Flex flex={1} flexDirection="column" justifyContent="center">
           {!!item.text?.json && (
@@ -40,7 +42,7 @@ export const QuoteRightContent: FunctionComponent<Props> = (props: Props): React
                 type={TextSizes.H4}
                 wordBreak="break-word"
                 fontFamily={'sans-serif'}
-                textAlign={!!props.item.quoteCentered ? 'center' : undefined}
+                textAlign={textCentered ? 'center' : undefined}
               >
                 <RichText document={item.text.json} />
               </Text>
@@ -52,7 +54,7 @@ export const QuoteRightContent: FunctionComponent<Props> = (props: Props): React
                 author={author}
                 authorImage={!!showAuthorImage ? authorImage : undefined}
                 authorLocation={authorLocation}
-                centered={!showAuthorImage || item.quoteCentered}
+                centered={!!showAuthorImage || item.quoteCentered}
               />
             </Box>
           )}
