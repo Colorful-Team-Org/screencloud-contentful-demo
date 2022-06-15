@@ -1,20 +1,22 @@
 import {
-  Box, ContentWrapper,
-  Flex, Progress,
-  QRCode, Text,
-  TextSizes, theme
-} from "@screencloud/alfie-alpha";
-import differenceInDays from "date-fns/differenceInDays";
-import differenceInHours from "date-fns/differenceInHours";
-import differenceInMinutes from "date-fns/differenceInMinutes";
-import differenceInSeconds from "date-fns/differenceInSeconds";
-import format from "date-fns/format";
-import React, {
-  FunctionComponent, useEffect, useMemo, useState
-} from "react";
-import { customColors } from "../../../custom-theme";
-import { ContentfulBlogItem } from "../../../providers/ContentfulDataProvider";
-import { RichText } from "../../RichText/rich-text";
+  Box,
+  ContentWrapper,
+  Flex,
+  Progress,
+  QRCode,
+  Text,
+  TextSizes,
+  theme,
+} from '@screencloud/alfie-alpha';
+import differenceInDays from 'date-fns/differenceInDays';
+import differenceInHours from 'date-fns/differenceInHours';
+import differenceInMinutes from 'date-fns/differenceInMinutes';
+import differenceInSeconds from 'date-fns/differenceInSeconds';
+import format from 'date-fns/format';
+import React, { FunctionComponent, useEffect, useMemo, useState } from 'react';
+import { customColors } from '../../../custom-theme';
+import { ContentfulBlogItem } from '../../../providers/ContentfulDataProvider';
+import { RichText } from '../../RichText/rich-text';
 
 interface Props {
   itemDurationSeconds: number;
@@ -40,7 +42,7 @@ const getPublishedTime = (publishedDate: string): string => {
     return `${differenceHours} hours ago`;
   }
   if (differenceDays > 30) {
-    return format(published, "LLLL dd, yyyy");
+    return format(published, 'LLLL dd, yyyy');
   }
   return `${differenceDays} days ago`;
 };
@@ -55,13 +57,12 @@ export const BlogPostRightContent: FunctionComponent<Props> = props => {
   }, [item]);
 
   const footer = useMemo(() => {
-    const string = [
-      item.author,
-      item.pubDate && getPublishedTime(item.pubDate)
-    ].filter(f => !!f).join(` • `)
+    const string = [item.author, item.pubDate && getPublishedTime(item.pubDate)]
+      .filter(f => !!f)
+      .join(` • `);
 
     return string ? `By ${string}` : undefined;
-  }, [item.author, item.pubDate])
+  }, [item.author, item.pubDate]);
 
   const itemDescriptionJson = item.description?.json;
   return (
@@ -71,60 +72,56 @@ export const BlogPostRightContent: FunctionComponent<Props> = props => {
         flexDirection="column"
         justifyContent="center"
         height="100%"
+        padding={{ _: 0, md: 28 }}
       >
-        {/* Category, Title and Logo */}
-        <Flex justifyContent="space-between"> 
-          {/* Category and Title */}
-          <Flex
-            overflow="hidden"
-            flexDirection="column"
-            width="100%"
-          >
-            {item.category && (
-              <Text
-                type={TextSizes.H4}
-                color={customColors.lightGray}
-                wordBreak="break-word"
-                fontFamily={"sans-serif"}
-                // fontWeight={theme.fontWeights.black}
-                paddingBottom={{ _: 2, lg: 7 }}
-              >
-                {item.category}
-              </Text>
-            )}
+        {/* Category and Logo */}
+        <Flex justifyContent="space-between" alignItems="center">
+          {/* Category */}
+          {item.category && (
             <Text
               type={TextSizes.H4}
-              color={theme.colors.black}
+              color={customColors.lightGray}
               wordBreak="break-word"
-              fontFamily={"sans-serif"}
-              fontWeight={theme.fontWeights.black}
-              paddingBottom={{ _: 4, lg: 7 }}
+              fontFamily={'sans-serif'}
+              // fontWeight={theme.fontWeights.black}
             >
-              {item.title}
+              {item.category}
             </Text>
-          </Flex>
-
+          )}
           {companyLogoUrl && (
-            <Box width="33%" paddingBottom={{ _: 42}}>
-              <img src={companyLogoUrl} style={{ maxWidth: '100%'}} alt="" />
+            <Box width="33%">
+              <img src={companyLogoUrl} style={{ maxWidth: '100%' }} alt="" />
             </Box>
           )}
         </Flex>
+
         <Flex
           flexGrow={1}
           flexDirection="column"
-          justifyContent={!!itemDescriptionJson ? 'center' : 'flex-start'}
+          // justifyContent={!!itemDescriptionJson ? 'center' : 'flex-start'}
+          justifyContent="center"
           alignItems="left"
         >
+          {/* Headline */}
+          <Text
+            type={TextSizes.H3}
+            color={theme.colors.black}
+            wordBreak="break-word"
+            fontFamily={'sans-serif'}
+            fontWeight={theme.fontWeights.black}
+            paddingBottom={{ _: 4, lg: 7 }}
+          >
+            {item.title}
+          </Text>
+
+          {/* Paragraph */}
           <Text
             type={TextSizes.SmallP}
             wordBreak="break-word"
-            fontFamily={"sans-serif"}
+            fontFamily={'sans-serif'}
             paddingBottom={{ _: 2, lg: 7 }}
           >
-            {itemDescriptionJson && (
-              <RichText document={itemDescriptionJson} />
-            )}
+            {itemDescriptionJson && <RichText document={itemDescriptionJson} />}
           </Text>
 
           {footer && (
@@ -132,37 +129,19 @@ export const BlogPostRightContent: FunctionComponent<Props> = props => {
               type={TextSizes.SmallP}
               color={customColors.lightGray}
               wordBreak="break-word"
-              fontFamily={"sans-serif"}
-              paddingBottom={{ _: 4, lg: 7 }}
+              fontFamily={'sans-serif'}
+              // paddingBottom={{ _: 4, lg: 7 }}
             >
               {footer}
             </Text>
           )}
-
         </Flex>
 
-        <Flex
-          width={"100%"}
-          justifyContent={"space-between"}
-          alignItems={"flex-end"}
-          flexDirection="row"
-        >
-          <Flex
-            width="100%"
-            height="100%"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <Box width={"33%"}>
-              <Progress
-                duration={itemDurationSeconds}
-                barColor={progressBarColor}
-              />
-            </Box>
-          </Flex>
-          {item.link && (
-            <QRCode url={item.link} />
-          )}
+        <Flex width={'100%'} justifyContent={'space-between'} alignItems={'flex-end'}>
+          <Box width={'33%'}>
+            <Progress duration={itemDurationSeconds} barColor={progressBarColor} />
+          </Box>
+          {item.link && <QRCode size={114} url={item.link} />}
         </Flex>
       </Flex>
     </ContentWrapper>
