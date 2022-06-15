@@ -38,3 +38,7 @@ code {
   height: 100vh;
   box-sizing: content-box;
 }
+
+.app-container > div:first-of-type {
+  border-right-width: 0;
+}
