@@ -1,11 +1,7 @@
-import React, { ReactElement, FunctionComponent, useMemo } from "react";
-import {
-  theme,
-  SplitLayoutContainer,
-  FullScreenImage,
-} from "@screencloud/alfie-alpha";
-import { QuoteRightContent } from "./QuoteRightContent";
-import { ContentfulQuoteItem } from "../../../providers/ContentfulDataProvider";
+import React, { ReactElement, FunctionComponent, useMemo } from 'react';
+import { theme, SplitLayoutContainer, FullScreenImage } from '@screencloud/alfie-alpha';
+import { QuoteRightContent } from './QuoteRightContent';
+import { ContentfulQuoteItem } from '../../../providers/ContentfulDataProvider';
 
 interface Props {
   itemDurationSeconds: number;
@@ -16,17 +12,9 @@ interface Props {
   isPortrait: boolean;
 }
 
-export const QuoteLayout: FunctionComponent<Props> = (
-  props: Props
-): ReactElement<Props> => {
-  const {
-    itemDurationSeconds,
-    companyLogoUrl,
-    item,
-    progressBarColor,
-    isPortrait,
-    themedColor,
-  } = props;
+export const QuoteLayout: FunctionComponent<Props> = (props: Props): ReactElement<Props> => {
+  const { itemDurationSeconds, companyLogoUrl, item, progressBarColor, isPortrait, themedColor } =
+    props;
   // console.log(`QuoteLayout`, props)
 
   const themeColor = themedColor || theme.colors.gray;
@@ -35,34 +23,37 @@ export const QuoteLayout: FunctionComponent<Props> = (
     const url = item.image?.url;
     if (!url) return undefined;
 
-    return <FullScreenImage
-      url={`${url}?w=2048`}
-      itemDurationSeconds={itemDurationSeconds}
-    />
+    return <FullScreenImage url={`${url}?w=2048`} itemDurationSeconds={itemDurationSeconds} />;
   }, [item.image?.url, itemDurationSeconds]);
 
-  const textContent = useMemo(() => (
-    <QuoteRightContent
-      itemDurationSeconds={itemDurationSeconds}
-      item={item}
-      companyLogoUrl={companyLogoUrl}
-      progressBarColor={progressBarColor}
-    />
-  ), [companyLogoUrl, item, itemDurationSeconds, progressBarColor])
+  const textContent = useMemo(
+    () => (
+      <QuoteRightContent
+        itemDurationSeconds={itemDurationSeconds}
+        item={item}
+        companyLogoUrl={companyLogoUrl}
+        progressBarColor={progressBarColor}
+      />
+    ),
+    [companyLogoUrl, item, itemDurationSeconds, progressBarColor]
+  );
 
   return (
     <>
       {!!imageContent ? (
         <SplitLayoutContainer
-          leftContentWidth={"50"}
-          rightContentWidth={"50"}
+          leftContentWidth={'50'}
+          rightContentWidth={'50'}
           isPortrait={isPortrait}
           borderColor={themeColor}
-          leftContent={ !!item.imageLeftAligned ? imageContent : textContent}
-          rightContent={!!item.imageLeftAligned ? textContent : imageContent}
+          // leftContent={!!item.imageLeftAligned ? imageContent : textContent}
+          // rightContent={!!item.imageLeftAligned ? textContent : imageContent}
+          leftContent={imageContent}
+          rightContent={textContent}
         />
-
-      ) : textContent}
+      ) : (
+        textContent
+      )}
     </>
   );
 };
