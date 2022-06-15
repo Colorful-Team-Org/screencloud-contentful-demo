@@ -5,13 +5,13 @@ import {
   Progress,
   Text,
   TextSizes,
-  theme,
+  theme
 } from '@screencloud/alfie-alpha';
-import React, { FunctionComponent, ReactElement, useEffect } from 'react';
+import { FunctionComponent, ReactElement } from 'react';
 import { ContentfulQuoteItem } from '../../../providers/ContentfulDataProvider';
 import { RichText } from '../../RichText/rich-text';
-import { QuoteAuthor } from './QuoteAuthor';
 import { ReactComponent as QuoteSvg } from './assets/quote.svg';
+import { QuoteAuthor } from './QuoteAuthor';
 
 interface Props {
   itemDurationSeconds: number;
