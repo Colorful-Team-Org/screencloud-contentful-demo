@@ -139,7 +139,7 @@ export const BlogPostRightContent: FunctionComponent<Props> = props => {
         </Flex>
 
         <Flex width={'100%'} justifyContent={'space-between'} alignItems={'flex-end'}>
-          <Box width={'33%'}>
+          <Box width={197}>
             <Progress duration={itemDurationSeconds} barColor={progressBarColor} />
           </Box>
           {item.link && <QRCode size={114} url={item.link} />}
