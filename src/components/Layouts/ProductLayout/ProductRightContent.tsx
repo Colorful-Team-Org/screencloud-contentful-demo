@@ -1,23 +1,17 @@
-import React, {
-  ReactElement,
-  FunctionComponent,
-  useState,
-  useEffect,
-  useMemo,
-} from "react";
 import {
   Box,
   ContentWrapper,
   Flex,
-  theme,
+  Logo,
+  Progress,
+  QRCode,
   Text,
   TextSizes,
-  Logo,
-  QRCode,
-  Progress,
-} from "@screencloud/alfie-alpha";
-import { ContentfulProductItem } from "../../../providers/ContentfulDataProvider";
-import { RichText } from "../../RichText/rich-text";
+  theme,
+} from '@screencloud/alfie-alpha';
+import { FunctionComponent, ReactElement, useEffect, useMemo, useState } from 'react';
+import { ContentfulProductItem } from '../../../providers/ContentfulDataProvider';
+import { RichText } from '../../RichText/rich-text';
 
 interface Props {
   itemDurationSeconds: number;
@@ -44,23 +38,24 @@ export const ProductRightContent: FunctionComponent<Props> = (
       <Text
         type={TextSizes.SmallP}
         wordBreak="break-word"
-        fontFamily={"sans-serif"}
+        fontFamily={'sans-serif'}
         paddingBottom={{ _: 2, lg: 7 }}
       >
-        {typeof item.description === 'string' ? item.description : (
-          !!item.description.json ? (
-            <RichText document={item.description.json} />
-          ) : (
-            ''
-          )
+        {typeof item.description === 'string' ? (
+          item.description
+        ) : !!item.description.json ? (
+          <RichText document={item.description.json} />
+        ) : (
+          ''
         )}
       </Text>
-    )
-  }, [item.description])
+    );
+  }, [item.description]);
 
   return (
     <ContentWrapper backgroundColor={theme.colors.white} key={key}>
       <Flex
+        padding={[0, 32]}
         overflow="hidden"
         flexDirection="column"
         justifyContent="center"
@@ -85,7 +80,7 @@ export const ProductRightContent: FunctionComponent<Props> = (
               >
                 {item.brand}
               </Text>
-            )} 
+            )}
             {item.type && (
               <Text
                 type={TextSizes.SmallP}
@@ -99,20 +94,13 @@ export const ProductRightContent: FunctionComponent<Props> = (
             )}
           </Flex>
 
-          {companyLogoUrl && (
-            <Logo url={companyLogoUrl} maxHeight={"160px"} maxWidth={"150px"} />
-          )}
+          {companyLogoUrl && <Logo url={companyLogoUrl} maxHeight={'160px'} maxWidth={'150px'} />}
         </Flex>
 
         {/* middle */}
         <Flex flex="1" flexDirection="column" alignItems="center" justifyContent="center">
           {/* description */}
-          <Flex
-            overflow="hidden"
-            flexDirection="column"
-            justifyContent="left"
-            width="100%"
-          >
+          <Flex overflow="hidden" flexDirection="column" justifyContent="left" width="100%">
             {item.name && (
               <Text
                 type={TextSizes.H3}
@@ -124,53 +112,28 @@ export const ProductRightContent: FunctionComponent<Props> = (
                 {item.name.toUpperCase()}
               </Text>
             )}
-            {!!description && (
-              <Box mt={4}>
-                {description}
-              </Box>
-            )}
-          </Flex>
+            {!!description && <Box mt={4}>{description}</Box>}
 
-          {/* product ID */}
-          <Flex
-            overflow="hidden"
-            flexDirection="row"
-            justifyContent="left"
-            width="100%"
-            paddingBottom={{ _: 4, lg: 7 }}
-          >
-            <Text
-              type={TextSizes.SmallP}
-              color="#777"
-              wordBreak="break-word"
-              fontFamily={theme.fonts.normal}
-              fontWeight={theme.fontWeights.normal}
-            >
-              {item.id}
-            </Text>
+            {/* product ID */}
+            {!!item.id && (
+              <Text
+                type={TextSizes.SmallP}
+                color="#999"
+                wordBreak="break-word"
+                fontFamily={theme.fonts.normal}
+                fontWeight={theme.fontWeights.normal}
+                style={{ marginTop: `1.5rem` }}
+              >
+                {item.id}
+              </Text>
+            )}
           </Flex>
 
           {/* price */}
           {!!item.price && (
-            <Flex
-              justifyContent="left"
-              alignItems="end"
-              width="100%"
-            >
-              {item.comparePrice && item.comparePrice !== item.price && (
-                <Text
-                  type={TextSizes.H2}
-                  wordBreak="break-word"
-                  fontFamily={theme.fonts.normal}
-                  fontWeight={theme.fontWeights.bold}
-                  color="#777"
-                  style={{ textDecoration: 'line-through', marginRight: 40 }}
-                >
-                  {item.comparePrice} €
-                </Text>
-              )}
+            <Flex mt={3} justifyContent="left" alignItems="end" width="100%">
               <Text
-                type={TextSizes.H1}
+                type={TextSizes.H3}
                 wordBreak="break-word"
                 fontFamily={theme.fonts.normal}
                 fontWeight={theme.fontWeights.bold}
@@ -178,30 +141,36 @@ export const ProductRightContent: FunctionComponent<Props> = (
               >
                 {item.price} €
               </Text>
+              {item.comparePrice && item.comparePrice !== item.price && (
+                <Text
+                  // type={TextSizes.H4}
+                  wordBreak="break-word"
+                  fontFamily={theme.fonts.normal}
+                  fontWeight={theme.fontWeights.bold}
+                  color="#999"
+                  style={{ marginLeft: 25 }}
+                >
+                  {item.comparePrice} €
+                </Text>
+              )}
             </Flex>
           )}
         </Flex>
         <Flex
-          width={"100%"}
-          justifyContent={"space-between"}
-          alignItems={"flex-end"}
+          width={'100%'}
+          justifyContent={'space-between'}
+          alignItems={'flex-end'}
           flexDirection="row"
         >
-          <Flex
-            width="100%"
-            height="100%"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Box width={"33%"}>
-              <Progress
-                duration={itemDurationSeconds}
-                barColor={progressBarColor}
-              />
+          <Flex width="100%" height="100%" justifyContent="space-between" alignItems="end">
+            <Box width={225}>
+              <Progress duration={itemDurationSeconds} barColor={progressBarColor} />
             </Box>
           </Flex>
           {item.link && (
-            <QRCode url={item.link} />
+            <Box>
+              <QRCode url={item.link} />
+            </Box>
           )}
         </Flex>
       </Flex>
