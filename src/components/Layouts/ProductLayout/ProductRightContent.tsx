@@ -62,14 +62,8 @@ export const ProductRightContent: FunctionComponent<Props> = (
         height="100%"
       >
         {/* Brand & product type */}
-        <Flex
-          overflow="hidden"
-          flexDirection="row"
-          justifyContent="left"
-          alignItems="flex-start"
-          width="100%"
-        >
-          <Flex flex="1" alignSelf="flex-end" flexDirection="column">
+        <Flex flexDirection="row" justifyContent="space-between" alignItems="center">
+          <Flex flexDirection="column">
             {item.brand && (
               <Text
                 type={TextSizes.H3}
@@ -93,8 +87,11 @@ export const ProductRightContent: FunctionComponent<Props> = (
               </Text>
             )}
           </Flex>
-
-          {companyLogoUrl && <Logo url={companyLogoUrl} maxHeight={'160px'} maxWidth={'150px'} />}
+          {companyLogoUrl && (
+            <Box width="33%" style={{ textAlign: 'right' }}>
+              <img src={companyLogoUrl} style={{ width: '100%', maxWidth: 200 }} alt="Logo" />
+            </Box>
+          )}
         </Flex>
 
         {/* middle */}
