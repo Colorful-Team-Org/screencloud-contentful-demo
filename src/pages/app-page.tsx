@@ -32,7 +32,7 @@ export default function AppPage() {
             <ContentfulApiContext.Provider
               value={{ apiKey: config?.apiKey, spaceId: config?.spaceId }}
             >
-              <ContentfulDataProvider contentFeedId={config?.playlistId} refetchInterval={3000}>
+              <ContentfulDataProvider contentFeedId={config?.contentFeed} refetchInterval={3000}>
                 <div className={styles.appPage}>
                   <App />
                 </div>

@@ -29,14 +29,14 @@ export function ScreenCloudPlayerProvider(props: PropsWithChildren<any>) {
 
   useEffect(() => {
     const getConfig = async () => {
-      let appConfig: AppConfig = { spaceId: '', apiKey: '', playlistId: '' };
+      let appConfig: AppConfig = { spaceId: '', apiKey: '', contentFeed: '' };
       if (process.env.NODE_ENV === 'development') {
         appConfig = devConfig.config;
       }
       const params = parseSearch(searchParams);
       if (params['space-id']) appConfig.spaceId = params['space-id'];
       if (params['api-key']) appConfig.apiKey = params['api-key'];
-      if (params['playlist']) appConfig.playlistId = params['playlist'];
+      if (params['playlist']) appConfig.contentFeed = params['playlist'];
 
       const sc = await connectScreenCloud<AppConfig>({ config: appConfig });
       setState(state => ({
