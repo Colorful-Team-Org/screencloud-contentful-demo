@@ -1,8 +1,6 @@
 import { connectScreenCloud } from '@screencloud/apps-sdk';
 import { Theme } from '@screencloud/apps-sdk/lib/types';
-import React, {
-  PropsWithChildren, useContext, useEffect, useState
-} from 'react';
+import React, { PropsWithChildren, useContext, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { AppConfig } from '../app-types';
 import { config as devConfig } from '../config.development';
@@ -35,7 +33,7 @@ export function ScreenCloudPlayerProvider(props: PropsWithChildren<any>) {
       }
       const params = parseSearch(searchParams);
       const urlVars = ['space-id', 'api-key', 'playlist'];
-      if (urlVars.some(k => k in params) ) {
+      if (urlVars.some(k => k in params)) {
         if (!appConfig) {
           appConfig = { spaceId: '', apiKey: '', contentFeed: '' };
         }

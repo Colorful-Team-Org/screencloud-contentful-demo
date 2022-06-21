@@ -17,19 +17,17 @@ export type ContentFeedConfig = EnvConfig & {
 
 export default function EditorForm(props: Props) {
   const sc = useScreenCloudEditor();
-  /** Config of the contentful space to be used. */
-  // const [envConfig, setEnvConig] = useState<Partial<EnvConfig>>({
-  //   spaceId: sc.config?.spaceId,
-  //   apiKey: sc.config?.apiKey,
-  // });
-  /** Contentfeeds loaded from cf ater env config is set. */
-  const [contentFeeds, setContentFeeds] = useState<{ name: string; id: string }[]>([]);
-  /** Complete config for a Screencloud app setuo */
+
   const [config, setConfig] = useState<Partial<ContentFeedConfig>>({
     spaceId: sc.config?.spaceId,
     apiKey: sc.config?.apiKey,
     contentFeed: sc.config?.contentFeed,
   });
+
+  const { spaceId, apiKey, contentFeed } = config;
+  /** Contentfeeds loaded from cf after env config is set. */
+  const [contentFeeds, setContentFeeds] = useState<{ name: string; id: string }[]>([]);
+  /** Complete config for a Screencloud app setuo */
 
   const fetchContentFeeds = useCallback(async (spaceId: string, apiKey: string) => {
     if (spaceId.length < 5 || apiKey.length < 20) return;
@@ -47,7 +45,7 @@ export default function EditorForm(props: Props) {
       );
     } catch (err) {
       console.warn('error during gql request', err);
-      setConfig(state => ({...state, contentFeed: undefined }));
+      setConfig(state => ({ ...state, contentFeed: undefined }));
       setContentFeeds([]);
     }
   }, []);
@@ -59,10 +57,6 @@ export default function EditorForm(props: Props) {
       ...state,
       [target.name]: target.type === 'checkbox' ? !!target.checked : target.value,
     }));
-    // setEnvConig(state => ({
-    //   ...state,
-    //   [target.name]: target.type === 'checkbox' ? !!target.checked : target.value,
-    // }));
   };
 
   const onContentFeedChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,21 +70,21 @@ export default function EditorForm(props: Props) {
         props.onChange(newConfig as any);
       }
     }
-
     sc.emitConfigUpdateAvailable?.();
   };
 
+  /** fetch contentFeeds on env config change */
   useEffect(() => {
-    if (!config) return;
+    if (!spaceId || !apiKey) return;
     const debounced = debounce(() => {
-      if (!config.spaceId || !config.apiKey) return;
-      fetchContentFeeds(config.spaceId, config.apiKey);
+      if (!spaceId || !apiKey) return;
+      fetchContentFeeds(spaceId, apiKey);
     }, 2000);
     debounced();
     return () => debounced.cancel();
-  }, [config, fetchContentFeeds]);
+  }, [apiKey, spaceId, fetchContentFeeds]);
 
-  /** screencloud */
+  /** populate screencloud config function */
   useEffect(() => {
     if (!config) return;
     console.log(`adding config to sc`, config);
@@ -107,14 +101,14 @@ export default function EditorForm(props: Props) {
       autoComplete="off"
     >
       <TextField
-        value={config.spaceId || ''}
+        value={spaceId || ''}
         name="spaceId"
         label="Space ID"
         fullWidth
         onChange={onEnvChange}
       />
       <TextField
-        value={config.apiKey || ''}
+        value={apiKey || ''}
         name="apiKey"
         label="API Key"
         fullWidth
@@ -131,7 +125,7 @@ export default function EditorForm(props: Props) {
           placeholder="Content feed"
           label="Content feed"
           fullWidth
-          value={config?.contentFeed || ''}
+          value={contentFeed || ''}
           onChange={onContentFeedChange}
         >
           <MenuItem value="">
