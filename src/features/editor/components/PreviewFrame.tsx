@@ -42,6 +42,7 @@ export default function PreviewFrame(props: Props) {
     }, 1000);
 
     onResize();
+    onResize.flush();
 
     window.addEventListener('resize', onResize);
     return () => {

@@ -17,6 +17,11 @@ export type ContentFeedConfig = EnvConfig & {
 
 export default function EditorForm(props: Props) {
   const sc = useScreenCloudEditor();
+  useEffect(() => {
+    if (sc.config?.spaceId && sc.config.apiKey && sc.config.contentFeed) {
+      props.onChange?.(sc.config);
+    }
+  }, [sc, props]);
 
   const [config, setConfig] = useState<Partial<ContentFeedConfig>>({
     spaceId: sc.config?.spaceId,
