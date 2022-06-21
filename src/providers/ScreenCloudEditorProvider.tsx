@@ -19,12 +19,9 @@ export function ScreenCloudEditorProvider(props: PropsWithChildren<any>) {
 
   useEffect(() => {
     const getConfig = async () => {
-      let appConfig: AppConfig = { spaceId: '', apiKey: '', contentFeed: '' };
-      if (process.env.NODE_ENV === 'development') {
-        appConfig = devConfig.config;
-      }
-
-      const sc = await connectScreenCloud<AppConfig>({ config: appConfig });
+      const sc = await connectScreenCloud<AppConfig>(
+        process.env.NODE_ENV === 'development' ? devConfig : undefined
+      );
       setState(state => ({
         onRequestConfigUpdate: sc.onRequestConfigUpdate,
         emitConfigUpdateAvailable: sc.emitConfigUpdateAvailable,
