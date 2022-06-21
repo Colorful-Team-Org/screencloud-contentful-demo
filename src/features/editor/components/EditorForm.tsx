@@ -1,8 +1,11 @@
 import { Box, Checkbox, Divider, FormControlLabel, MenuItem, TextField } from '@mui/material';
-import debounce from 'lodash/debounce';
-import React, { FormEvent, useCallback, useEffect, useState } from 'react';
+import { styled } from '@mui/material/styles';
+import React, { FormEvent, useEffect, useMemo, useState } from 'react';
+import { useQuery } from 'react-query';
+import SpinnerBox from '../../../components/SpinnerBox';
 import { useScreenCloudEditor } from '../../../providers/ScreenCloudEditorProvider';
 import { gqlRequest } from '../../../service/contentful-api/contentful-graphql-service';
+import logo from '../assets/contentful-logo.png';
 
 type Props = {
   config?: ContentFeedConfig;
@@ -14,6 +17,14 @@ type EnvConfig = { spaceId: string; apiKey: string; preview?: boolean };
 export type ContentFeedConfig = EnvConfig & {
   contentFeed: string;
 };
+
+const Logo = styled('img')({
+  width: `100%`,
+});
+
+const ContentConfig = styled('div')({
+  position: 'relative',
+});
 
 export default function EditorForm(props: Props) {
   const sc = useScreenCloudEditor();
@@ -30,30 +41,26 @@ export default function EditorForm(props: Props) {
   });
 
   const { spaceId, apiKey, contentFeed } = config;
-  /** Contentfeeds loaded from cf after env config is set. */
-  const [contentFeeds, setContentFeeds] = useState<{ name: string; id: string }[]>([]);
-  /** Complete config for a Screencloud app setuo */
 
-  const fetchContentFeeds = useCallback(async (spaceId: string, apiKey: string) => {
-    if (spaceId.length < 5 || apiKey.length < 20) return;
-    try {
-      const response = await gqlRequest<any>(
-        spaceId,
-        apiKey,
-        `{ contentFeedCollection { items { name sys { id } } } }`
-      );
-      setContentFeeds(
-        response.contentFeedCollection.items.map((item: any) => ({
-          name: item.name,
-          id: item.sys.id,
-        }))
-      );
-    } catch (err) {
-      console.warn('error during gql request', err);
-      setConfig(state => ({ ...state, contentFeed: undefined }));
-      setContentFeeds([]);
+  /** Contentfeeds loaded from cf after env config is set. */
+  const feedsQuery = useQuery(
+    ['contentfeeds', spaceId, apiKey],
+    () =>
+      gqlRequest<any>(spaceId!, apiKey!, `{ contentFeedCollection { items { name sys { id } } } }`),
+    { enabled: !!spaceId && !!apiKey, retry: false }
+  );
+
+  const contentFeeds: { id: string; name: string }[] = useMemo(() => {
+    if (feedsQuery.isError) {
+      return [];
     }
-  }, []);
+    return (
+      feedsQuery.data?.contentFeedCollection.items.map((item: any) => ({
+        name: item.name,
+        id: item.sys.id,
+      })) || []
+    );
+  }, [feedsQuery.data, feedsQuery.isError]);
 
   const onEnvChange = (ev: FormEvent) => {
     const target = ev.target as HTMLInputElement;
@@ -78,17 +85,6 @@ export default function EditorForm(props: Props) {
     sc.emitConfigUpdateAvailable?.();
   };
 
-  /** fetch contentFeeds on env config change */
-  useEffect(() => {
-    if (!spaceId || !apiKey) return;
-    const debounced = debounce(() => {
-      if (!spaceId || !apiKey) return;
-      fetchContentFeeds(spaceId, apiKey);
-    }, 2000);
-    debounced();
-    return () => debounced.cancel();
-  }, [apiKey, spaceId, fetchContentFeeds]);
-
   /** populate screencloud config function */
   useEffect(() => {
     if (!config) return;
@@ -97,54 +93,62 @@ export default function EditorForm(props: Props) {
   }, [config, sc]);
 
   return (
-    <Box
-      component="form"
-      sx={{
-        '& .MuiTextField-root': { my: 1 },
-      }}
-      noValidate
-      autoComplete="off"
-    >
-      <TextField
-        value={spaceId || ''}
-        name="spaceId"
-        label="Space ID"
-        fullWidth
-        onChange={onEnvChange}
-      />
-      <TextField
-        value={apiKey || ''}
-        name="apiKey"
-        label="API Key"
-        fullWidth
-        onChange={onEnvChange}
-      />
-      <FormControlLabel
-        label="Preview"
-        control={<Checkbox name="preview" onChange={onEnvChange} />}
-      />
-      <Divider sx={{ my: 2 }} />
-      {!!contentFeeds.length ? (
+    <>
+      <Box>
+        <Logo src={logo} alt="Logo" />
+      </Box>
+      <Box
+        component="form"
+        sx={{
+          '& .MuiTextField-root': { my: 1 },
+        }}
+        noValidate
+        autoComplete="off"
+      >
         <TextField
-          select
-          placeholder="Content feed"
-          label="Content feed"
+          value={spaceId || ''}
+          name="spaceId"
+          label="Space ID"
           fullWidth
-          value={contentFeed || ''}
-          onChange={onContentFeedChange}
-        >
-          <MenuItem value="">
-            <em>Select contentfeed</em>
-          </MenuItem>
-          {contentFeeds.map(feed => (
-            <MenuItem key={feed.id} value={feed.id}>
-              {feed.name}
-            </MenuItem>
-          ))}
-        </TextField>
-      ) : (
-        <TextField disabled placeholder="Content feed" fullWidth />
-      )}
-    </Box>
+          onChange={onEnvChange}
+        />
+        <TextField
+          value={apiKey || ''}
+          name="apiKey"
+          label="API Key"
+          fullWidth
+          onChange={onEnvChange}
+        />
+        <FormControlLabel
+          label="Preview"
+          control={<Checkbox name="preview" onChange={onEnvChange} />}
+        />
+        <Divider sx={{ my: 2 }} />
+        <ContentConfig>
+          {!!contentFeeds.length ? (
+            <TextField
+              select
+              placeholder="Content feed"
+              label="Content feed"
+              fullWidth
+              value={contentFeed || ''}
+              onChange={onContentFeedChange}
+            >
+              <MenuItem value="">
+                <em>Select contentfeed</em>
+              </MenuItem>
+              {contentFeeds.map(feed => (
+                <MenuItem key={feed.id} value={feed.id}>
+                  {feed.name}
+                </MenuItem>
+              ))}
+            </TextField>
+          ) : (
+            <TextField disabled placeholder="Content feed" fullWidth />
+          )}
+          {feedsQuery.isLoading && <SpinnerBox />}
+        </ContentConfig>
+      </Box>
+    </>
   );
 }
