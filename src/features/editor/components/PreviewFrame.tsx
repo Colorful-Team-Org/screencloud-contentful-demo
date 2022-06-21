@@ -1,6 +1,7 @@
 import { styled } from '@mui/material';
 import { debounce } from 'lodash';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { Typography } from '@mui/material';
 
 type Props = {
   config?: {
@@ -28,6 +29,15 @@ const IFrame = styled('iframe')({
   border: `solid 8px black`,
 });
 
+const Empty = styled('div')({
+  width: '100%',
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'center',
+});
+
 export default function PreviewFrame(props: Props) {
   // console.log('PreviewFrame', props);
   const [iFrameScale, setIFrameScale] = useState(1);
@@ -53,7 +63,7 @@ export default function PreviewFrame(props: Props) {
 
   return (
     <PreviewFrameRoot ref={rootref}>
-      {!!config?.spaceId && !!config.apiKey && !!config.contentFeed && (
+      {!!config?.spaceId && !!config.apiKey && !!config.contentFeed ? (
         <IFrame
           style={{
             transform: `scale(${iFrameScale}) translate(${previewPadding}px, ${previewPadding}px)`,
@@ -61,6 +71,15 @@ export default function PreviewFrame(props: Props) {
           title="Preview"
           src={`/?space-id=${config.spaceId}&api-key=${config.apiKey}&playlist=${config.contentFeed}`}
         />
+      ) : (
+        <Empty>
+          <Typography variant="h5" color="grey.500">
+            Preview area
+          </Typography>
+          <Typography variant="h6" color="grey.500" mt={2}>
+            Please complete your configuration.
+          </Typography>
+        </Empty>
       )}
     </PreviewFrameRoot>
   );
