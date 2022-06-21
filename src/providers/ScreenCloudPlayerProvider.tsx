@@ -1,6 +1,17 @@
-import React, { useContext, ReactNode, Component } from "react";
-import { connectScreenCloud } from "@screencloud/apps-sdk";
-import { Theme, AppConfig } from "@screencloud/apps-sdk/lib/types";
+import React, {
+  useContext,
+  ReactNode,
+  Component,
+  useState,
+  useEffect,
+  PropsWithChildren,
+} from 'react';
+import { connectScreenCloud } from '@screencloud/apps-sdk';
+import { Theme } from '@screencloud/apps-sdk/lib/types';
+import { useSearchParams } from 'react-router-dom';
+import { parseSearch } from '../utils/url-utils';
+import { AppConfig } from '../app-types';
+import { config as devConfig } from '../config.development';
 
 export interface ScreenCloudPlayer {
   appStarted: boolean;
@@ -8,67 +19,48 @@ export interface ScreenCloudPlayer {
   theme?: Theme;
 }
 
-interface State {
-  appStarted: boolean;
-  config?: AppConfig;
-  theme?: Theme;
-}
-
-interface Props {
-  children: ReactNode;
-  testData: any;
-}
-
 const initialState = { appStarted: false, config: undefined };
 
-export const ScreenCloudPlayerContext =
-  React.createContext<ScreenCloudPlayer>(initialState);
+export const ScreenCloudPlayerContext = React.createContext<ScreenCloudPlayer>(initialState);
 
-export class ScreenCloudPlayerProvider extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      appStarted: false,
-      config: undefined,
-    };
-  }
+type ScreenCloudState = {
+  config?: AppConfig;
+  theme?: Theme;
+  appStarted: boolean;
+};
+export function ScreenCloudPlayerProvider(props: PropsWithChildren<any>) {
+  const [state, setState] = useState<ScreenCloudState>({ appStarted: false });
+  const [searchParams] = useSearchParams();
 
-  async componentDidMount() {
-    let testData;
-    if (process.env.NODE_ENV === "development") {
-      testData = this.props.testData;
-    }
-    const sc = await connectScreenCloud(testData);
+  useEffect(() => {
+    const getConfig = async () => {
+      let appConfig: AppConfig = { spaceId: '', apiKey: '', playlistId: '' };
+      if (process.env.NODE_ENV === 'development') {
+        appConfig = devConfig.config;
+      }
+      const params = parseSearch(searchParams);
+      if (params['space-id']) appConfig.spaceId = params['space-id'];
+      if (params['api-key']) appConfig.apiKey = params['api-key'];
+      if (params['playlist']) appConfig.playlistId = params['playlist'];
 
-    const context = sc.getContext();
-    const config = sc.getConfig();
-
-    this.setState({
-      config,
-      theme: context.theme,
-    });
-
-    sc.onAppStarted().then(() => {
-      this.setState({
-        appStarted: true,
-      });
-    });
-  }
-
-  render() {
-    const props = {
-      appStarted: this.state.appStarted,
-      config: this.state.config,
-      theme: this.state.theme,
+      const sc = await connectScreenCloud<AppConfig>({ config: appConfig });
+      setState(state => ({
+        ...state,
+        config: sc.getConfig(),
+        theme: sc.getContext().theme,
+      }));
+      await sc.onAppStarted();
+      setState(state => ({ ...state, appStarted: true }));
     };
 
-    return (
-      <ScreenCloudPlayerContext.Provider value={props}>
-        {this.state.config && this.props.children}
-      </ScreenCloudPlayerContext.Provider>
-    );
-  }
+    getConfig();
+  }, [searchParams]);
+
+  return (
+    <ScreenCloudPlayerContext.Provider value={state}>
+      {state.config && props.children}
+    </ScreenCloudPlayerContext.Provider>
+  );
 }
 
-export const useScreenCloudPlayer = (): ScreenCloudPlayer =>
-  useContext(ScreenCloudPlayerContext);
+export const useScreenCloudPlayer = (): ScreenCloudPlayer => useContext(ScreenCloudPlayerContext);

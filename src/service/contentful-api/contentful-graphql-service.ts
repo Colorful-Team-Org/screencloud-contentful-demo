@@ -1,7 +1,7 @@
-import { request } from "graphql-request";
-import { useContext } from "react";
-import { useQuery, UseQueryOptions } from "react-query";
-import { ContentfulApiContext } from "./contentful-api-ctx";
+import { request } from 'graphql-request';
+import { useContext } from 'react';
+import { useQuery, UseQueryOptions } from 'react-query';
+import { ContentfulApiContext } from './contentful-api-ctx';
 
 export type ContentfulCollection<CType> = {
   items: CType[];
@@ -28,7 +28,7 @@ type Input = {
   env?: string;
 };
 
-async function gqlRequest<ReturnType>(
+export async function gqlRequest<ReturnType>(
   spaceId: string,
   apiKey: string,
   query: string,
@@ -44,8 +44,8 @@ type UseGqlQueryOptions<ReturnType> = {
   input?: { id?: string };
   // pipe?: (response: ReturnType) => ReturnType | P | Promise<P>;
   skip?: boolean;
-  refetchInterval?: UseQueryOptions<ReturnType>['refetchInterval'],
-  isDataEqual?: UseQueryOptions<ReturnType>['isDataEqual'],
+  refetchInterval?: UseQueryOptions<ReturnType>['refetchInterval'];
+  isDataEqual?: UseQueryOptions<ReturnType>['isDataEqual'];
 };
 
 export function useGqlQuery<ReturnType = any>(
@@ -54,19 +54,17 @@ export function useGqlQuery<ReturnType = any>(
 ) {
   const { spaceId, apiKey, environment } = useContext(ContentfulApiContext);
   if (!spaceId || !apiKey) {
-    console.warn(
-      `No request can be  executed because there is no spaceId or apiKey provided.`
-    );
+    console.warn(`No request can be  executed because there is no spaceId or apiKey provided.`);
   }
   const { key = query, input, skip, refetchInterval, isDataEqual } = options || {};
 
   return useQuery(
-    key || "useGqlQuery",
+    key || 'useGqlQuery',
     () =>
-      gqlRequest<ReturnType>(spaceId || "", apiKey || "", query || "", {
+      gqlRequest<ReturnType>(spaceId || '', apiKey || '', query || '', {
         env: environment,
         ...input,
-      }).then((response) => response),
+      }).then(response => response),
     {
       enabled: !skip && !!query && !!spaceId && !!apiKey,
       refetchInterval,

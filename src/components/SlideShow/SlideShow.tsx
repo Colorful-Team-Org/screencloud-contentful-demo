@@ -2,7 +2,6 @@ import { DEFAULT_ITEM_DELAY_SECONDS } from '@screencloud/alfie-alpha';
 import React, { useMemo, useState } from 'react';
 import useTimeout from '../../hooks/useTimeout';
 import { useContentfulData } from '../../providers/ContentfulDataProvider';
-import { useScreenCloudPlayer } from '../../providers/ScreenCloudPlayerProvider';
 import { BlogPostLayout } from '../Layouts/BlogPostLayout/BlogPostLayout';
 import { HeroLayout } from '../Layouts/HeroLayout/HeroLayout';
 import { ProductLayout } from '../Layouts/ProductLayout/ProductLayout';
@@ -24,7 +23,7 @@ export const SlideShow = () => {
   // console.log(`SlideShow()`);
   const { data } = useContentfulData();
   // console.log(`useContentfulData`, data);
-  const { appStarted } = useScreenCloudPlayer();
+  // const { appStarted } = useScreenCloudPlayer();
 
   const themedColor = '';
   const companyLogoUrl = data?.companyLogo;
@@ -44,7 +43,7 @@ export const SlideShow = () => {
           const fileExt = String(fileName).toLowerCase().split(`.`).pop();
           if (!fileExt) return collection;
 
-          if (fileExt && ['jpg', 'jpeg'].includes(fileExt)) {
+          if (fileExt && ['jpg', 'jpeg', 'png'].includes(fileExt)) {
             return [...collection, fileName];
           }
           return collection;
@@ -84,7 +83,7 @@ export const SlideShow = () => {
       }
     },
     ITEM_DELAY_SECONDS * 1000,
-    !!items?.length && appStarted
+    !!items?.length
   );
 
   const Comp = data?.templateName ? components[data.templateName] : undefined;

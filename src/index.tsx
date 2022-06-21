@@ -1,18 +1,8 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import ReactDOM from 'react-dom';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { createWebStoragePersistor } from 'react-query/createWebStoragePersistor-experimental';
-import { persistQueryClient } from 'react-query/persistQueryClient-experimental';
-import { config as devConfig } from './config.development';
-import App from './containers/AppContainer/AppContainer';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './index.css';
-import { ContentfulDataProvider } from './providers/ContentfulDataProvider';
-import {
-  ScreenCloudPlayerContext,
-  ScreenCloudPlayerProvider,
-} from './providers/ScreenCloudPlayerProvider';
 import reportWebVitals from './reportWebVitals';
-import { ContentfulApiContext } from './service/contentful-api/contentful-api-ctx';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
 /* 
@@ -23,43 +13,21 @@ LAYOUTS
  - blog
 */
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      cacheTime: Infinity,
-    },
-  },
-});
-
-persistQueryClient({
-  queryClient,
-  persistor: createWebStoragePersistor({ storage: window.localStorage }),
-});
-
 console.log(`version 1.1.0`);
+
+const Index = lazy(() => import('./pages/app-page'));
+const Editor = lazy(() => import('./pages/editor-page'));
 
 ReactDOM.render(
   <React.StrictMode>
-    <ScreenCloudPlayerProvider testData={devConfig}>
-      <ScreenCloudPlayerContext.Consumer>
-        {({ config }) => (
-          <QueryClientProvider client={queryClient}>
-            <ContentfulApiContext.Provider
-              value={{ apiKey: config?.apiKey, spaceId: config?.spaceId }}
-            >
-              <ContentfulDataProvider contentFeedId={config?.playlistId} refetchInterval={3000}>
-                <div className="app-container">
-                  <App />
-                </div>
-                <div style={{ position: 'fixed', bottom: 10, right: 10, color: '#aaa' }}>
-                  v1.1.0
-                </div>
-              </ContentfulDataProvider>
-            </ContentfulApiContext.Provider>
-          </QueryClientProvider>
-        )}
-      </ScreenCloudPlayerContext.Consumer>
-    </ScreenCloudPlayerProvider>
+    <Suspense fallback={<div>Loading...</div>}>
+      <BrowserRouter>
+        <Routes>
+          <Route index element={<Index />} />
+          <Route path="/editor" element={<Editor />} />
+        </Routes>
+      </BrowserRouter>
+    </Suspense>
   </React.StrictMode>,
   document.getElementById('root')
 );
