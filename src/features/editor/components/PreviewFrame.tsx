@@ -1,7 +1,6 @@
-import { styled } from '@mui/material';
+import { styled, Typography } from '@mui/material';
 import { debounce } from 'lodash';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Typography } from '@mui/material';
+import { useLayoutEffect, useRef, useState } from 'react';
 
 type Props = {
   config?: {
@@ -69,7 +68,7 @@ export default function PreviewFrame(props: Props) {
             transform: `scale(${iFrameScale}) translate(${previewPadding}px, ${previewPadding}px)`,
           }}
           title="Preview"
-          src={`/?space-id=${config.spaceId}&api-key=${config.apiKey}&playlist=${config.contentFeed}`}
+          src={`/?space-id=${config.spaceId}&api-key=${config.apiKey}&contentfeed=${config.contentFeed}`}
         />
       ) : (
         <Empty>
