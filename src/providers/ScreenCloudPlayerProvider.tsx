@@ -1,17 +1,12 @@
-import React, {
-  useContext,
-  ReactNode,
-  Component,
-  useState,
-  useEffect,
-  PropsWithChildren,
-} from 'react';
 import { connectScreenCloud } from '@screencloud/apps-sdk';
 import { Theme } from '@screencloud/apps-sdk/lib/types';
+import React, {
+  PropsWithChildren, useContext, useEffect, useState
+} from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { parseSearch } from '../utils/url-utils';
 import { AppConfig } from '../app-types';
 import { config as devConfig } from '../config.development';
+import { parseSearch } from '../utils/url-utils';
 
 export interface ScreenCloudPlayer {
   appStarted: boolean;

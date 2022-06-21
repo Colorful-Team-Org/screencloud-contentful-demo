@@ -8,6 +8,7 @@
     "@emotion/styled": "^11.9.3",
     "@mui/material": "^5.8.4",
     "@screencloud/alfie-alpha": "1.0.1",
+    "@screencloud/apps-editor-sdk": "^1.0.2",
     "@screencloud/apps-sdk": "1.1.0",
     "clsx": "^1.1.1",
     "contentful": "9.0.0",

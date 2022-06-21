@@ -1,6 +1,7 @@
 import { Box, Checkbox, Divider, FormControlLabel, MenuItem, TextField } from '@mui/material';
 import debounce from 'lodash/debounce';
 import React, { FormEvent, useCallback, useEffect, useState } from 'react';
+import { useScreenCloudEditor } from '../../../providers/ScreenCloudEditorProvider';
 import { gqlRequest } from '../../../service/contentful-api/contentful-graphql-service';
 
 type Props = {
@@ -21,6 +22,8 @@ export default function EditorForm(props: Props) {
   const [contentFeeds, setContentFeeds] = useState<{ name: string; id: string }[]>([]);
   /** Complete config for a Screencloud app setuo */
   const [config, setConfig] = useState<Partial<ContentFeedConfig>>();
+
+  const sc = useScreenCloudEditor();
 
   const fetchContentFeeds = useCallback(async (spaceId: string, apiKey: string) => {
     if (spaceId.length < 5 || apiKey.length < 20) return;
@@ -64,6 +67,8 @@ export default function EditorForm(props: Props) {
         props.onChange(newConfig as any);
       }
     }
+
+    sc.emitConfigUpdateAvailable?.();
   };
 
   useEffect(() => {
@@ -75,6 +80,12 @@ export default function EditorForm(props: Props) {
     debounced();
     return () => debounced.cancel();
   }, [envConfig, fetchContentFeeds]);
+
+  /** screencloud */
+  useEffect(() => {
+    if (!config) return;
+    sc.onRequestConfigUpdate?.(() => Promise.resolve({ config }));
+  }, [config, sc]);
 
   return (
     <Box

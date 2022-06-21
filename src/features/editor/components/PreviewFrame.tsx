@@ -29,14 +29,13 @@ const IFrame = styled('iframe')({
 });
 
 export default function PreviewFrame(props: Props) {
-  console.log('PreviewFrame', props);
+  // console.log('PreviewFrame', props);
   const [iFrameScale, setIFrameScale] = useState(1);
 
   const { config } = props;
   const rootref = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => {
     const onResize = debounce(() => {
-      console.log('onResize', onResize);
       const rect = rootref.current?.getBoundingClientRect();
       if (!rect) return;
       setIFrameScale(rect.width / (previewSize[0] + previewPadding * 2));
@@ -55,7 +54,9 @@ export default function PreviewFrame(props: Props) {
     <PreviewFrameRoot ref={rootref}>
       {!!config?.spaceId && !!config.apiKey && !!config.contentFeed && (
         <IFrame
-          style={{ transform: `scale(${iFrameScale}) translate(${previewPadding}px, ${previewPadding}px)` }}
+          style={{
+            transform: `scale(${iFrameScale}) translate(${previewPadding}px, ${previewPadding}px)`,
+          }}
           title="Preview"
           src={`/?space-id=${config.spaceId}&api-key=${config.apiKey}&playlist=${config.contentFeed}`}
         />
