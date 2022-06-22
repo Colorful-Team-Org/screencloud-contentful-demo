@@ -4,5 +4,5 @@ export type AppConfig = {
   contentFeed: string;
   preview?: boolean;
   fetchInterval?: number;
-  slideshowInterval?: number;
+  slideDuration?: number;
 };

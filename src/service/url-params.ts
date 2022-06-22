@@ -13,6 +13,7 @@ export function configFromUrlParams(searchParams: URLSearchParams, currentConfig
     if (params['api-key']) config.apiKey = params['api-key'];
     if (params['contentfeed']) config.contentFeed = params['contentfeed'];
     if (params['preview']) config.preview = params['preview'] === '1';
+    if (params['slide-duration']) config.slideDuration = parseInt(params['slide-duration']);
 
     return config;
   }
@@ -22,5 +23,5 @@ export function configFromUrlParams(searchParams: URLSearchParams, currentConfig
 export function urlParamsFrom(config: AppConfig) {
   return `space-id=${config.spaceId}&api-key=${config.apiKey}&contentfeed=${config.contentFeed}${
     !!config.preview ? `&preview=1` : ''
-  }`;
+  }${config.slideDuration ? `&slide-duration=${config.slideDuration}` : ''}`;
 }

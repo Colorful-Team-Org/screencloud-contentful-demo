@@ -11,6 +11,7 @@ const queryClient = new QueryClient();
 
 export default function EditorPage() {
   const [config, setConfig] = useState<AppConfig>();
+  console.log('EditorPage', config);
 
   return (
     <>

@@ -3,6 +3,7 @@ import { styled } from '@mui/material/styles';
 import React, { FormEvent, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import { AppConfig } from '../../../app-types';
+import NumberField from '../../../components/NumberField';
 import SpinnerBox from '../../../components/SpinnerBox';
 import { useScreenCloudEditor } from '../../../providers/ScreenCloudEditorProvider';
 import { gqlRequest } from '../../../service/contentful-api/contentful-graphql-service';
@@ -13,21 +14,33 @@ type Props = {
   onChange?: (config?: AppConfig) => any;
 };
 
+const SLIDE_DUR_RANGE = [3, 300];
+const FETCH_INTERVAL_RANGE = [3, 3600];
+
 const Logo = styled('img')({
   width: `100%`,
 });
 
 const ContentConfig = styled('div')({
   position: 'relative',
+  'input::-webkit-outer-spin-button, input::-webkit-inner-spin-button': {
+    WebkitAppearance: 'none',
+    margin: 0,
+  },
+  'input[type=number]': {
+    MozAppearance: 'textfield',
+  },
 });
 
 export default function EditorForm(props: Props) {
   const sc = useScreenCloudEditor();
-
   const [config, setConfig] = useState<Partial<AppConfig>>({
-    spaceId: sc.config?.spaceId,
-    apiKey: sc.config?.apiKey,
-    contentFeed: sc.config?.contentFeed,
+    spaceId: '',
+    apiKey: '',
+    contentFeed: '',
+    slideDuration: 20000,
+    fetchInterval: 10000,
+    ...sc.config,
   });
 
   const { spaceId, apiKey, contentFeed, preview } = config;
@@ -152,6 +165,30 @@ export default function EditorForm(props: Props) {
           ) : (
             <TextField disabled placeholder="Content feed" fullWidth />
           )}
+          <NumberField
+            label="Slide duration sec."
+            defaultValue={(config.slideDuration || 20000) / 1000}
+            min={SLIDE_DUR_RANGE[0]}
+            max={SLIDE_DUR_RANGE[1]}
+            onBlur={value =>
+              setConfig(state => ({
+                ...state,
+                slideDuration: value * 1000,
+              }))
+            }
+          />
+          <NumberField
+            label="Refetch interval sec."
+            defaultValue={(config.fetchInterval || 10000) / 1000}
+            min={FETCH_INTERVAL_RANGE[0]}
+            max={FETCH_INTERVAL_RANGE[1]}
+            onBlur={value =>
+              setConfig(state => ({
+                ...state,
+                fetchInterval: value * 1000,
+              }))
+            }
+          />
           {feedsQuery.isLoading && <SpinnerBox />}
         </ContentConfig>
       </Box>

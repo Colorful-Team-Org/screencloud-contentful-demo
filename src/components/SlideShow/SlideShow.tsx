@@ -2,6 +2,7 @@ import { DEFAULT_ITEM_DELAY_SECONDS } from '@screencloud/alfie-alpha';
 import React, { useMemo, useState } from 'react';
 import useTimeout from '../../hooks/useTimeout';
 import { useContentfulData } from '../../providers/ContentfulDataProvider';
+import { useScreenCloudPlayer } from '../../providers/ScreenCloudPlayerProvider';
 import { BlogPostLayout } from '../Layouts/BlogPostLayout/BlogPostLayout';
 import { HeroLayout } from '../Layouts/HeroLayout/HeroLayout';
 import { ProductLayout } from '../Layouts/ProductLayout/ProductLayout';
@@ -22,8 +23,12 @@ const components = {
 export const SlideShow = () => {
   // console.log(`SlideShow()`);
   const { data } = useContentfulData();
-  // console.log(`useContentfulData`, data);
-  // const { appStarted } = useScreenCloudPlayer();
+  const { config: screencloudConfig } = useScreenCloudPlayer();
+  const slideSeconds = useMemo(() => {
+    if (!screencloudConfig?.slideDuration) return ITEM_DELAY_SECONDS;
+    return screencloudConfig?.slideDuration / 1000;
+  }, [screencloudConfig?.slideDuration]);
+
 
   const themedColor = '';
   const companyLogoUrl = data?.companyLogo;
@@ -82,7 +87,7 @@ export const SlideShow = () => {
         }
       }
     },
-    ITEM_DELAY_SECONDS * 1000,
+    slideSeconds * 1000,
     !!items?.length
   );
 
@@ -91,7 +96,7 @@ export const SlideShow = () => {
 
   return item && Comp ? (
     <Comp
-      itemDurationSeconds={ITEM_DELAY_SECONDS}
+      itemDurationSeconds={slideSeconds}
       item={item as any}
       isPortrait={isPortrait}
       companyLogoUrl={companyLogoUrl}
