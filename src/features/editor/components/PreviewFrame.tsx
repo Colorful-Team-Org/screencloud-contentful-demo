@@ -1,6 +1,7 @@
 import { styled, Typography } from '@mui/material';
 import { debounce } from 'lodash';
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { urlParamsFrom } from '../../../service/url-params';
 
 type Props = {
   config?: {
@@ -60,6 +61,8 @@ export default function PreviewFrame(props: Props) {
     };
   }, []);
 
+  const src = useMemo(() => (config ? `/?${urlParamsFrom(config)}` : undefined), [config]);
+
   return (
     <PreviewFrameRoot ref={rootref}>
       {!!config?.spaceId && !!config.apiKey && !!config.contentFeed ? (
@@ -68,7 +71,7 @@ export default function PreviewFrame(props: Props) {
             transform: `scale(${iFrameScale}) translate(${previewPadding}px, ${previewPadding}px)`,
           }}
           title="Preview"
-          src={`/?space-id=${config.spaceId}&api-key=${config.apiKey}&contentfeed=${config.contentFeed}`}
+          src={src}
         />
       ) : (
         <Empty>

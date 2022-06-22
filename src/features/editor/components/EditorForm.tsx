@@ -2,20 +2,15 @@ import { Box, Checkbox, Divider, FormControlLabel, MenuItem, TextField } from '@
 import { styled } from '@mui/material/styles';
 import React, { FormEvent, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
+import { AppConfig } from '../../../app-types';
 import SpinnerBox from '../../../components/SpinnerBox';
 import { useScreenCloudEditor } from '../../../providers/ScreenCloudEditorProvider';
 import { gqlRequest } from '../../../service/contentful-api/contentful-graphql-service';
 import logo from '../assets/contentful-logo.png';
 
 type Props = {
-  config?: ContentFeedConfig;
-  onChange?: (config?: ContentFeedConfig) => any;
-};
-
-type EnvConfig = { spaceId: string; apiKey: string; preview?: boolean };
-
-export type ContentFeedConfig = EnvConfig & {
-  contentFeed: string;
+  config?: AppConfig;
+  onChange?: (config?: AppConfig) => any;
 };
 
 const Logo = styled('img')({
@@ -28,25 +23,24 @@ const ContentConfig = styled('div')({
 
 export default function EditorForm(props: Props) {
   const sc = useScreenCloudEditor();
-  useEffect(() => {
-    if (sc.config?.spaceId && sc.config.apiKey && sc.config.contentFeed) {
-      props.onChange?.(sc.config);
-    }
-  }, [sc, props]);
 
-  const [config, setConfig] = useState<Partial<ContentFeedConfig>>({
+  const [config, setConfig] = useState<Partial<AppConfig>>({
     spaceId: sc.config?.spaceId,
     apiKey: sc.config?.apiKey,
     contentFeed: sc.config?.contentFeed,
   });
 
-  const { spaceId, apiKey, contentFeed } = config;
+  const { spaceId, apiKey, contentFeed, preview } = config;
 
   /** Contentfeeds loaded from cf after env config is set. */
   const feedsQuery = useQuery(
-    ['contentfeeds', spaceId, apiKey],
+    ['contentfeeds', spaceId, apiKey, preview],
     () =>
-      gqlRequest<any>(spaceId!, apiKey!, `{ contentFeedCollection { items { name sys { id } } } }`),
+      gqlRequest<any>(
+        spaceId!,
+        apiKey!,
+        `{ contentFeedCollection(preview: ${String(!!preview)}) { items { name sys { id } } } }`
+      ),
     { enabled: !!spaceId && !!apiKey, retry: false }
   );
 
@@ -62,35 +56,47 @@ export default function EditorForm(props: Props) {
     );
   }, [feedsQuery.data, feedsQuery.isError]);
 
+  // useEffect(() => {
+  //   if (contentFeed && !contentFeeds.find(c => c.id === contentFeed)) {
+  //     setConfig(state => ({ ...state, contentFeed: undefined }));
+  //   }
+  // }, [contentFeed, contentFeeds]);
+
   const onEnvChange = (ev: FormEvent) => {
     const target = ev.target as HTMLInputElement;
-    // console.log('name', target.name, target.value);
-    setConfig(state => ({
-      ...state,
+    const newState = {
+      ...config,
       [target.name]: target.type === 'checkbox' ? !!target.checked : target.value,
-    }));
+    };
+    setConfig(newState);
+    sc.emitConfigUpdateAvailable?.();
   };
 
   const onContentFeedChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
     const newConfig = { ...config, contentFeed: ev.target.value };
     setConfig(newConfig);
+  };
 
+  useEffect(() => {
+    if (config.spaceId && config.apiKey && config.contentFeed) {
+      props.onChange?.(config as any);
+    }
+  }, [config, props]);
+
+  /** dispatch config changes */
+  useEffect(() => {
+    if (!config) return;
     if (props.onChange) {
-      if (!newConfig.apiKey || !newConfig.contentFeed || !newConfig.spaceId) {
+      if (!config.apiKey || !config.contentFeed || !config.spaceId) {
         props.onChange(undefined);
       } else {
-        props.onChange(newConfig as any);
+        props.onChange(config as any);
       }
     }
     sc.emitConfigUpdateAvailable?.();
-  };
 
-  /** populate screencloud config function */
-  useEffect(() => {
-    if (!config) return;
-    console.log(`adding config to sc`, config);
     sc.onRequestConfigUpdate?.(() => Promise.resolve({ config }));
-  }, [config, sc]);
+  }, [config, props, sc]);
 
   return (
     <>

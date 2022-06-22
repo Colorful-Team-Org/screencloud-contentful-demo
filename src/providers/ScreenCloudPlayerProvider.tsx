@@ -4,6 +4,7 @@ import React, { PropsWithChildren, useContext, useEffect, useState } from 'react
 import { useSearchParams } from 'react-router-dom';
 import { AppConfig } from '../app-types';
 import { config as devConfig } from '../config.development';
+import { configFromUrlParams } from '../service/url-params';
 import { parseSearch } from '../utils/url-utils';
 
 export interface ScreenCloudPlayer {
@@ -31,16 +32,7 @@ export function ScreenCloudPlayerProvider(props: PropsWithChildren<any>) {
       if (process.env.NODE_ENV === 'development') {
         appConfig = devConfig.config;
       }
-      const params = parseSearch(searchParams);
-      const urlVars = ['space-id', 'api-key', 'contentfeed'];
-      if (urlVars.some(k => k in params)) {
-        if (!appConfig) {
-          appConfig = { spaceId: '', apiKey: '', contentFeed: '' };
-        }
-        if (params['space-id']) appConfig.spaceId = params['space-id'];
-        if (params['api-key']) appConfig.apiKey = params['api-key'];
-        if (params['contentfeed']) appConfig.contentFeed = params['contentfeed'];
-      }
+      appConfig = configFromUrlParams(searchParams, appConfig);
 
       const sc = await connectScreenCloud<AppConfig>(appConfig ? { config: appConfig } : undefined);
       setState(state => ({

@@ -1,8 +1,9 @@
-import { gql } from "graphql-request";
+import { gql } from 'graphql-request';
+
 
 export const ContentFeedGql = gql`
-  query ContentFeed($id: String!) {
-    contentFeed(id: $id) {
+  query ContentFeed($id: String!, $preview: Boolean) {
+    contentFeed(id: $id, preview: $preview) {
       contentMappingConfig {
         name
         config
@@ -24,7 +25,7 @@ export type ContentTypeMapping = {
 };
 
 type Sys = {
-  __typename?: "Sys";
+  __typename?: 'Sys';
   environmentId: string;
   firstPublishedAt?: string;
   id: string;
@@ -34,9 +35,9 @@ type Sys = {
 };
 
 type ContentfulMetadata = {
-  __typename?: "ContentfulMetadata";
+  __typename?: 'ContentfulMetadata';
   tags: {
-    __typename?: "ContentfulTag";
+    __typename?: 'ContentfulTag';
     id: string;
     name: string;
   };

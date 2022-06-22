@@ -1,16 +1,16 @@
-import { Box, Container, CssBaseline } from '@mui/material';
+import { Box, Container, CssBaseline, ThemeProvider } from '@mui/material';
 import { useState } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import EditorForm, { ContentFeedConfig } from '../features/editor/components/EditorForm';
+import { AppConfig } from '../app-types';
+import EditorForm from '../features/editor/components/EditorForm';
 import PreviewFrame from '../features/editor/components/PreviewFrame';
-import { ScreenCloudEditorProvider } from '../providers/ScreenCloudEditorProvider';
-import { ThemeProvider } from '@mui/material';
 import { scMuiTheme } from '../features/editor/screencloud-mui-theme';
+import { ScreenCloudEditorProvider } from '../providers/ScreenCloudEditorProvider';
 
 const queryClient = new QueryClient();
 
 export default function EditorPage() {
-  const [config, setConfig] = useState<ContentFeedConfig>();
+  const [config, setConfig] = useState<AppConfig>();
 
   return (
     <>
@@ -23,20 +23,6 @@ export default function EditorPage() {
                 <EditorForm onChange={setConfig} />
               </Container>
               <PreviewFrame config={config} />
-              {/* <Box sx={{ flex: 1 }}>
-            {!!config?.spaceId && !!config.apiKey && !!config.contentFeed && (
-              <ContentfulApiContext.Provider
-                value={{
-                  apiKey: config.apiKey,
-                  spaceId: config.spaceId,
-                }}
-              >
-                <ContentfulDataProvider contentFeedId={config.contentFeed} refetchInterval={3000}>
-                  <App key={config.contentFeed} />
-                </ContentfulDataProvider>
-              </ContentfulApiContext.Provider>
-            )}
-          </Box> */}
             </Box>
           </QueryClientProvider>
         </ScreenCloudEditorProvider>

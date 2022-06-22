@@ -5,7 +5,7 @@ import App from '../containers/AppContainer/AppContainer';
 import { ContentfulDataProvider } from '../providers/ContentfulDataProvider';
 import {
   ScreenCloudPlayerContext,
-  ScreenCloudPlayerProvider
+  ScreenCloudPlayerProvider,
 } from '../providers/ScreenCloudPlayerProvider';
 import { ContentfulApiContext } from '../service/contentful-api/contentful-api-ctx';
 import styles from './app-page.module.css';
@@ -30,9 +30,13 @@ export default function AppPage() {
         {({ config }) => (
           <QueryClientProvider client={queryClient}>
             <ContentfulApiContext.Provider
-              value={{ apiKey: config?.apiKey, spaceId: config?.spaceId }}
+              value={{ apiKey: config?.apiKey, spaceId: config?.spaceId, preview: config?.preview }}
             >
-              <ContentfulDataProvider contentFeedId={config?.contentFeed} refetchInterval={3000}>
+              <ContentfulDataProvider
+                contentFeedId={config?.contentFeed}
+                preview={config?.preview}
+                refetchInterval={3000}
+              >
                 <div className={styles.appPage}>
                   <App />
                 </div>

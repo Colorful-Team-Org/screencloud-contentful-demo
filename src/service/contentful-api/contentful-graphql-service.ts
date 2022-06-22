@@ -10,7 +10,6 @@ export type ContentfulCollection<CType> = {
 interface GetEndpointInput {
   spaceId: string;
   apiKey: string;
-  preview?: boolean;
   env?: string;
 }
 
@@ -24,7 +23,6 @@ export const getEndpoint = (input: GetEndpointInput): string => {
 
 type Input = {
   locale?: string;
-  preview?: boolean;
   env?: string;
 };
 
@@ -34,14 +32,14 @@ export async function gqlRequest<ReturnType>(
   query: string,
   input: Input = {}
 ): Promise<ReturnType> {
-  const { preview = false, env } = input;
-  const endpoint = getEndpoint({ spaceId, apiKey, env, preview });
+  const { env } = input;
+  const endpoint = getEndpoint({ spaceId, apiKey, env });
   return request<ReturnType>(endpoint, query, input);
 }
 
 type UseGqlQueryOptions<ReturnType> = {
   key?: string;
-  input?: { id?: string };
+  input?: { id?: string; preview?: boolean };
   // pipe?: (response: ReturnType) => ReturnType | P | Promise<P>;
   skip?: boolean;
   refetchInterval?: UseQueryOptions<ReturnType>['refetchInterval'];
@@ -56,10 +54,11 @@ export function useGqlQuery<ReturnType = any>(
   if (!spaceId || !apiKey) {
     console.warn(`No request can be  executed because there is no spaceId or apiKey provided.`);
   }
-  const { key = query, input, skip, refetchInterval, isDataEqual } = options || {};
+  const { key, input, skip, refetchInterval, isDataEqual } = options || {};
+  const queryKey = key || [query, input?.id, input?.preview];
 
   return useQuery(
-    key || 'useGqlQuery',
+    queryKey,
     () =>
       gqlRequest<ReturnType>(spaceId || '', apiKey || '', query || '', {
         env: environment,
