@@ -39,7 +39,7 @@ export default function EditorForm(props: Props) {
     apiKey: '',
     contentFeed: '',
     slideDuration: 20000,
-    fetchInterval: 10000,
+    fetchInterval: 60000,
     ...sc.config,
   });
 
@@ -179,7 +179,7 @@ export default function EditorForm(props: Props) {
           />
           <NumberField
             label="Refetch interval sec."
-            defaultValue={(config.fetchInterval || 10000) / 1000}
+            defaultValue={(config.fetchInterval || 60000) / 1000}
             min={FETCH_INTERVAL_RANGE[0]}
             max={FETCH_INTERVAL_RANGE[1]}
             onBlur={value =>
