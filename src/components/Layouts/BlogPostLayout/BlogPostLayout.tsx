@@ -1,12 +1,8 @@
-import React, { FunctionComponent } from "react";
-import {
-  theme,
-  SplitLayoutContainer,
-  FullScreenImage,
-} from "@screencloud/alfie-alpha";
-import { BlogPostRightContent } from "./BlogPostRightContent";
-import { ContentfulBlogItem } from "../../../providers/ContentfulDataProvider";
-import FullGrey from "../../styling/FullGrey";
+import React, { FunctionComponent } from 'react';
+import { theme, SplitLayoutContainer, FullScreenImage } from '@screencloud/alfie-alpha';
+import { BlogPostRightContent } from './BlogPostRightContent';
+import { ContentfulBlogItem } from '../../../providers/ContentfulDataProvider';
+import FullGrey from '../../styling/FullGrey';
 
 interface Props {
   itemDurationSeconds: number;
@@ -18,34 +14,28 @@ interface Props {
   updatedAt?: string;
 }
 
-export const BlogPostLayout: FunctionComponent<Props> = (
-  props: Props
-) => {
+export const BlogPostLayout: FunctionComponent<Props> = (props: Props) => {
   // console.log(`BlogPostLayout()`);
-  const {
-    itemDurationSeconds,
-    companyLogoUrl,
-    item,
-    progressBarColor,
-    isPortrait,
-    themedColor,
-  } = props;
+  const { itemDurationSeconds, companyLogoUrl, item, progressBarColor, isPortrait, themedColor } =
+    props;
 
   const themeColor = themedColor || theme.colors.gray;
 
   return (
     <SplitLayoutContainer
-      leftContentWidth={"50"}
-      rightContentWidth={"50"}
+      leftContentWidth={'50'}
+      rightContentWidth={'50'}
       isPortrait={isPortrait}
       borderColor={themeColor}
       leftContent={
         item.image?.url ? (
           <FullScreenImage
-            url={item.image?.url ? `${item.image?.url}?w=2048` : ""}
+            url={item.image?.url ? `${item.image?.url}?w=2048` : ''}
             itemDurationSeconds={itemDurationSeconds}
           />
-        ) : <FullGrey />
+        ) : (
+          <FullGrey />
+        )
       }
       rightContent={
         <BlogPostRightContent

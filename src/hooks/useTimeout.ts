@@ -1,10 +1,6 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react';
 
-const useTimeout = (
-  callback: () => void,
-  duration = 0,
-  started = true
-): void => {
+const useTimeout = (callback: () => void, duration = 0, started = true): void => {
   const timerRef = useRef<undefined | NodeJS.Timeout>(undefined);
   const callbackRef = useRef<() => void>(callback);
 

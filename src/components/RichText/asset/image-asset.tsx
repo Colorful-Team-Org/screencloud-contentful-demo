@@ -1,6 +1,6 @@
-import { Image } from "@screencloud/alfie-alpha";
-import React, { FunctionComponent } from "react";
-import { AssetType } from "./fragments";
+import { Image } from '@screencloud/alfie-alpha';
+import React, { FunctionComponent } from 'react';
+import { AssetType } from './fragments';
 
 interface Props extends AssetType {
   disableCaption?: boolean;
@@ -16,18 +16,16 @@ const ImageAsset: FunctionComponent<Props> = (props: Props) => {
   return (
     <figure>
       <img
-        src={props.url.replace(/^\/\//, "https://")}
-        width={props.imgWidth || props.width || ""}
-        height={props.imgHeight || props.height || ""}
+        src={props.url.replace(/^\/\//, 'https://')}
+        width={props.imgWidth || props.width || ''}
+        height={props.imgHeight || props.height || ''}
         alt={props.description || undefined}
         title={props.title || undefined}
         className={props.className}
         style={{ maxWidth: '100%' }}
       />
       {!props.disableCaption && props.title && (
-        <figcaption className="text-gray-700 text-center">
-          {props.title}
-        </figcaption>
+        <figcaption className="text-gray-700 text-center">{props.title}</figcaption>
       )}
     </figure>
   );

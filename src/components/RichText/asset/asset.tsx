@@ -1,9 +1,9 @@
-import React, { FunctionComponent } from "react";
-import { AssetType } from "./fragments";
-import ImageAsset from "./image-asset";
+import React, { FunctionComponent } from 'react';
+import { AssetType } from './fragments';
+import ImageAsset from './image-asset';
 
 const Asset: FunctionComponent<AssetType> = (props: AssetType) => {
-  const isImage = props.contentType?.includes("image");
+  const isImage = props.contentType?.includes('image');
   if (isImage) {
     return <ImageAsset {...props} />;
   }

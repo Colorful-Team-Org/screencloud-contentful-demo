@@ -1,6 +1,5 @@
 import { gql } from 'graphql-request';
 
-
 export const ContentFeedGql = gql`
   query ContentFeed($id: String!, $preview: Boolean) {
     contentFeed(id: $id, preview: $preview) {

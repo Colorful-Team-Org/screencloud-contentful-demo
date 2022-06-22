@@ -12,8 +12,8 @@ type ContentfulItem = {
   sys: {
     id: string;
     publishedAt: string;
-  }
-}
+  };
+};
 
 export interface ContentfulBlogItem extends ContentfulItem {
   title: string;

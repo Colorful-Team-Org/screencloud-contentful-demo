@@ -6,7 +6,9 @@ const urlVars = ['space-id', 'api-key', 'contentfeed', 'preview'];
 export function configFromUrlParams(searchParams: URLSearchParams, currentConfig?: AppConfig) {
   const params = parseSearch(searchParams);
   if (urlVars.some(k => k in params)) {
-    let config = currentConfig ? { ...currentConfig } : { spaceId: '', apiKey: '', contentFeed: '' }
+    let config = currentConfig
+      ? { ...currentConfig }
+      : { spaceId: '', apiKey: '', contentFeed: '' };
     if (params['space-id']) config.spaceId = params['space-id'];
     if (params['api-key']) config.apiKey = params['api-key'];
     if (params['contentfeed']) config.contentFeed = params['contentfeed'];

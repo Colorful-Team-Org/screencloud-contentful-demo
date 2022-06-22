@@ -5,7 +5,7 @@ import {
   Progress,
   Text,
   TextSizes,
-  theme
+  theme,
 } from '@screencloud/alfie-alpha';
 import { FunctionComponent, ReactElement } from 'react';
 import { ContentfulQuoteItem } from '../../../providers/ContentfulDataProvider';
@@ -30,7 +30,6 @@ export const QuoteRightContent: FunctionComponent<Props> = (props: Props): React
   return (
     <ContentWrapper backgroundColor={theme.colors.white}>
       <Flex padding={[0, 28]} flexDirection="column" justifyContent="space-between" height="100%">
-
         {/* <Flex flexDirection="row" flexWrap="wrap" justifyContent="center" alignItems="center"> */}
         <Flex flex={1} flexDirection="column" justifyContent="center">
           {!!item.text?.json && (

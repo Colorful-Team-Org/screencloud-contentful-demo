@@ -12,19 +12,15 @@ import {
   CachedResponseWillBeUsedCallbackParam,
   registerQuotaErrorCallback,
   HandlerDidCompleteCallbackParam,
-} from "workbox-core";
-import { ExpirationPlugin } from "workbox-expiration";
-import { precacheAndRoute, createHandlerBoundToURL } from "workbox-precaching";
-import { registerRoute } from "workbox-routing";
-import {
-  CacheFirst,
-  NetworkOnly,
-  StaleWhileRevalidate,
-} from "workbox-strategies";
-import { WorkboxPlugin } from "workbox-core";
-import { CacheableResponsePlugin } from "workbox-cacheable-response";
-import { setCacheNameDetails } from "workbox-core";
-import { CacheExpiration } from "workbox-expiration";
+} from 'workbox-core';
+import { ExpirationPlugin } from 'workbox-expiration';
+import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching';
+import { registerRoute } from 'workbox-routing';
+import { CacheFirst, NetworkOnly, StaleWhileRevalidate } from 'workbox-strategies';
+import { WorkboxPlugin } from 'workbox-core';
+import { CacheableResponsePlugin } from 'workbox-cacheable-response';
+import { setCacheNameDetails } from 'workbox-core';
+import { CacheExpiration } from 'workbox-expiration';
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -37,34 +33,32 @@ precacheAndRoute(self.__WB_MANIFEST);
 
 // This allows the web app to trigger skipWaiting via
 // registration.waiting.postMessage({type: 'SKIP_WAITING'})
-self.addEventListener("message", (event) => {
-  if (event.data && event.data.type === "SKIP_WAITING") {
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
 });
 
-self.addEventListener("install", (event: ExtendableEvent) => {
+self.addEventListener('install', (event: ExtendableEvent) => {
   // Installing a new service worker
-  console.log("SW - install", event);
+  console.log('SW - install', event);
 });
 
-self.addEventListener("activate", (event) => {
+self.addEventListener('activate', event => {
   // Activating the new service worker
-  console.log("SW - activate", event);
+  console.log('SW - activate', event);
 
   const clearGoogleFontsStylesheetsCache = async () => {
     await Promise.all([
-      await caches
-        .open(mkCacheName("google-fonts-stylesheets"))
-        .then((cache) => {
-          cache.keys().then(async (keys) => {
-            const cacheItemPromises = keys.map((key) => cache.delete(key));
-            return await Promise.all(cacheItemPromises);
-          });
-        }),
-      await caches.open(mkCacheName("custom-assets")).then((cache) => {
-        cache.keys().then(async (keys) => {
-          const cacheItemPromises = keys.map((key) => cache.delete(key));
+      await caches.open(mkCacheName('google-fonts-stylesheets')).then(cache => {
+        cache.keys().then(async keys => {
+          const cacheItemPromises = keys.map(key => cache.delete(key));
+          return await Promise.all(cacheItemPromises);
+        });
+      }),
+      await caches.open(mkCacheName('custom-assets')).then(cache => {
+        cache.keys().then(async keys => {
+          const cacheItemPromises = keys.map(key => cache.delete(key));
           return await Promise.all(cacheItemPromises);
         });
       }),
@@ -73,10 +67,9 @@ self.addEventListener("activate", (event) => {
   clearGoogleFontsStylesheetsCache();
 });
 
-const daysInSeconds = (numberOfDays: number): number =>
-  numberOfDays * 24 * 60 * 60;
+const daysInSeconds = (numberOfDays: number): number => numberOfDays * 24 * 60 * 60;
 
-const cachePrefix = "app"; // the app caches use this prefix to be able to remove old caches easier
+const cachePrefix = 'app'; // the app caches use this prefix to be able to remove old caches easier
 
 setCacheNameDetails({
   prefix: cachePrefix,
@@ -86,7 +79,7 @@ setCacheNameDetails({
 // so we are using this function to set their cache name
 const mkCacheName = (name: string): string => `${cachePrefix}-${name}`;
 
-const expirationManager = new CacheExpiration(mkCacheName("images"), {
+const expirationManager = new CacheExpiration(mkCacheName('images'), {
   maxEntries: 250, //employs LRU
   maxAgeSeconds: daysInSeconds(14),
   matchOptions: {
@@ -104,18 +97,16 @@ registerQuotaErrorCallback(async () => {
     hasQuotaError = true;
 
     const cacheKeys = await self.caches.keys();
-    const cacheKeysToDelete = cacheKeys.filter((key) =>
-      key.includes(`${cachePrefix}-`)
-    );
+    const cacheKeysToDelete = cacheKeys.filter(key => key.includes(`${cachePrefix}-`));
 
     const cacheMap: { [key: string]: number } = {};
 
     await Promise.all(
-      cacheKeysToDelete.map(async (cacheKey) => {
-        await caches.open(cacheKey).then((cache) => {
-          cache.keys().then(async (keys) => {
+      cacheKeysToDelete.map(async cacheKey => {
+        await caches.open(cacheKey).then(cache => {
+          cache.keys().then(async keys => {
             cacheMap[cacheKey] = keys.length;
-            const cacheItemPromises = keys.map((key) => cache.delete(key));
+            const cacheItemPromises = keys.map(key => cache.delete(key));
             return await Promise.all(cacheItemPromises);
           });
         });
@@ -132,18 +123,16 @@ class CachePlugin implements WorkboxPlugin {
     param: CachedResponseWillBeUsedCallbackParam
   ): Promise<Response | void | null | undefined> {
     // eslint-disable-next-line no-async-promise-executor
-    return new Promise(async (resolve) => {
+    return new Promise(async resolve => {
       await expirationManager.updateTimestamp(param.request.url);
       resolve(param.cachedResponse);
     });
   }
 
   // Remove all items in the cache which have expired if the handler is used that is associated with the cache
-  handlerDidComplete(
-    param: HandlerDidCompleteCallbackParam
-  ): Promise<void | null | undefined> {
+  handlerDidComplete(param: HandlerDidCompleteCallbackParam): Promise<void | null | undefined> {
     // eslint-disable-next-line no-async-promise-executor
-    return new Promise(async (resolve) => {
+    return new Promise(async resolve => {
       await expirationManager.expireEntries();
       resolve(undefined);
     });
@@ -154,16 +143,16 @@ class CachePlugin implements WorkboxPlugin {
 // Set up App Shell-style routing, so that all navigation requests
 // are fulfilled with your index.html shell. Learn more at
 // https://developers.google.com/web/fundamentals/architecture/app-shell
-const fileExtensionRegexp = new RegExp("/[^/?]+\\.[^/]+$");
+const fileExtensionRegexp = new RegExp('/[^/?]+\\.[^/]+$');
 registerRoute(
   // Return false to exempt requests from being fulfilled by index.html.
   ({ request, url }: { request: Request; url: URL }) => {
     // If this isn't a navigation, skip.
-    if (request.mode !== "navigate") {
+    if (request.mode !== 'navigate') {
       return false;
     }
     // If this is a URL that starts with /_, skip.
-    if (url.pathname.startsWith("/_")) {
+    if (url.pathname.startsWith('/_')) {
       return false;
     }
     // If this looks like a URL for a resource, because it contains
@@ -174,21 +163,21 @@ registerRoute(
     // Return true to signal that we want to use the handler.
     return true;
   },
-  createHandlerBoundToURL(process.env.PUBLIC_URL + "/index.html")
+  createHandlerBoundToURL(process.env.PUBLIC_URL + '/index.html')
 );
 
 // Image & Imgix Handler
 registerRoute(
   ({ url, request }) => {
     return (
-      request.destination === "image" ||
+      request.destination === 'image' ||
       // match https://<any subdomain>.imgix.net
       url.href.match(/^https:\/\/[-\w]+\.imgix\.net/)
     );
   },
   new CacheFirst({
     // Use a custom cache name.
-    cacheName: mkCacheName("images"),
+    cacheName: mkCacheName('images'),
     plugins: [
       new CacheableResponsePlugin({
         statuses: [0, 200],
@@ -204,7 +193,7 @@ registerRoute(
 registerRoute(
   /^https:\/\/fonts\.googleapis\.com/,
   new StaleWhileRevalidate({
-    cacheName: mkCacheName("google-fonts-stylesheets"),
+    cacheName: mkCacheName('google-fonts-stylesheets'),
     plugins: [
       new ExpirationPlugin({
         maxEntries: 30,
@@ -222,7 +211,7 @@ registerRoute(
 registerRoute(
   /^https:\/\/fonts\.gstatic\.com/,
   new StaleWhileRevalidate({
-    cacheName: mkCacheName("google-fonts-webfonts"),
+    cacheName: mkCacheName('google-fonts-webfonts'),
     plugins: [
       new CacheableResponsePlugin({
         statuses: [200],
@@ -238,10 +227,9 @@ registerRoute(
 // Custom stylesheets and fonts for users adding custom fonts which are not hosted by Google
 // https://medium.com/dev-channel/service-worker-caching-strategies-based-on-request-types-57411dd7652c
 registerRoute(
-  ({ request }) =>
-    request.destination === "style" || request.destination === "font",
+  ({ request }) => request.destination === 'style' || request.destination === 'font',
   new StaleWhileRevalidate({
-    cacheName: mkCacheName("custom-assets"),
+    cacheName: mkCacheName('custom-assets'),
     plugins: [
       new CacheableResponsePlugin({
         statuses: [0, 200], // Status code 0 is used for opaque responses.
@@ -256,8 +244,5 @@ registerRoute(
 
 // Everything else (except service-worker.js & manifest.json)
 registerRoute(({ url }) => {
-  return (
-    !url.pathname.includes("service-worker.js") &&
-    !url.pathname.includes("manifest.json")
-  );
+  return !url.pathname.includes('service-worker.js') && !url.pathname.includes('manifest.json');
 }, new NetworkOnly());

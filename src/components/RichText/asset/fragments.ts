@@ -1,5 +1,5 @@
 export interface AssetType {
-  __typename?: "Asset";
+  __typename?: 'Asset';
   contentType: string;
   description: string;
   height: number;
