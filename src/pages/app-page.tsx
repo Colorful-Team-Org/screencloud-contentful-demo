@@ -35,7 +35,7 @@ export default function AppPage() {
               <ContentfulDataProvider
                 contentFeedId={config?.contentFeed}
                 preview={config?.preview}
-                refetchInterval={3000}
+                refetchInterval={config?.fetchInterval || 10000}
               >
                 <div className={styles.appPage}>
                   <App />
