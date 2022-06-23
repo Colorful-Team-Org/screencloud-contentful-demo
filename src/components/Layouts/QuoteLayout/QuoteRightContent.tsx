@@ -10,7 +10,7 @@ import {
 import { FunctionComponent, ReactElement } from 'react';
 import { ContentfulQuoteItem } from '../../../providers/ContentfulDataProvider';
 import { RichText } from '../../RichText/rich-text';
-import { ReactComponent as QuoteSvg} from './assets/quote.svg';
+import { ReactComponent as QuoteSvg } from './assets/quote.svg';
 import { QuoteAuthor } from './QuoteAuthor';
 import style from './quotes.module.css';
 

@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { useEffect, useMemo, useState } from 'react';
 import { ContentfulCollection, useGqlQuery } from '../contentful-api/contentful-graphql-service';
 import {
@@ -106,6 +105,7 @@ export function queryStringFromMappingConfig(config: ContentMappingConfig, ids?:
 
   const idsFilter = ids?.length ? ` where: {sys:{id_in:["${ids.join(`","`)}"]}}` : '';
 
+  // prettier-ignore
   const queryString = `query($preview: Boolean $locale: String) {
     ${contentType}Collection(limit: ${ids?.length || 20}${idsFilter} locale: $locale preview: $preview) {
       items {

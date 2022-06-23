@@ -29,7 +29,6 @@ export const SlideShow = () => {
     return screencloudConfig?.slideDuration / 1000;
   }, [screencloudConfig?.slideDuration]);
 
-
   const themedColor = '';
   const companyLogoUrl = data?.companyLogo;
   const isPortrait = false;
