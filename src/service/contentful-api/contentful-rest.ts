@@ -36,23 +36,16 @@ const getLocalesUrl = (space: string, token: string, env = 'master', preview = f
 };
 
 export const getLocales = async (url: string) => {
-  return queryClient.fetchQuery(
-    url,
-    () =>
-      fetch(url)
-        .then(response => response.json() as Promise<LocalesResponse>)
-        .then(response => {
-          // console.log(`response`, response);
-          if (response.sys.type === 'Error') {
-            console.error(response.message);
-            throw response.message;
-          }
-          return response.items;
-        })
-    // .catch(err => {
-    //   console.error('Error retrieving locales:', err);
-    //   return [] as LocalesResponse['items'];
-    // })
+  return queryClient.fetchQuery(url, () =>
+    fetch(url)
+      .then(response => response.json() as Promise<LocalesResponse>)
+      .then(response => {
+        // console.log(`response`, response);
+        if (response.sys.type === 'Error') {
+          throw response.message;
+        }
+        return response.items;
+      })
   );
 };
 
@@ -96,5 +89,6 @@ export function useLocales(space?: string, apiKey?: string, preview = false) {
     ...getLocalesQueryOptions(space!, apiKey!, undefined, preview),
     enabled: !!space && !!apiKey,
     refetchOnWindowFocus: false,
+    retry: false,
   });
 }

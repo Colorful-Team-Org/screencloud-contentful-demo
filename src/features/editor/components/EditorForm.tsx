@@ -70,13 +70,7 @@ export default function EditorForm(props: Props) {
     );
   }, [feedsQuery.data, feedsQuery.isError]);
 
-  const localesQuery = useLocales(config.spaceId, config.apiKey, true);
-
-  // useEffect(() => {
-  //   if (contentFeed && !contentFeeds.find(c => c.id === contentFeed)) {
-  //     setConfig(state => ({ ...state, contentFeed: undefined }));
-  //   }
-  // }, [contentFeed, contentFeeds]);
+  const localesQuery = useLocales(config.spaceId, config.apiKey, config.preview);
 
   const onEnvChange = (ev: FormEvent) => {
     const target = ev.target as HTMLInputElement;
@@ -110,6 +104,8 @@ export default function EditorForm(props: Props) {
     sc.onRequestConfigUpdate?.(() => Promise.resolve({ config }));
   }, [config, props, sc]);
 
+  const contentConfigEnabled = !!contentFeeds.length;
+
   return (
     <>
       <Box>
@@ -138,45 +134,46 @@ export default function EditorForm(props: Props) {
           onChange={onEnvChange}
         />
 
-        <TextField
-          select
-          name="locale"
-          label="Locale"
-          fullWidth
-          value={config.locale || ''}
-          onChange={onEnvChange}
-          disabled={!localesQuery.data?.length}
-          // onChange={onContentFeedChange}
-        >
-          {!!localesQuery.data ? (
-            [
-              <MenuItem key="default" value="">
-                Default
-              </MenuItem>,
-              localesQuery.data.map(locale => (
-                <MenuItem key={locale.code} value={locale.code}>
-                  {locale.name}
-                </MenuItem>
-              )),
-            ]
-          ) : (
-            <MenuItem value="" />
-          )}
-        </TextField>
-
         <FormControlLabel
           label="Preview"
           control={<Checkbox name="preview" onChange={onEnvChange} />}
         />
 
         <Divider sx={{ my: 2 }} />
+
         <ContentConfig>
+          <TextField
+            select
+            name="locale"
+            label="Locale"
+            fullWidth
+            value={config.locale || ''}
+            disabled={!contentConfigEnabled || !localesQuery.data?.length}
+            onChange={onEnvChange}
+            // onChange={onContentFeedChange}
+          >
+            {!!localesQuery.data ? (
+              [
+                <MenuItem key="default" value="">
+                  Default
+                </MenuItem>,
+                localesQuery.data.map(locale => (
+                  <MenuItem key={locale.code} value={locale.code}>
+                    {locale.name}
+                  </MenuItem>
+                )),
+              ]
+            ) : (
+              <MenuItem value="" />
+            )}
+          </TextField>
           <TextField
             select
             name="contentFeed"
             label="Content feed"
             fullWidth
             value={contentFeed || ''}
+            disabled={!contentConfigEnabled}
             onChange={ev => !!ev.target.value && onEnvChange(ev)}
           >
             <MenuItem value="" disabled>
@@ -198,6 +195,7 @@ export default function EditorForm(props: Props) {
             defaultValue={(config.slideDuration || 20000) / 1000}
             min={SLIDE_DUR_RANGE[0]}
             max={SLIDE_DUR_RANGE[1]}
+            disabled={!contentConfigEnabled}
             onBlur={value =>
               setConfig(state => ({
                 ...state,
@@ -210,6 +208,7 @@ export default function EditorForm(props: Props) {
             defaultValue={(config.fetchInterval || 60000) / 1000}
             min={FETCH_INTERVAL_RANGE[0]}
             max={FETCH_INTERVAL_RANGE[1]}
+            disabled={!contentConfigEnabled}
             onBlur={value =>
               setConfig(state => ({
                 ...state,
