@@ -1,12 +1,13 @@
 import { Box, Checkbox, Divider, FormControlLabel, MenuItem, TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import React, { FormEvent, useEffect, useMemo, useState } from 'react';
+import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import { AppConfig } from '../../../app-types';
 import NumberField from '../../../components/NumberField';
 import SpinnerBox from '../../../components/SpinnerBox';
 import { useScreenCloudEditor } from '../../../providers/ScreenCloudEditorProvider';
 import { gqlRequest } from '../../../service/contentful-api/contentful-graphql-service';
+import { useLocales } from '../../../service/contentful-api/contentful-rest';
 import logo from '../assets/contentful-logo.png';
 
 type Props = {
@@ -69,6 +70,8 @@ export default function EditorForm(props: Props) {
     );
   }, [feedsQuery.data, feedsQuery.isError]);
 
+  const localesQuery = useLocales(config.spaceId, config.apiKey, true);
+
   // useEffect(() => {
   //   if (contentFeed && !contentFeeds.find(c => c.id === contentFeed)) {
   //     setConfig(state => ({ ...state, contentFeed: undefined }));
@@ -77,17 +80,13 @@ export default function EditorForm(props: Props) {
 
   const onEnvChange = (ev: FormEvent) => {
     const target = ev.target as HTMLInputElement;
+    console.log('onEnvChange', target.name, target.value);
     const newState = {
       ...config,
-      [target.name]: target.type === 'checkbox' ? !!target.checked : target.value,
+      [target.name]: target.type === 'checkbox' ? !!target.checked : target.value || undefined,
     };
     setConfig(newState);
     sc.emitConfigUpdateAvailable?.();
-  };
-
-  const onContentFeedChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
-    const newConfig = { ...config, contentFeed: ev.target.value };
-    setConfig(newConfig);
   };
 
   useEffect(() => {
@@ -138,33 +137,62 @@ export default function EditorForm(props: Props) {
           fullWidth
           onChange={onEnvChange}
         />
+
+        <TextField
+          select
+          name="locale"
+          label="Locale"
+          fullWidth
+          value={config.locale || ''}
+          onChange={onEnvChange}
+          disabled={!localesQuery.data?.length}
+          // onChange={onContentFeedChange}
+        >
+          {!!localesQuery.data ? (
+            [
+              <MenuItem key="default" value="">
+                Default
+              </MenuItem>,
+              localesQuery.data.map(locale => (
+                <MenuItem key={locale.code} value={locale.code}>
+                  {locale.name}
+                </MenuItem>
+              )),
+            ]
+          ) : (
+            <MenuItem value="" />
+          )}
+        </TextField>
+
         <FormControlLabel
           label="Preview"
           control={<Checkbox name="preview" onChange={onEnvChange} />}
         />
+
         <Divider sx={{ my: 2 }} />
         <ContentConfig>
-          {!!contentFeeds.length ? (
-            <TextField
-              select
-              placeholder="Content feed"
-              label="Content feed"
-              fullWidth
-              value={contentFeed || ''}
-              onChange={onContentFeedChange}
-            >
-              <MenuItem value="">
-                <em>Select contentfeed</em>
-              </MenuItem>
-              {contentFeeds.map(feed => (
+          <TextField
+            select
+            name="contentFeed"
+            label="Content feed"
+            fullWidth
+            value={contentFeed || ''}
+            onChange={ev => !!ev.target.value && onEnvChange(ev)}
+          >
+            <MenuItem value="" disabled>
+              <em>Select contentfeed</em>
+            </MenuItem>
+            {!!contentFeeds.length ? (
+              contentFeeds.map(feed => (
                 <MenuItem key={feed.id} value={feed.id}>
                   {feed.name}
                 </MenuItem>
-              ))}
-            </TextField>
-          ) : (
-            <TextField disabled placeholder="Content feed" fullWidth />
-          )}
+              ))
+            ) : (
+              <MenuItem value="" />
+            )}
+          </TextField>
+
           <NumberField
             label="Slide duration sec."
             defaultValue={(config.slideDuration || 20000) / 1000}

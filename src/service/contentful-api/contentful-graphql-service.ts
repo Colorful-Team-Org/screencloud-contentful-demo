@@ -50,7 +50,7 @@ export function useGqlQuery<ReturnType = any>(
   query?: string,
   options?: UseGqlQueryOptions<ReturnType>
 ) {
-  const { spaceId, apiKey, environment } = useContext(ContentfulApiContext);
+  const { spaceId, apiKey, environment, locale, preview } = useContext(ContentfulApiContext);
   if (!spaceId || !apiKey) {
     console.warn(`No request can be  executed because there is no spaceId or apiKey provided.`);
   }
@@ -62,6 +62,8 @@ export function useGqlQuery<ReturnType = any>(
     () =>
       gqlRequest<ReturnType>(spaceId || '', apiKey || '', query || '', {
         env: environment,
+        preview,
+        locale,
         ...input,
       }).then(response => response),
     {

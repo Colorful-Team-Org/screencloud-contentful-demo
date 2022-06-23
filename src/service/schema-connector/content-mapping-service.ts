@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useEffect, useMemo, useState } from 'react';
 import { ContentfulCollection, useGqlQuery } from '../contentful-api/contentful-graphql-service';
 import {
@@ -105,8 +106,8 @@ export function queryStringFromMappingConfig(config: ContentMappingConfig, ids?:
 
   const idsFilter = ids?.length ? ` where: {sys:{id_in:["${ids.join(`","`)}"]}}` : '';
 
-  const queryString = `query($preview: Boolean) {
-    ${contentType}Collection(limit: ${ids?.length || 20}${idsFilter} preview: $preview) {
+  const queryString = `query($preview: Boolean $locale: String) {
+    ${contentType}Collection(limit: ${ids?.length || 20}${idsFilter} locale: $locale preview: $preview) {
       items {
         ${itemsQueryString}
       }
@@ -134,15 +135,14 @@ export function queryStringFromMappingConfig(config: ContentMappingConfig, ids?:
  */
 export function useContentFeedQuery(options: {
   id: string;
-  preview?: boolean;
   skip?: boolean;
   refetchInterval?: number;
 }) {
-  const { id, skip, refetchInterval, preview } = options;
+  const { id, skip, refetchInterval } = options;
   const key = `useContentFeedQuery:${id}`;
   return useGqlQuery<ContentMappingCollectionResponse>(ContentFeedGql, {
     key,
-    input: { id, preview },
+    input: { id },
     skip,
     refetchInterval,
   });
@@ -161,10 +161,9 @@ export function useMappedData(
   options?: {
     filterItems?: { sys: { id: string } }[];
     refetchInterval?: number;
-    preview?: boolean;
   }
 ) {
-  const { filterItems, refetchInterval, preview } = options || {};
+  const { filterItems, refetchInterval } = options || {};
 
   const selectedItemIds = useMemo(() => filterItems?.map(item => item.sys.id), [filterItems]);
 
@@ -174,7 +173,6 @@ export function useMappedData(
 
   const query = useGqlQuery<Record<string, ContentfulCollection<any>>>(queryString, {
     refetchInterval,
-    input: { preview },
   });
 
   const contentfulItems = mappingConfig

@@ -74,7 +74,6 @@ export const ContentfulDataContext = React.createContext({
 });
 
 type Props = {
-  preview?: boolean;
   contentFeedId?: string;
   refetchInterval?: number;
 };
@@ -83,7 +82,6 @@ export const ContentfulDataProvider: FunctionComponent<Props> = props => {
   const contentFeedQuery = useContentFeedQuery({
     skip: !props.contentFeedId,
     id: props.contentFeedId!,
-    preview: props.preview,
     refetchInterval: props.refetchInterval,
   });
   const contentFeed = contentFeedQuery.data?.contentFeed;
@@ -104,7 +102,6 @@ export const ContentfulDataProvider: FunctionComponent<Props> = props => {
   }, [mappingConfig?.mapping]);
 
   const { queryResponse, items = [] } = useMappedData(mappingConfig, {
-    preview: props.preview,
     filterItems: itemIds,
     refetchInterval: props.refetchInterval,
   });

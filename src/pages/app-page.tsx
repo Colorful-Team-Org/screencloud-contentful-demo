@@ -30,11 +30,15 @@ export default function AppPage() {
         {({ config }) => (
           <QueryClientProvider client={queryClient}>
             <ContentfulApiContext.Provider
-              value={{ apiKey: config?.apiKey, spaceId: config?.spaceId, preview: config?.preview }}
+              value={{
+                apiKey: config?.apiKey,
+                spaceId: config?.spaceId,
+                locale: config?.locale,
+                preview: config?.preview,
+              }}
             >
               <ContentfulDataProvider
                 contentFeedId={config?.contentFeed}
-                preview={config?.preview}
                 refetchInterval={config?.fetchInterval || 10000}
               >
                 <div className={styles.appPage}>

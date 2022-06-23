@@ -1,8 +1,8 @@
 import { gql } from 'graphql-request';
 
 export const ContentFeedGql = gql`
-  query ContentFeed($id: String!, $preview: Boolean) {
-    contentFeed(id: $id, preview: $preview) {
+  query ContentFeed($id: String!, $preview: Boolean, $locale: String) {
+    contentFeed(id: $id, locale: $locale, preview: $preview) {
       contentMappingConfig {
         name
         config

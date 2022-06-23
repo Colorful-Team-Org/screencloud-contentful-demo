@@ -12,8 +12,8 @@ const EmbeddedAssetBlock: FunctionComponent<Props> = (props: Props) => {
   // console.log(`EmbeddedAssetBlock`, props);
   const { id, preview } = props;
   const queryResponse = useGqlQuery<{ asset: AssetType }>(
-    `query Asset($preview: Boolean) {
-    asset(id: "${id}", preview: $preview) {
+    `query Asset($preview: Boolean, $locale: String) {
+    asset(id: "${id}", preview: $preview, locale: $locale) {
       __typename contentType sys { id }
       url
       title description

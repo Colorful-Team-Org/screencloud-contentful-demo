@@ -14,8 +14,8 @@ export function useSiteConfig(preview?: boolean) {
   };
 
   const siteConfigQuery = useGqlQuery<QueryResponse>(
-    `query SiteConfig {
-    siteConfigurationCollection(limit: 10, preview: $preview) {
+    `query SiteConfig($locale: String, $preview: Boolean) {
+    siteConfigurationCollection(limit: 10, locale: $locale, preview: $preview) {
       items {
         logo {
           url
