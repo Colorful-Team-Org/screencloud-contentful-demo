@@ -10,8 +10,9 @@ import {
 import { FunctionComponent, ReactElement } from 'react';
 import { ContentfulQuoteItem } from '../../../providers/ContentfulDataProvider';
 import { RichText } from '../../RichText/rich-text';
-import { ReactComponent as QuoteSvg } from './assets/quote.svg';
+import { ReactComponent as QuoteSvg} from './assets/quote.svg';
 import { QuoteAuthor } from './QuoteAuthor';
+import style from './quotes.module.css';
 
 interface Props {
   itemDurationSeconds: number;
@@ -34,16 +35,15 @@ export const QuoteRightContent: FunctionComponent<Props> = (props: Props): React
         <Flex flex={1} flexDirection="column" justifyContent="center">
           {!!item.text?.json && (
             <>
-              <Box marginBottom={50}>
-                <QuoteSvg width={76} />
-              </Box>
               <Text
+                className={style.quoteContainer}
                 type={TextSizes.H4}
                 wordBreak="break-word"
                 fontFamily={'sans-serif'}
                 textAlign={textCentered ? 'center' : undefined}
               >
-                <RichText document={item.text.json} />
+                <QuoteSvg className={style.quoteSymbol} />
+                <RichText className={style.richText} document={item.text.json} />
               </Text>
             </>
           )}

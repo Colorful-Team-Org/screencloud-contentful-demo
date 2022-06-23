@@ -1,7 +1,7 @@
-import { Box, Flex, Text } from '@screencloud/alfie-alpha';
+import { Box, Flex, Text, TextSizes } from '@screencloud/alfie-alpha';
 import React, { CSSProperties, FunctionComponent } from 'react';
 import { ImageAsset } from '../../../service/schema-connector/content-mapping-service';
-import styles from './QuoteAuthor.module.css';
+import styles from './quotes.module.css';
 
 type Props = React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> & {
   author: string;
@@ -38,8 +38,10 @@ export const QuoteAuthor: FunctionComponent<Props> = props => {
               />
             </Box>
             <Box display="inline-block">
-              <Text fontWeight="bold">{author}</Text>
-              {!!authorLocation && <Text>, {authorLocation}</Text>}
+              <Text type={TextSizes.H4} fontWeight="bold">
+                {author}
+              </Text>
+              {!!authorLocation && <Text type={TextSizes.H4}>, {authorLocation}</Text>}
             </Box>
           </Flex>
         )}
