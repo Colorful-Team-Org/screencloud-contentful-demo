@@ -1,11 +1,14 @@
-import { AppConfig } from '../app-types';
-import { parseSearch } from '../utils/url-utils';
+import { AppConfig } from '../../app-types';
+import { parseSearch } from '../../utils/url-utils';
+import { PlayerConfig } from './ScreenCloudPlayerProvider';
 
 const urlVars = ['space-id', 'api-key', 'contentfeed', 'locale', 'preview'];
 
-export function configFromUrlParams(searchParams: URLSearchParams, currentConfig?: AppConfig) {
+export function configFromUrlParams(searchParams: URLSearchParams, currentConfig?: PlayerConfig) {
   const params = parseSearch(searchParams);
   if (urlVars.some(k => k in params)) {
+    const isPreview = params['preview'] === '1';
+
     let config = currentConfig
       ? { ...currentConfig }
       : { spaceId: '', apiKey: '', contentFeed: '' };
@@ -13,7 +16,7 @@ export function configFromUrlParams(searchParams: URLSearchParams, currentConfig
     if (params['api-key']) config.apiKey = params['api-key'];
     if (params['contentfeed']) config.contentFeed = params['contentfeed'];
     if (params['locale']) config.locale = params['locale'];
-    if (params['preview']) config.preview = params['preview'] === '1';
+    if (params['preview']) config.preview = isPreview;
     if (params['slide-duration']) config.slideDuration = parseInt(params['slide-duration']);
 
     return config;
@@ -22,7 +25,8 @@ export function configFromUrlParams(searchParams: URLSearchParams, currentConfig
 }
 
 export function urlParamsFrom(config: AppConfig) {
-  let string = `space-id=${config.spaceId}&api-key=${config.apiKey}&contentfeed=${config.contentFeed}`;
+  const apiKey = config.preview ? config.previewApiKey : config.apiKey;
+  let string = `space-id=${config.spaceId}&api-key=${apiKey}&contentfeed=${config.contentFeed}`;
   if (config.locale) {
     string += `&locale=${config.locale}`;
   }

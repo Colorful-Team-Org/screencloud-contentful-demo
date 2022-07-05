@@ -6,7 +6,7 @@ import { ContentfulDataProvider } from '../providers/ContentfulDataProvider';
 import {
   ScreenCloudPlayerContext,
   ScreenCloudPlayerProvider,
-} from '../providers/ScreenCloudPlayerProvider';
+} from '../features/sc-player/ScreenCloudPlayerProvider';
 import { ContentfulApiContext } from '../service/contentful-api/contentful-api-ctx';
 import styles from './app-page.module.css';
 

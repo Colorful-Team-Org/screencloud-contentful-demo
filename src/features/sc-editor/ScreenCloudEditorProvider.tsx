@@ -4,8 +4,8 @@ import {
   OnRequestConfigUpdate,
 } from '@screencloud/apps-editor-sdk/lib/types';
 import React, { PropsWithChildren, useContext, useEffect, useState } from 'react';
-import { AppConfig } from '../app-types';
-import { config as devConfig } from '../config.development';
+import { AppConfig } from '../../app-types';
+import { config as devConfig } from '../../config.development';
 
 export const ScreenCloudEditorContext = React.createContext<ScreenCloudState>({});
 

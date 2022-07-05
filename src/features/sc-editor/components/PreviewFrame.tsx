@@ -1,7 +1,7 @@
 import { styled, Typography } from '@mui/material';
 import { debounce } from 'lodash';
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { urlParamsFrom } from '../../../service/url-params';
+import { urlParamsFrom } from '../../sc-player/url-params';
 
 type Props = {
   config?: {

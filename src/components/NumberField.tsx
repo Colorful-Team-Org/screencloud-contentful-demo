@@ -1,17 +1,15 @@
-import TextField from '@mui/material/TextField';
-type Props = {
-  label?: string;
+import TextField, { TextFieldProps } from '@mui/material/TextField';
+type Props = Omit<TextFieldProps, 'onBlur'> & {
   defaultValue?: number;
-  disabled?: boolean;
   min?: number;
   max?: number;
   onBlur?: (value: number) => any;
 };
 export default function NumberField(props: Props) {
-  const { min, max, onBlur, ...rest } = props;
+  const { min, max, onBlur, ...textfieldProps } = props;
   return (
     <TextField
-      {...rest}
+      {...textfieldProps}
       type="number"
       inputProps={{
         min: String(props.min),

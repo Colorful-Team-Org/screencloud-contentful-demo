@@ -2,7 +2,7 @@ import { DEFAULT_ITEM_DELAY_SECONDS } from '@screencloud/alfie-alpha';
 import React, { useMemo, useState } from 'react';
 import useTimeout from '../../hooks/useTimeout';
 import { useContentfulData } from '../../providers/ContentfulDataProvider';
-import { useScreenCloudPlayer } from '../../providers/ScreenCloudPlayerProvider';
+import { useScreenCloudPlayer } from '../../features/sc-player/ScreenCloudPlayerProvider';
 import { BlogPostLayout } from '../Layouts/BlogPostLayout/BlogPostLayout';
 import { HeroLayout } from '../Layouts/HeroLayout/HeroLayout';
 import { ProductLayout } from '../Layouts/ProductLayout/ProductLayout';

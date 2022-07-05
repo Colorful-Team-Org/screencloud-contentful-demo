@@ -2,11 +2,19 @@ import { connectScreenCloud } from '@screencloud/apps-sdk';
 import { Theme } from '@screencloud/apps-sdk/lib/types';
 import React, { PropsWithChildren, useContext, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { AppConfig } from '../app-types';
-import { config as devConfig } from '../config.development';
-import { configFromUrlParams } from '../service/url-params';
-import { parseSearch } from '../utils/url-utils';
+import { AppConfig } from '../../app-types';
+import { config as devConfig } from '../../config.development';
+import { configFromUrlParams } from './url-params';
 
+export type PlayerConfig = {
+  spaceId: string;
+  apiKey: string;
+  contentFeed: string;
+  locale?: string;
+  preview?: boolean;
+  fetchInterval?: number;
+  slideDuration?: number;
+};
 export interface ScreenCloudPlayer {
   appStarted: boolean;
   config?: AppConfig;
@@ -18,7 +26,7 @@ const initialState = { appStarted: false, config: undefined };
 export const ScreenCloudPlayerContext = React.createContext<ScreenCloudPlayer>(initialState);
 
 type ScreenCloudState = {
-  config?: AppConfig;
+  config?: PlayerConfig;
   theme?: Theme;
   appStarted: boolean;
 };
@@ -35,9 +43,17 @@ export function ScreenCloudPlayerProvider(props: PropsWithChildren<any>) {
       appConfig = configFromUrlParams(searchParams, appConfig);
 
       const sc = await connectScreenCloud<AppConfig>(appConfig ? { config: appConfig } : undefined);
+
+      appConfig = sc.getConfig();
+      const config: PlayerConfig = {
+        ...appConfig,
+        apiKey:
+          appConfig.preview && appConfig.previewApiKey ? appConfig.previewApiKey : appConfig.apiKey,
+      };
+
       setState(state => ({
         ...state,
-        config: sc.getConfig(),
+        config,
         theme: sc.getContext().theme,
       }));
       await sc.onAppStarted();

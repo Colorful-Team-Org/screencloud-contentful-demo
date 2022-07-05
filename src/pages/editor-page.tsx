@@ -2,10 +2,10 @@ import { Box, Container, CssBaseline, ThemeProvider } from '@mui/material';
 import { useState } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { AppConfig } from '../app-types';
-import EditorForm from '../features/editor/components/EditorForm';
-import PreviewFrame from '../features/editor/components/PreviewFrame';
-import { scMuiTheme } from '../features/editor/screencloud-mui-theme';
-import { ScreenCloudEditorProvider } from '../providers/ScreenCloudEditorProvider';
+import EditorForm from '../features/sc-editor/components/EditorForm';
+import PreviewFrame from '../features/sc-editor/components/PreviewFrame';
+import { scMuiTheme } from '../features/sc-editor/screencloud-mui-theme';
+import { ScreenCloudEditorProvider } from '../features/sc-editor/ScreenCloudEditorProvider';
 
 const queryClient = new QueryClient();
 
@@ -19,10 +19,12 @@ export default function EditorPage() {
         <ScreenCloudEditorProvider>
           <QueryClientProvider client={queryClient}>
             <Box display="flex" height={'100%'}>
-              <Container sx={{ flexBasis: 300, overflow: 'hidden' }}>
+              <Container sx={{ flexBasis: '50%' }}>
                 <EditorForm onChange={setConfig} />
               </Container>
-              <PreviewFrame config={config} />
+              <Box sx={{ flexBasis: '50%', overflow: 'hidden' }}>
+                <PreviewFrame config={config} />
+              </Box>
             </Box>
           </QueryClientProvider>
         </ScreenCloudEditorProvider>
