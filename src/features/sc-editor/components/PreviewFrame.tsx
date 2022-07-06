@@ -22,11 +22,23 @@ const PreviewFrameRoot = styled('div')({
   overflow: 'hidden',
 });
 
+const IFrameContainer = styled('div')({
+  width: `calc(100% - ${previewPadding * 2}px)`,
+  aspectRatio: `${previewSize[0]} / ${previewSize[1]}`,
+  margin: previewPadding,
+  overflow: 'hidden',
+  border: `solid 6px black`,
+  borderRadius: 3,
+  boxShadow: `rgba(0, 0, 0, 0.4) 0px 90px 100px -80px`,
+});
+
 const IFrame = styled('iframe')({
   width: previewSize[0],
   height: previewSize[1],
+  border: 'none',
+  padding: 0,
+  margin: 0,
   transformOrigin: '0 0',
-  border: `solid 8px black`,
 });
 
 const Empty = styled('div')({
@@ -48,8 +60,8 @@ export default function PreviewFrame(props: Props) {
     const onResize = debounce(() => {
       const rect = rootref.current?.getBoundingClientRect();
       if (!rect) return;
-      setIFrameScale(rect.width / (previewSize[0] + previewPadding * 2));
-    }, 1000);
+      setIFrameScale(rect.width / (previewSize[0] + previewPadding));
+    }, 250);
 
     onResize();
     onResize.flush();
@@ -64,15 +76,17 @@ export default function PreviewFrame(props: Props) {
   const src = useMemo(() => (config ? `/?${urlParamsFrom(config)}` : undefined), [config]);
 
   return (
-    <PreviewFrameRoot ref={rootref}>
+    <PreviewFrameRoot>
       {!!config?.spaceId && !!config.apiKey && !!config.contentFeed ? (
-        <IFrame
-          style={{
-            transform: `scale(${iFrameScale}) translate(${previewPadding}px, ${previewPadding}px)`,
-          }}
-          title="Preview"
-          src={src}
-        />
+        <IFrameContainer ref={rootref}>
+          <IFrame
+            style={{
+              transform: `scale(${iFrameScale})`,
+            }}
+            title="Preview"
+            src={src}
+          />
+        </IFrameContainer>
       ) : (
         <Empty>
           <Typography variant="h5" color="grey.500">
