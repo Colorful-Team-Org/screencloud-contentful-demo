@@ -1,6 +1,5 @@
-import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import { styled, useTheme } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import { useState } from 'react';
 import { AppConfig } from '../../../app-types';
 import EditorForm from './EditorForm';
@@ -23,15 +22,14 @@ const PreviewContainer = styled(Grid)(({ theme }) => ({
   }
 }));
 
-export default function ScEditor() {
+export default function Editor() {
   const [config, setConfig] = useState<AppConfig>();
-  console.log('background', useTheme().palette.background);
   return (
     <Grid container sx={{ height: `100%`}}>
-      <EditorContainer sm={12} md={6} lg={4}>
+      <EditorContainer item sm={12} md={6} lg={4}>
         <EditorForm onChange={setConfig} />
       </EditorContainer>
-      <PreviewContainer sm={12} md={6} lg={8}>
+      <PreviewContainer item sm={12} md={6} lg={8}>
         <PreviewFrame config={config} />
       </PreviewContainer>
     </Grid>

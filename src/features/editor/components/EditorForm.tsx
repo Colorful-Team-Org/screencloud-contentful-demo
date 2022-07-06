@@ -39,6 +39,7 @@ const FormContainer = styled(Grid)(({ theme }) => ({
 }));
 
 export default function EditorForm(props: Props) {
+  const { onChange } = props;
   const sc = useScreenCloudEditor();
   const [config, setConfig] = useState<Partial<AppConfig>>({
     spaceId: '',
@@ -80,7 +81,7 @@ export default function EditorForm(props: Props) {
 
   const onEnvChange = (ev: FormEvent) => {
     const target = ev.target as HTMLInputElement;
-    console.log('onEnvChange', target.name, target.checked);
+    // console.log('onEnvChange', target.name, target.checked);
     const newState = {
       ...config,
       [target.name]: target.type === 'checkbox' ? !!target.checked : target.value || undefined,
@@ -89,26 +90,28 @@ export default function EditorForm(props: Props) {
     sc.emitConfigUpdateAvailable?.();
   };
 
-  // useEffect(() => {
-  //   if (config.spaceId && config.apiKey && config.contentFeed) {
-  //     props.onChange?.(config as any);
-  //   }
-  // }, [config, props]);
-
   /** dispatch config changes */
   useEffect(() => {
     if (!config) return;
-    if (props.onChange) {
-      if (!config.apiKey || !config.contentFeed || !config.spaceId) {
-        props.onChange(undefined);
+    const newConfig: Partial<AppConfig> = {
+      ...config,
+      locale: config.locale?.trim(), // `default` locale is represented as ` ` in the form. By triming we set it to falsy.
+    };
+    if (onChange) {
+      if (!newConfig.apiKey || !newConfig.contentFeed || !newConfig.spaceId) {
+        onChange(undefined);
       } else {
-        props.onChange(config as any);
+        onChange(newConfig as any);
       }
     }
     sc.emitConfigUpdateAvailable?.();
 
-    sc.onRequestConfigUpdate?.(() => Promise.resolve({ config }));
-  }, [config, props, sc]);
+    sc.onRequestConfigUpdate?.(() =>
+      Promise.resolve({
+        config: newConfig,
+      })
+    );
+  }, [config, onChange, sc]);
 
   const contentConfigEnabled = !!contentFeeds.length;
 
@@ -190,14 +193,14 @@ export default function EditorForm(props: Props) {
               id="locale"
               name="locale"
               fullWidth
-              value={config.locale || ''}
+              value={config.locale || ' '}
               disabled={!contentConfigEnabled || !localesQuery.data?.length}
               onChange={onEnvChange}
               // onChange={onContentFeedChange}
             >
               {!!localesQuery.data ? (
                 [
-                  <MenuItem key="default" value="">
+                  <MenuItem key="default" value=" ">
                     Default
                   </MenuItem>,
                   localesQuery.data.map(locale => (
@@ -207,7 +210,7 @@ export default function EditorForm(props: Props) {
                   )),
                 ]
               ) : (
-                <MenuItem value="" />
+                <MenuItem value=" ">Default</MenuItem>
               )}
             </TextField>
           </Grid>

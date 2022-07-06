@@ -60,7 +60,6 @@ export default function PreviewFrame(props: Props) {
   useLayoutEffect(() => {
     const onResize = debounce(() => {
       const rect = rootref.current?.getBoundingClientRect();
-      console.log('rect', rect);
       if (!rect) return;
       setIFrameScale(rect.width / (previewSize[0] + (previewPadding >> 1)));
     }, 250);
@@ -75,15 +74,13 @@ export default function PreviewFrame(props: Props) {
     };
   }, [config]); // need `config` as a dependency because `rootRef.current` depends on it.
 
-  console.log('rootref', rootref.current, config);
-
   const src = useMemo(() => (config ? `/?${urlParamsFrom(config)}` : undefined), [config]);
 
   return (
     <PreviewFrameRoot>
       <IFrameContainer ref={rootref}>
         {!!config?.spaceId && !!config.apiKey && !!config.contentFeed ? (
-        // {false ? (
+          // {false ? (
           <IFrame
             style={{
               transform: `scale(${iFrameScale})`,
