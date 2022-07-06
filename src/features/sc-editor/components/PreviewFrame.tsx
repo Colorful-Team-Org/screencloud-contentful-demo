@@ -12,7 +12,7 @@ type Props = {
 };
 
 const previewSize = [1920, 1080];
-const previewPadding = 16;
+const previewPadding = 40;
 
 const PreviewFrameRoot = styled('div')({
   width: '100%',
@@ -29,7 +29,7 @@ const IFrameContainer = styled('div')({
   overflow: 'hidden',
   border: `solid 6px black`,
   borderRadius: 3,
-  boxShadow: `rgba(0, 0, 0, 0.4) 0px 90px 100px -80px`,
+  boxShadow: `rgba(0, 0, 0, 0.4) 0px 90px 80px -80px`,
 });
 
 const IFrame = styled('iframe')({
@@ -60,7 +60,7 @@ export default function PreviewFrame(props: Props) {
     const onResize = debounce(() => {
       const rect = rootref.current?.getBoundingClientRect();
       if (!rect) return;
-      setIFrameScale(rect.width / (previewSize[0] + previewPadding));
+      setIFrameScale(rect.width / (previewSize[0] + (previewPadding >> 1)));
     }, 250);
 
     onResize();

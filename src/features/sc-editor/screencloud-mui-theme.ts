@@ -1,7 +1,11 @@
-import { createTheme } from '@mui/material/styles';
+import { createTheme, ThemeOptions } from '@mui/material/styles';
 
 const baseTheme = createTheme({
   palette: {
+    background: {
+      default: '#f8f8f8',
+      paper: '#fff',
+    },
     primary: {
       main: '#F7D146',
     },
@@ -11,7 +15,7 @@ const baseTheme = createTheme({
   },
 });
 
-const textFieldComponent = createTheme({
+const textFieldComponent: ThemeOptions = {
   components: {
     MuiOutlinedInput: {
       styleOverrides: {
@@ -27,9 +31,9 @@ const textFieldComponent = createTheme({
       },
     },
   },
-});
+};
 
-const switchComponent = createTheme({
+const switchComponent: ThemeOptions = {
   components: {
     MuiSwitch: {
       styleOverrides: {
@@ -78,6 +82,6 @@ const switchComponent = createTheme({
       },
     },
   },
-});
+};
 
 export const scMuiTheme = createTheme(baseTheme, textFieldComponent, switchComponent);
