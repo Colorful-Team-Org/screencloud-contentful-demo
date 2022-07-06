@@ -2,6 +2,7 @@ import { styled, Typography } from '@mui/material';
 import { debounce } from 'lodash';
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { urlParamsFrom } from '../../sc-player/url-params';
+import { ReactComponent as EmptySvg } from '../assets/empty-app-config.svg';
 
 type Props = {
   config?: {
@@ -80,8 +81,9 @@ export default function PreviewFrame(props: Props) {
 
   return (
     <PreviewFrameRoot>
-      {!!config?.spaceId && !!config.apiKey && !!config.contentFeed ? (
-        <IFrameContainer ref={rootref}>
+      <IFrameContainer ref={rootref}>
+        {!!config?.spaceId && !!config.apiKey && !!config.contentFeed ? (
+        // {false ? (
           <IFrame
             style={{
               transform: `scale(${iFrameScale})`,
@@ -89,17 +91,14 @@ export default function PreviewFrame(props: Props) {
             title="Preview"
             src={src}
           />
-        </IFrameContainer>
-      ) : (
-        <Empty>
-          <Typography variant="h5" color="grey.500">
-            Preview area
-          </Typography>
-          <Typography variant="h6" color="grey.500" mt={2}>
-            Please complete your configuration.
-          </Typography>
-        </Empty>
-      )}
+        ) : (
+          <Empty>
+            <EmptySvg style={{ width: `25%`, marginBottom: 40 }} />
+            <Typography variant="h5">App instance preview</Typography>
+            <Typography>Edit the configuration to preview this app instnace.</Typography>
+          </Empty>
+        )}
+      </IFrameContainer>
     </PreviewFrameRoot>
   );
 }
