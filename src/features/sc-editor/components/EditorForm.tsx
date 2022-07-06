@@ -120,7 +120,9 @@ export default function EditorForm(props: Props) {
       <form noValidate autoComplete="off">
         <FormContainer container gap={0} rowGap={2} alignItems="center">
           <Grid item xs={6}>
-            <FormLabel htmlFor="spaceId">Space ID</FormLabel>
+            <FormLabel htmlFor="spaceId" required>
+              Space ID
+            </FormLabel>
           </Grid>
           <Grid item xs={6}>
             <TextField
@@ -133,7 +135,9 @@ export default function EditorForm(props: Props) {
           </Grid>
 
           <Grid item xs={6}>
-            <FormLabel htmlFor="apiKey">API Key</FormLabel>
+            <FormLabel htmlFor="apiKey" required>
+              API Key
+            </FormLabel>
           </Grid>
           <Grid item xs={6}>
             <TextField
@@ -209,7 +213,9 @@ export default function EditorForm(props: Props) {
           </Grid>
 
           <Grid item xs={6}>
-            <FormLabel htmlFor="contentFeed">Content feed</FormLabel>
+            <FormLabel htmlFor="contentFeed" required>
+              Content feed
+            </FormLabel>
           </Grid>
           <Grid item xs={6}>
             <TextField
@@ -237,7 +243,9 @@ export default function EditorForm(props: Props) {
           </Grid>
 
           <Grid item xs={6}>
-            <FormLabel htmlFor="slideDuration">Slide duration sec.</FormLabel>
+            <FormLabel htmlFor="slideDuration" required>
+              Slide duration sec.
+            </FormLabel>
           </Grid>
           <Grid item xs={6}>
             <NumberField
@@ -256,7 +264,9 @@ export default function EditorForm(props: Props) {
             />
           </Grid>
           <Grid item xs={6}>
-            <FormLabel htmlFor="fetchInterval">Refetch interval sec.</FormLabel>
+            <FormLabel htmlFor="fetchInterval" required>
+              Refetch interval sec.
+            </FormLabel>
           </Grid>
           <Grid item xs={6}>
             <NumberField
