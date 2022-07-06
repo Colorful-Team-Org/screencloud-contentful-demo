@@ -82,8 +82,8 @@ export default function PreviewFrame(props: Props) {
   return (
     <PreviewFrameRoot>
       <IFrameContainer ref={rootref}>
-        {!!config?.spaceId && !!config.apiKey && !!config.contentFeed ? (
-        // {false ? (
+        {/* {!!config?.spaceId && !!config.apiKey && !!config.contentFeed ? ( */}
+        {false ? (
           <IFrame
             style={{
               transform: `scale(${iFrameScale})`,
@@ -94,7 +94,7 @@ export default function PreviewFrame(props: Props) {
         ) : (
           <Empty>
             <EmptySvg style={{ width: `25%`, marginBottom: 40 }} />
-            <Typography variant="h5">App instance preview</Typography>
+            <Typography fontWeight="bold">App instance preview</Typography>
             <Typography>Edit the configuration to preview this app instnace.</Typography>
           </Empty>
         )}

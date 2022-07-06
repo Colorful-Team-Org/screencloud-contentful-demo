@@ -13,7 +13,22 @@ const baseTheme = createTheme({
       main: '#325FE4',
     },
   },
+  typography: {
+    fontFamily: "'Lato', sans-serif",
+  },
 });
+
+const formComponents: ThemeOptions = {
+  components: {
+    MuiFormLabel: {
+      styleOverrides: {
+        root: {
+          color: baseTheme.palette.text.primary,
+        },
+      },
+    },
+  },
+};
 
 const textFieldComponent: ThemeOptions = {
   components: {
@@ -84,4 +99,9 @@ const switchComponent: ThemeOptions = {
   },
 };
 
-export const scMuiTheme = createTheme(baseTheme, textFieldComponent, switchComponent);
+export const scMuiTheme = createTheme(
+  baseTheme,
+  formComponents,
+  textFieldComponent,
+  switchComponent
+);
