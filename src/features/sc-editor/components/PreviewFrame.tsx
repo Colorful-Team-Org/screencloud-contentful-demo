@@ -82,8 +82,8 @@ export default function PreviewFrame(props: Props) {
   return (
     <PreviewFrameRoot>
       <IFrameContainer ref={rootref}>
-        {/* {!!config?.spaceId && !!config.apiKey && !!config.contentFeed ? ( */}
-        {false ? (
+        {!!config?.spaceId && !!config.apiKey && !!config.contentFeed ? (
+        // {false ? (
           <IFrame
             style={{
               transform: `scale(${iFrameScale})`,
