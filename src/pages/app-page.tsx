@@ -1,7 +1,6 @@
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { createWebStoragePersistor } from 'react-query/createWebStoragePersistor-experimental';
 import { persistQueryClient } from 'react-query/persistQueryClient-experimental';
-import App from '../containers/AppContainer/AppContainer';
 import { ContentfulDataProvider } from '../providers/ContentfulDataProvider';
 import {
   ScreenCloudPlayerContext,
@@ -9,6 +8,7 @@ import {
 } from '../features/sc-player/ScreenCloudPlayerProvider';
 import { ContentfulApiContext } from '../service/contentful-api/contentful-api-ctx';
 import styles from './app-page.module.css';
+import App from '../components/AppContainer';
 
 const queryClient = new QueryClient({
   defaultOptions: {
