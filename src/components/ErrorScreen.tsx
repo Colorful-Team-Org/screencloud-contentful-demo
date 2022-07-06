@@ -34,11 +34,9 @@ export const ErrorScreen = () => {
         textAlign="center"
         width="100%"
       >
-        ⛔️ Unfortunately your content could not be loaded.
+        Your content cannot be loaded.
         <br />
-        Please check your internet connection
-        <br />
-        and/or your app configuration.
+        Check your internet connection and/or app configuration.
       </Text>
     </div>
   );
