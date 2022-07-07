@@ -5,12 +5,12 @@ import {
   Progress,
   Text,
   TextSizes,
-  theme,
+  theme
 } from '@screencloud/alfie-alpha';
 import { FunctionComponent, ReactElement } from 'react';
+import { RichText } from '../../../components/RichText/rich-text';
 import { ContentfulQuoteItem } from '../../../providers/ContentfulDataProvider';
-import { RichText } from '../../RichText/rich-text';
-import { ReactComponent as QuoteSvg } from './assets/quote.svg';
+import { ReactComponent as QuoteSvg } from '../assets/quote.svg';
 import { QuoteAuthor } from './QuoteAuthor';
 import style from './quotes.module.css';
 

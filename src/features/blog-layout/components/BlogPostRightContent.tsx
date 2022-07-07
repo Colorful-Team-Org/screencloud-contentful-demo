@@ -16,7 +16,7 @@ import format from 'date-fns/format';
 import React, { FunctionComponent, useEffect, useMemo, useState } from 'react';
 import { customColors } from '../../../custom-theme';
 import { ContentfulBlogItem } from '../../../providers/ContentfulDataProvider';
-import { RichText } from '../../RichText/rich-text';
+import { RichText } from '../../../components/RichText/rich-text';
 
 interface Props {
   itemDurationSeconds: number;

@@ -60,7 +60,7 @@ export function mapContent(
 }
 
 /**
- * @returns Generates a GraphQL queryString which can be used to call the
+ * @returns A GraphQL queryString which can be used to call the api
  */
 export function queryStringFromMappingConfig(config: ContentMappingConfig, ids?: string[]) {
   const { contentType, mapping } = config;
@@ -89,8 +89,7 @@ export function queryStringFromMappingConfig(config: ContentMappingConfig, ids?:
       }
 
       /** if parent has a type we wrap our field with an inline fragment: */
-      const item = i < arr.length - 1 ? arr[i + 1]?.split(`:`) : [];
-      const prevType = item[1];
+      const prevType = arr[i + 1]?.split(`:`)[1];
       if (prevType) {
         const prevTypes = prevType.split(`|`);
         str = prevTypes.map(p => `...on ${capitalize(p)} { ${str} }`).join(` `);
@@ -232,7 +231,7 @@ export function useMappedData(
   return { items, queryResponse: query };
 }
 
-// Utitliy functions:
+// Utility functions:
 
 function mapLink(baseUrl?: string, slug?: string) {
   if (!baseUrl) {

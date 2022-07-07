@@ -1,12 +1,12 @@
 import { DEFAULT_ITEM_DELAY_SECONDS } from '@screencloud/alfie-alpha';
 import React, { useMemo, useState } from 'react';
+import { BlogPostLayout } from '../../features/blog-layout/components/BlogPostLayout';
+import { HeroLayout } from '../../features/hero-layout/components/HeroLayout';
+import { ProductLayout } from '../../features/product-layout/components/ProductLayout';
+import { QuoteLayout } from '../../features/quote-layout/components/QuoteLayout';
+import { useScreenCloudPlayer } from '../../features/sc-player/ScreenCloudPlayerProvider';
 import useTimeout from '../../hooks/useTimeout';
 import { useContentfulData } from '../../providers/ContentfulDataProvider';
-import { useScreenCloudPlayer } from '../../features/sc-player/ScreenCloudPlayerProvider';
-import { BlogPostLayout } from '../Layouts/BlogPostLayout/BlogPostLayout';
-import { HeroLayout } from '../Layouts/HeroLayout/HeroLayout';
-import { ProductLayout } from '../Layouts/ProductLayout/ProductLayout';
-import { QuoteLayout } from '../Layouts/QuoteLayout/QuoteLayout';
 
 const ITEM_DELAY_SECONDS = DEFAULT_ITEM_DELAY_SECONDS;
 // const ITEM_DELAY_SECONDS = 60 * 60 * 24;

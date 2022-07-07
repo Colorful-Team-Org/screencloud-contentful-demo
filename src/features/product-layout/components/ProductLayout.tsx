@@ -1,5 +1,5 @@
-import { Box, Flex, FullScreenImage, SplitLayoutContainer, theme } from '@screencloud/alfie-alpha';
-import React, { FunctionComponent, ReactElement } from 'react';
+import { FullScreenImage, SplitLayoutContainer, theme } from '@screencloud/alfie-alpha';
+import { FunctionComponent, ReactElement } from 'react';
 import { ContentfulProductItem } from '../../../providers/ContentfulDataProvider';
 import { ProductRightContent } from './ProductRightContent';
 
