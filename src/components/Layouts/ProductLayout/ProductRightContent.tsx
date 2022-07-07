@@ -140,12 +140,12 @@ export const ProductRightContent: FunctionComponent<Props> = (
               </Text>
               {item.comparePrice && item.comparePrice !== item.price && (
                 <Text
-                  // type={TextSizes.H4}
+                  type={TextSizes.H3}
                   wordBreak="break-word"
                   fontFamily={theme.fonts.normal}
                   fontWeight={theme.fontWeights.bold}
                   color="#999"
-                  style={{ marginLeft: 25 }}
+                  style={{ marginLeft: 25, textDecoration: 'line-through' }}
                 >
                   {item.comparePrice} €
                 </Text>

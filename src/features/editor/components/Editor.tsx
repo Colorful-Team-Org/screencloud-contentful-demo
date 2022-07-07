@@ -10,7 +10,7 @@ const EditorContainer = styled(Grid)(({ theme }) => ({
   borderRight: `solid 1px ${theme.palette.grey[300]}`,
   [theme.breakpoints.up('md')]: {
     height: `100%`,
-  }
+  },
 }));
 
 const PreviewContainer = styled(Grid)(({ theme }) => ({
@@ -19,13 +19,13 @@ const PreviewContainer = styled(Grid)(({ theme }) => ({
   paddingTop: theme.spacing(4),
   [theme.breakpoints.up('md')]: {
     height: `100%`,
-  }
+  },
 }));
 
 export default function Editor() {
   const [config, setConfig] = useState<AppConfig>();
   return (
-    <Grid container sx={{ height: `100%`}}>
+    <Grid container sx={{ height: `100%` }}>
       <EditorContainer item sm={12} md={6} lg={4}>
         <EditorForm onChange={setConfig} />
       </EditorContainer>
