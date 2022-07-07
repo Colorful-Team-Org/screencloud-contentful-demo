@@ -1,8 +1,8 @@
 import React, { FunctionComponent } from 'react';
 import { theme, SplitLayoutContainer, FullScreenImage } from '@screencloud/alfie-alpha';
 import { BlogPostRightContent } from './BlogPostRightContent';
-import { ContentfulBlogItem } from '../../../providers/ContentfulDataProvider';
 import FullGrey from '../../../components/styling/FullGrey';
+import { ContentfulBlogItem } from '../blog-layout-types';
 
 interface Props {
   itemDurationSeconds: number;

@@ -1,6 +1,6 @@
 import { FullScreenImage, SplitLayoutContainer, theme } from '@screencloud/alfie-alpha';
 import { FunctionComponent, ReactElement } from 'react';
-import { ContentfulProductItem } from '../../../providers/ContentfulDataProvider';
+import { ContentfulProductItem } from '../product-layout-types';
 import { ProductRightContent } from './ProductRightContent';
 
 interface Props {

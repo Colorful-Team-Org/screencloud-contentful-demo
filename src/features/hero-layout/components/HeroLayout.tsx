@@ -1,7 +1,7 @@
-import React, { ReactElement, FunctionComponent } from 'react';
-import { theme, SplitLayoutContainer, FullScreenImage } from '@screencloud/alfie-alpha';
+import { FullScreenImage, SplitLayoutContainer, theme } from '@screencloud/alfie-alpha';
+import { FunctionComponent, ReactElement } from 'react';
+import { ContentfulHeroItem } from '../hero-layout-types';
 import { HeroRightContent } from './HeroRightContent';
-import { ContentfulHeroItem } from '../../../providers/ContentfulDataProvider';
 
 interface Props {
   itemDurationSeconds: number;

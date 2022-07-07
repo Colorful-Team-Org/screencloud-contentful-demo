@@ -1,58 +1,31 @@
-import * as types from '@contentful/rich-text-types';
 import React, { FunctionComponent, useContext, useMemo } from 'react';
+import { BLOG_TEMPLATE_NAME, ContentfulBlogItem } from '../features/blog-layout/blog-layout-types';
+import { ContentfulHeroItem, HERO_TEMPLATE_NAME } from '../features/hero-layout/hero-layout-types';
 import {
-  ImageAsset,
+  ContentfulProductItem,
+  PRODUCT_TEMPLATE_NAME,
+} from '../features/product-layout/product-layout-types';
+import {
+  ContentfulQuoteItem,
+  QUOTE_TEMPLATE_NAME,
+} from '../features/quote-layout/quote-layout-types';
+import {
   useContentFeedQuery,
   useMappedData,
 } from '../service/schema-connector/content-mapping-service';
 
-type TemplateName = 'blog' | 'quotes' | 'products' | 'heroes';
+type TemplateName =
+  | typeof BLOG_TEMPLATE_NAME
+  | typeof QUOTE_TEMPLATE_NAME
+  | typeof PRODUCT_TEMPLATE_NAME
+  | typeof HERO_TEMPLATE_NAME;
 
-type ContentfulItem = {
+export type ContentfulItem = {
   sys: {
     id: string;
     publishedAt: string;
   };
 };
-
-export interface ContentfulBlogItem extends ContentfulItem {
-  title: string;
-  link: string;
-  description?: { json: types.Document };
-  category?: string;
-  author: string;
-  image?: ImageAsset;
-  pubDate?: string;
-}
-
-export interface ContentfulQuoteItem extends ContentfulItem {
-  image?: ImageAsset;
-  text: { json: types.Document };
-  author: string;
-  authorImage: ImageAsset;
-  authorLocation?: string;
-  imageLeftAligned?: boolean;
-  quoteCentered?: boolean;
-}
-export interface ContentfulProductItem extends ContentfulItem {
-  id: string;
-  brand: string;
-  price: number;
-  comparePrice: number;
-  type: string;
-  description?: string | { json: types.Document };
-  image?: ImageAsset;
-  name: string;
-  link?: string;
-}
-
-export interface ContentfulHeroItem extends ContentfulItem {
-  headline: string;
-  image?: ImageAsset;
-  paragraph?: { json: types.Document };
-  link?: string;
-  color: string;
-}
 
 export type TemplateData<TN extends TemplateName, D> = {
   templateName?: TN;

@@ -1,7 +1,7 @@
-import React, { ReactElement, FunctionComponent, useMemo } from 'react';
-import { theme, SplitLayoutContainer, FullScreenImage } from '@screencloud/alfie-alpha';
+import { FullScreenImage, SplitLayoutContainer, theme } from '@screencloud/alfie-alpha';
+import { FunctionComponent, ReactElement, useMemo } from 'react';
+import { ContentfulQuoteItem } from '../quote-layout-types';
 import { QuoteRightContent } from './QuoteRightContent';
-import { ContentfulQuoteItem } from '../../../providers/ContentfulDataProvider';
 
 interface Props {
   itemDurationSeconds: number;

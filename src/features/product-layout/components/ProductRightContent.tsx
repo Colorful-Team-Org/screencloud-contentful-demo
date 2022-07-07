@@ -1,15 +1,16 @@
 import {
   Box,
   ContentWrapper,
-  Flex, Progress,
+  Flex,
+  Progress,
   QRCode,
   Text,
   TextSizes,
-  theme
+  theme,
 } from '@screencloud/alfie-alpha';
 import { FunctionComponent, ReactElement, useEffect, useMemo, useState } from 'react';
 import { RichText } from '../../../components/RichText/rich-text';
-import { ContentfulProductItem } from '../../../providers/ContentfulDataProvider';
+import { ContentfulProductItem } from '../product-layout-types';
 
 interface Props {
   itemDurationSeconds: number;

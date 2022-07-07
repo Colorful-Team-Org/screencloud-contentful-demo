@@ -6,17 +6,17 @@ import {
   QRCode,
   Text,
   TextSizes,
-  theme,
+  theme
 } from '@screencloud/alfie-alpha';
 import differenceInDays from 'date-fns/differenceInDays';
 import differenceInHours from 'date-fns/differenceInHours';
 import differenceInMinutes from 'date-fns/differenceInMinutes';
 import differenceInSeconds from 'date-fns/differenceInSeconds';
 import format from 'date-fns/format';
-import React, { FunctionComponent, useEffect, useMemo, useState } from 'react';
-import { customColors } from '../../../custom-theme';
-import { ContentfulBlogItem } from '../../../providers/ContentfulDataProvider';
+import { FunctionComponent, useEffect, useMemo, useState } from 'react';
 import { RichText } from '../../../components/RichText/rich-text';
+import { customColors } from '../../../custom-theme';
+import { ContentfulBlogItem } from '../blog-layout-types';
 
 interface Props {
   itemDurationSeconds: number;

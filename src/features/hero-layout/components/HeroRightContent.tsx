@@ -7,10 +7,10 @@ import {
   QRCode,
   Text,
   TextSizes,
-  theme,
+  theme
 } from '@screencloud/alfie-alpha';
 import { FunctionComponent, ReactElement, useEffect, useMemo, useState } from 'react';
-import { ContentfulHeroItem } from '../../../providers/ContentfulDataProvider';
+import { ContentfulHeroItem } from '../hero-layout-types';
 
 interface Props {
   itemDurationSeconds: number;
