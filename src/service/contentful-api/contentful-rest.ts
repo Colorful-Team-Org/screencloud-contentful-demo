@@ -1,9 +1,9 @@
-import { useContext } from 'react';
-import { QueryClient, QueryOptions, useQueries, useQuery } from 'react-query';
-import { ContentfulApiContext } from './contentful-api-ctx';
+import { QueryClient, useQuery } from 'react-query';
+import { ContentType, ContentTypeCollection, createClient  } from 'contentful'
 
 const BASE_PATH = `https://cdn.contentful.com`;
 const PREVIEW_BASE_PATH = `https://preview.contentful.com`;
+
 
 export const getSpaceUrl = (space: string, preview = false): string =>
   `${preview === true ? PREVIEW_BASE_PATH : BASE_PATH}/spaces/${space}`;
@@ -30,8 +30,17 @@ const queryClient = new QueryClient({
   },
 });
 
-const getLocalesUrl = (space: string, token: string, env = 'master', preview = false) => {
-  const url = `${getSpaceUrl(space, preview)}/environments/${env}/locales?access_token=${token}`;
+const getEndpoint = (
+  resource: string,
+  space: string,
+  token: string,
+  env = 'master',
+  preview = false
+) => {
+  const url = `${getSpaceUrl(
+    space,
+    preview
+  )}/environments/${env}/${resource}?access_token=${token}`;
   return url;
 };
 
@@ -55,7 +64,7 @@ export const getLocalesQueryOptions = (
   env = 'master',
   preview = false
 ) => {
-  const url = getLocalesUrl(space, token, env, preview);
+  const url = getEndpoint(`locales`, space, token, env, preview);
   return {
     queryKey: url,
     queryFn: () => getLocales(url),
@@ -69,7 +78,7 @@ export const ensureLocale = async (
   env?: string,
   preview = false
 ) => {
-  const url = getLocalesUrl(space, token, env, preview);
+  const url = getEndpoint(`locales`, space, token, env, preview);
   const remoteLocales = await getLocales(url);
   if (!requestedLocale) {
     return remoteLocales.find(r => r.default)?.code || 'en-US';
@@ -84,11 +93,22 @@ export const ensureLocale = async (
   return selectedLocale;
 };
 
-export function useLocales(space?: string, apiKey?: string, preview = false) {
+export function useLocalesQuery(space?: string, apiKey?: string, preview = false) {
   return useQuery({
     ...getLocalesQueryOptions(space!, apiKey!, undefined, preview),
     enabled: !!space && !!apiKey,
     refetchOnWindowFocus: false,
     retry: false,
   });
+}
+
+export function useContentTypesQuery(space: string = '', apiKey: string = '', preview = false) {
+  const url = getEndpoint(`content_types`, space, apiKey);
+  return useQuery(
+    url,
+    () => {
+      return fetch(url).then(response => response.json() as Promise<ContentTypeCollection>);
+    },
+    { enabled: !!space && !!apiKey }
+  );
 }

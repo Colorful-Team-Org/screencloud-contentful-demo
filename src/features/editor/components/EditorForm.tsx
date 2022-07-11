@@ -5,13 +5,12 @@ import MenuItem from '@mui/material/MenuItem';
 import { styled } from '@mui/material/styles';
 import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
-import { FormEvent, useEffect, useMemo, useState } from 'react';
-import { useQuery } from 'react-query';
+import { FormEvent, useEffect, useState } from 'react';
 import { AppConfig } from '../../../app-types';
 import NumberField from '../../../components/ui/NumberField';
 import SpinnerBox from '../../../components/ui/SpinnerBox';
-import { gqlRequest } from '../../../service/contentful-api/contentful-graphql-service';
-import { useLocales } from '../../../service/contentful-api/contentful-rest';
+import { useLocalesQuery } from '../../../service/contentful-api/contentful-rest';
+import { useContentFeedQuery as useContentFeedsData } from '../editor-service';
 import { useScreenCloudEditor } from '../ScreenCloudEditorProvider';
 
 type Props = {
@@ -54,30 +53,12 @@ export default function EditorForm(props: Props) {
   const { spaceId, apiKey, previewApiKey, contentFeed, preview } = config;
 
   /** Contentfeeds loaded from cf after env config is set. */
-  const feedsQuery = useQuery(
-    ['contentfeeds', spaceId, apiKey, preview],
-    () =>
-      gqlRequest<any>(
-        spaceId!,
-        apiKey!,
-        `{ contentFeedCollection(preview: ${String(!!preview)}) { items { name sys { id } } } }`
-      ),
-    { enabled: !!spaceId && !!apiKey, retry: false }
-  );
+  const contentFeedsQuery = useContentFeedsData(config.spaceId!, config.apiKey!, config.preview);
+  const contentFeeds = contentFeedsQuery.data || [];
+  // console.log('contentFeeds', contentFeeds);
 
-  const contentFeeds: { id: string; name: string }[] = useMemo(() => {
-    if (feedsQuery.isError) {
-      return [];
-    }
-    return (
-      feedsQuery.data?.contentFeedCollection.items.map((item: any) => ({
-        name: item.name,
-        id: item.sys.id,
-      })) || []
-    );
-  }, [feedsQuery.data, feedsQuery.isError]);
+  const localesQuery = useLocalesQuery(config.spaceId, config.apiKey, config.preview);
 
-  const localesQuery = useLocales(config.spaceId, config.apiKey, config.preview);
 
   const onEnvChange = (ev: FormEvent) => {
     const target = ev.target as HTMLInputElement;
@@ -287,7 +268,7 @@ export default function EditorForm(props: Props) {
               }
             />
           </Grid>
-          {feedsQuery.isLoading && <SpinnerBox />}
+          {contentFeedsQuery.isLoading && <SpinnerBox />}
         </FormContainer>
       </form>
     </>

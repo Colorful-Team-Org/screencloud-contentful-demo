@@ -2,9 +2,10 @@ export type AppConfig = {
   spaceId: string;
   apiKey: string;
   previewApiKey?: string;
-  contentFeed: string;
   locale?: string;
   preview?: boolean;
+  contentFeed: string;
+  contentType?: string;
   fetchInterval?: number;
   slideDuration?: number;
 };

@@ -55,7 +55,6 @@ export type ContentMappingConfig = {
 };
 
 export type ContentMappingItem = {
-  id: string;
   config: ContentMappingConfig;
 };
 

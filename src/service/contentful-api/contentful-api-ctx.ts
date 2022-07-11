@@ -9,3 +9,4 @@ export type ContentfulApiConfig = {
 };
 
 export const ContentfulApiContext = createContext<ContentfulApiConfig>({});
+
