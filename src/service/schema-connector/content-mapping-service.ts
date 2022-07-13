@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { ContentfulCollection, useGqlQuery } from '../contentful-api/contentful-graphql-service';
 import {
   ContentFeedGql,
-  ContentMappingCollectionResponse,
+  ContentfeedGqlResponse,
   ContentMappingConfig,
 } from './content-mapping.queries';
 
@@ -66,6 +66,8 @@ export function queryStringFromMappingConfig(config: ContentMappingConfig, ids?:
   const { contentType, mapping } = config;
   const entries = Object.entries(mapping);
 
+  let needsAssetFragment = false;
+
   const itemsQueryString = entries?.reduce((itemsString, entry) => {
     const path = entry[1];
     const segments = path.split('.');
@@ -84,6 +86,7 @@ export function queryStringFromMappingConfig(config: ContentMappingConfig, ids?:
           case 'Asset':
           case 'ImageAsset':
             str = `${fieldName} { ...Asset }`;
+            needsAssetFragment = true;
             break;
         }
       }
@@ -99,8 +102,8 @@ export function queryStringFromMappingConfig(config: ContentMappingConfig, ids?:
       return str;
     }, ``);
 
-    return `${itemsString}${singleItemString} sys { id publishedAt }`;
-  }, ``);
+    return `${itemsString} ${singleItemString}`;
+  }, `sys { id publishedAt }`);
 
   const idsFilter = ids?.length ? ` where: {sys:{id_in:["${ids.join(`","`)}"]}}` : '';
 
@@ -113,7 +116,7 @@ export function queryStringFromMappingConfig(config: ContentMappingConfig, ids?:
     }
   }
   
-  fragment Asset on Asset {
+  ${needsAssetFragment ? `fragment Asset on Asset {
     description
     fileName
     width
@@ -122,7 +125,7 @@ export function queryStringFromMappingConfig(config: ContentMappingConfig, ids?:
     sys { id }
     title
     url
-  }`;
+  }`: ``}`;
   // console.log(`queryString`, queryString);
   return queryString;
 }
@@ -139,7 +142,7 @@ export function useContentFeedQuery(options: {
 }) {
   const { id, skip, refetchInterval } = options;
   const key = `useContentFeedQuery:${id}`;
-  return useGqlQuery<ContentMappingCollectionResponse>(ContentFeedGql, {
+  return useGqlQuery<ContentfeedGqlResponse>(ContentFeedGql, {
     key,
     input: { id },
     skip,

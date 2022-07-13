@@ -1,5 +1,7 @@
 import React, { FunctionComponent, useContext, useMemo } from 'react';
+import { useQuery } from 'react-query';
 import { BLOG_TEMPLATE_NAME, ContentfulBlogItem } from '../features/blog-layout/blog-layout-types';
+import { PlaylistGql, PlaylistGqlResponse } from '../features/editor/editor-service';
 import { ContentfulHeroItem, HERO_TEMPLATE_NAME } from '../features/hero-layout/hero-layout-types';
 import {
   ContentfulProductItem,
@@ -9,10 +11,18 @@ import {
   ContentfulQuoteItem,
   QUOTE_TEMPLATE_NAME,
 } from '../features/quote-layout/quote-layout-types';
+import { ContentfulApiContext } from '../service/contentful-api/contentful-api-ctx';
+import { gqlRequest, GraphQLClientCtx } from '../service/contentful-api/contentful-graphql-service';
+import { fetchContentTypes } from '../service/contentful-api/contentful-rest';
+import { useMappedData } from '../service/schema-connector/content-mapping-service';
 import {
-  useContentFeedQuery,
-  useMappedData,
-} from '../service/schema-connector/content-mapping-service';
+  ContentFeedGql,
+  ContentfeedGqlResponse,
+  ContentMappingConfig,
+} from '../service/schema-connector/content-mapping.queries';
+import { fetchAppDefinition } from '../service/use-app-definition';
+import { filterTruthy } from '../utils/list-utils';
+import { uncapitalize } from '../utils/string-utils';
 
 type TemplateName =
   | typeof BLOG_TEMPLATE_NAME
@@ -48,16 +58,95 @@ export const ContentfulDataContext = React.createContext({
 
 type Props = {
   contentFeedId?: string;
+  appDefinitionName?: string;
   refetchInterval?: number;
 };
 
 export const ContentfulDataProvider: FunctionComponent<Props> = props => {
-  const contentFeedQuery = useContentFeedQuery({
-    skip: !props.contentFeedId,
-    id: props.contentFeedId!,
-    refetchInterval: props.refetchInterval,
-  });
-  const contentFeed = contentFeedQuery.data?.contentFeed;
+  console.log('ContentfulDataProvider', props);
+  const { client: gqlClient } = useContext(GraphQLClientCtx);
+  const { spaceId, apiKey } = useContext(ContentfulApiContext);
+  const [listType, listId] = (props.contentFeedId || '').split(':');
+
+  type QueryParams = {
+    mappingConfig: ContentMappingConfig;
+    filterItems?: { sys: { id: string } }[];
+  };
+  const playlistQuery = useQuery<QueryParams | undefined>(
+    [ContentFeedGql, listType, listId, props.appDefinitionName],
+    async () => {
+      if (!gqlClient) {
+        return undefined;
+      }
+      if (listType === 'feed') {
+        let r: ContentfeedGqlResponse | undefined;
+        r = await gqlClient.request<ContentfeedGqlResponse>(ContentFeedGql, {
+          id: listId,
+        });
+        // TODO handle contentFeed.contentMappingConfig.config === null
+        return {
+          mappingConfig: r.contentFeed.contentMappingConfig.config,
+          filterItems: filterTruthy(r.contentFeed.entriesCollection.items),
+        };
+      }
+      if (listType === 'playlist') {
+        if (!props.appDefinitionName) {
+          return undefined;
+        }
+        const [appDefinitions, contentTypesResponse, playlistResponse] = await Promise.all([
+          fetchAppDefinition().then(r => r.find(d => d.name === props.appDefinitionName)),
+          fetchContentTypes(spaceId, apiKey),
+          gqlClient.request<PlaylistGqlResponse>(PlaylistGql, { id: listId }),
+        ]);
+        // console.log('appDefinitons', appDefinitions);
+        const playlistItems = playlistResponse.screencloudPlaylist.entriesCollection?.items;
+
+        const contentTypeId = uncapitalize(playlistItems[0]?.__typename);
+        if (!contentTypeId) {
+          console.warn('Content feed has no entries');
+          return undefined;
+        }
+
+        const ct = contentTypesResponse.items.find(ct => ct.sys.id === contentTypeId);
+        if (!ct) {
+          console.warn(`Content type ${contentTypeId} does not exists`);
+          return undefined;
+        }
+
+        const mapping: any = {};
+        appDefinitions?.fields.forEach(field => {
+          const ctField = ct.fields.find(ctField => ctField.id === field.name);
+          console.log(`field`, field.name, ctField);
+          if (!ctField) {
+            console.warn(`Content type ${contentTypeId} has no field ${field.name}`);
+            return;
+          }
+          if (ctField.type === 'Link') {
+            if (ctField.linkType === 'Asset') {
+              mapping[field.name] = `${field.name}:Asset`;
+            }
+            return;
+          }
+          mapping[field.name] = `${field.name}:${ctField.type}`;
+        });
+
+        return {
+          mappingConfig: { contentType: contentTypeId, name: contentTypeId, mapping },
+          filterItems: filterTruthy(playlistItems),
+        };
+      }
+      return undefined;
+    },
+    { enabled: !!spaceId && !!apiKey }
+  );
+
+  const mappingConfig = playlistQuery.data?.mappingConfig;
+  const filterItems = useMemo(
+    () => filterTruthy(playlistQuery.data?.filterItems),
+    [playlistQuery.data?.filterItems]
+  );
+  // console.log('mappingConfig', mappingConfig);
+
   // useEffect(() => {
   //   if (contentFeed) {
   //     console.group(`Contentful Content feed`);
@@ -66,8 +155,7 @@ export const ContentfulDataProvider: FunctionComponent<Props> = props => {
   //   }
   // }, [contentFeed])
 
-  const mappingConfig = contentFeed?.contentMappingConfig.config;
-  const itemIds = contentFeed?.entriesCollection.items;
+  // const mappingConfig = contentFeed?.contentMappingConfig.config;
 
   const assetFieldNames = useMemo(() => {
     if (!mappingConfig?.mapping) return [];
@@ -75,15 +163,15 @@ export const ContentfulDataProvider: FunctionComponent<Props> = props => {
   }, [mappingConfig?.mapping]);
 
   const { queryResponse, items = [] } = useMappedData(mappingConfig, {
-    filterItems: itemIds,
+    filterItems,
     refetchInterval: props.refetchInterval,
   });
 
-  const isLoading = contentFeedQuery.isLoading || queryResponse.isLoading;
+  const isLoading = playlistQuery.isLoading || queryResponse.isLoading;
 
-  let error: any =
-    contentFeed === null ? `There is no ContentFeed with id "${props.contentFeedId}"` : undefined;
-  if (!error) error = contentFeedQuery.error || queryResponse.error;
+  let error: any = '';
+  // contentFeed === null ? `There is no ContentFeed with id "${props.contentFeedId}"` : undefined;
+  if (!error) error = playlistQuery.error || queryResponse.error;
 
   const templateName = mappingConfig?.name as TemplateName | undefined;
   const companyLogo = mappingConfig?.constants?.logoUrl;

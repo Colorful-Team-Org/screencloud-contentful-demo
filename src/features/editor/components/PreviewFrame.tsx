@@ -9,6 +9,7 @@ type Props = {
     spaceId: string;
     apiKey: string;
     contentFeed: string;
+    appDefinitionName?: string;
   };
 };
 

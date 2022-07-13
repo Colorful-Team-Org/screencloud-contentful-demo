@@ -5,7 +5,7 @@ export type AppConfig = {
   locale?: string;
   preview?: boolean;
   contentFeed: string;
-  contentType?: string;
+  appDefinitionName?: string;
   fetchInterval?: number;
   slideDuration?: number;
 };

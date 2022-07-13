@@ -1,5 +1,5 @@
-import { request } from 'graphql-request';
-import { useContext } from 'react';
+import { request, GraphQLClient } from 'graphql-request';
+import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
 import { useQuery, UseQueryOptions } from 'react-query';
 import { ContentfulApiContext } from './contentful-api-ctx';
 
@@ -21,7 +21,7 @@ export const getEndpoint = (input: GetEndpointInput): string => {
   return `${url}?access_token=${input.apiKey}`;
 };
 
-type Input = {
+type Input = Record<string, any> & {
   locale?: string;
   env?: string;
 };
@@ -50,26 +50,45 @@ export function useGqlQuery<ReturnType = any>(
   query?: string,
   options?: UseGqlQueryOptions<ReturnType>
 ) {
-  const { spaceId, apiKey, environment, locale, preview } = useContext(ContentfulApiContext);
-  if (!spaceId || !apiKey) {
-    console.warn(`No request can be  executed because there is no spaceId or apiKey provided.`);
+  const { client } = useContext(GraphQLClientCtx);
+  if (!client) {
+    console.warn(`No GraphQL Client available.`);
   }
+  const { locale, preview } = useContext(ContentfulApiContext);
   const { key, input, skip, refetchInterval, isDataEqual } = options || {};
   const queryKey = key || [query, input?.id, input?.preview];
 
   return useQuery(
     queryKey,
     () =>
-      gqlRequest<ReturnType>(spaceId || '', apiKey || '', query || '', {
-        env: environment,
-        preview,
-        locale,
-        ...input,
-      }).then(response => response),
+      client!
+        .request<ReturnType, any>(query!, {
+          preview,
+          locale,
+          ...input,
+        })
+        .then(response => response),
     {
-      enabled: !skip && !!query && !!spaceId && !!apiKey,
+      enabled: !!client && !skip && !!query,
       refetchInterval,
       isDataEqual,
     }
   );
+}
+
+export const GraphQLClientCtx = createContext({
+  client: undefined as GraphQLClient | undefined,
+});
+
+export function GraphQLClientProvider({ children }: PropsWithChildren<any>) {
+  const { spaceId, apiKey, environment } = useContext(ContentfulApiContext);
+
+  const client = useMemo(() => {
+    if (!spaceId || !apiKey) return undefined;
+    return new GraphQLClient(getEndpoint({ spaceId, apiKey, env: environment }), {
+      errorPolicy: 'all',
+    });
+  }, [apiKey, environment, spaceId]);
+
+  return <GraphQLClientCtx.Provider value={{ client }}>{children}</GraphQLClientCtx.Provider>;
 }

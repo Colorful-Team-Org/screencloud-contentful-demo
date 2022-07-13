@@ -1,5 +1,30 @@
 import { gql } from 'graphql-request';
 
+export const ContentFeedsGql = gql`
+  query ($preview: Boolean) {
+    contentFeedCollection(preview: $preview) {
+      items {
+        name
+        sys {
+          id
+        }
+        contentMappingConfig {
+          config
+        }
+      }
+    }
+  }
+`;
+export type ContentFeedsGqlResponse = {
+  contentFeedCollection: {
+    items: {
+      name: string;
+      sys: { id: string };
+    }[];
+    contentMappingConfig: ContentMappingItem;
+  };
+};
+
 export const ContentFeedGql = gql`
   query ContentFeed($id: String!, $preview: Boolean, $locale: String) {
     contentFeed(id: $id, locale: $locale, preview: $preview) {
@@ -7,16 +32,27 @@ export const ContentFeedGql = gql`
         name
         config
       }
-      entriesCollection {
+      entriesCollection(limit: 100) {
         items {
-          sys {
-            id
+          __typename
+          ... on Entry {
+            sys {
+              id
+            }
           }
         }
       }
     }
   }
 `;
+export type ContentfeedGqlResponse = {
+  contentFeed: {
+    contentMappingConfig: ContentMappingItem;
+    entriesCollection: {
+      items: ({ __typename: string; sys: { id: string } } | null)[];
+    };
+  };
+};
 
 export type ContentTypeMapping = {
   contentType: string;
@@ -47,22 +83,14 @@ export type ContentMappingConfig = {
     baseUrl?: string;
     logoUrl?: string;
   };
-  contentfulMetadata: ContentfulMetadata;
+  contentfulMetadata?: ContentfulMetadata;
   contentType: string;
   mapping: Record<string, string>;
   name: string;
-  sys: Sys;
+  sys?: Sys;
 };
 
 export type ContentMappingItem = {
   config: ContentMappingConfig;
-};
-
-export type ContentMappingCollectionResponse = {
-  contentFeed: {
-    contentMappingConfig: ContentMappingItem;
-    entriesCollection: {
-      items: { sys: { id: string } }[];
-    };
-  };
+  name: string;
 };

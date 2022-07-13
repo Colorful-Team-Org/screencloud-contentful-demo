@@ -9,6 +9,7 @@ import {
 import { ContentfulApiContext } from '../service/contentful-api/contentful-api-ctx';
 import styles from './app-page.module.css';
 import App from '../components/AppContainer';
+import { GraphQLClientProvider } from '../service/contentful-api/contentful-graphql-service';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -37,17 +38,20 @@ export default function AppPage() {
                 preview: config?.preview,
               }}
             >
-              <ContentfulDataProvider
-                contentFeedId={config?.contentFeed}
-                refetchInterval={config?.fetchInterval || 10000}
-              >
-                <div className={styles.appPage}>
-                  <App />
-                </div>
-                <div style={{ position: 'fixed', bottom: 10, right: 10, color: '#aaa' }}>
-                  v1.2.0
-                </div>
-              </ContentfulDataProvider>
+              <GraphQLClientProvider>
+                <ContentfulDataProvider
+                  contentFeedId={config?.contentFeed}
+                  appDefinitionName={config?.appDefinitionName}
+                  refetchInterval={config?.fetchInterval || 10000}
+                >
+                  <div className={styles.appPage}>
+                    <App />
+                  </div>
+                  <div style={{ position: 'fixed', bottom: 10, right: 10, color: '#aaa' }}>
+                    v1.2.0
+                  </div>
+                </ContentfulDataProvider>
+              </GraphQLClientProvider>
             </ContentfulApiContext.Provider>
           </QueryClientProvider>
         )}

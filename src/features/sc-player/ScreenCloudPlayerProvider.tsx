@@ -10,6 +10,7 @@ export type PlayerConfig = {
   spaceId: string;
   apiKey: string;
   contentFeed: string;
+  appDefinitionName?: string;
   locale?: string;
   preview?: boolean;
   fetchInterval?: number;

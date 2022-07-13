@@ -1,5 +1,5 @@
-import { QueryClient, useQuery } from 'react-query';
-import { ContentType, ContentTypeCollection, createClient  } from 'contentful'
+import { ContentTypeCollection } from 'contentful';
+import { QueryClient, useQuery, UseQueryOptions } from 'react-query';
 
 const BASE_PATH = `https://cdn.contentful.com`;
 const PREVIEW_BASE_PATH = `https://preview.contentful.com`;
@@ -102,13 +102,18 @@ export function useLocalesQuery(space?: string, apiKey?: string, preview = false
   });
 }
 
-export function useContentTypesQuery(space: string = '', apiKey: string = '', preview = false) {
+export function fetchContentTypes(space: string = '', apiKey: string = '') {
+  const url = getEndpoint(`content_types`, space, apiKey);
+  return fetch(url).then(response => response.json() as Promise<ContentTypeCollection>);
+}
+
+export function useContentTypesQuery<R = ContentTypeCollection>(space: string = '', apiKey: string = '', options?: UseQueryOptions<R>) {
   const url = getEndpoint(`content_types`, space, apiKey);
   return useQuery(
     url,
     () => {
-      return fetch(url).then(response => response.json() as Promise<ContentTypeCollection>);
+      return fetch(url).then(response => response.json());
     },
-    { enabled: !!space && !!apiKey }
+    { ...options, enabled: options?.enabled !== false && !!space && !!apiKey }
   );
 }
