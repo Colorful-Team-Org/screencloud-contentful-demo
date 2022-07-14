@@ -1,15 +1,17 @@
-import React from 'react';
+import { memo } from 'react';
 import { ErrorScreen } from '../components/ErrorScreen';
 import { SlideShow } from '../components/SlideShow/SlideShow';
-import { useContentfulData } from '../providers/ContentfulDataProvider';
+import { useContentFeedItems } from '../providers/ContentFeedProvider';
 import './AppContainer.css';
 
 interface Props {}
 
-function App(props: Props) {
-  const { error } = useContentfulData();
+const SlideShowMemo = memo(SlideShow);
 
-  return !!error ? <ErrorScreen /> : <SlideShow />;
+function App(props: Props) {
+  const { error, data } = useContentFeedItems();
+
+  return !!error ? <ErrorScreen /> : <SlideShowMemo data={data} />;
 }
 
 export default App;

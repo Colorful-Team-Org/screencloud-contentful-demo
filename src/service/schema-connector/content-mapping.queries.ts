@@ -28,6 +28,10 @@ export type ContentFeedsGqlResponse = {
 export const ContentFeedGql = gql`
   query ContentFeed($id: String!, $preview: Boolean, $locale: String) {
     contentFeed(id: $id, locale: $locale, preview: $preview) {
+      sys {
+        id
+        publishedAt
+      }
       contentMappingConfig {
         name
         config
@@ -47,6 +51,10 @@ export const ContentFeedGql = gql`
 `;
 export type ContentfeedGqlResponse = {
   contentFeed: {
+    sys: {
+      id: string;
+      publishedAt: string;
+    };
     contentMappingConfig: ContentMappingItem;
     entriesCollection: {
       items: ({ __typename: string; sys: { id: string } } | null)[];

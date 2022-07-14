@@ -11,9 +11,9 @@ import {
   ContentfulQuoteItem,
   QUOTE_TEMPLATE_NAME,
 } from '../features/quote-layout/quote-layout-types';
-import { ContentfulApiContext } from '../service/contentful-api/contentful-api-ctx';
-import { gqlRequest, GraphQLClientCtx } from '../service/contentful-api/contentful-graphql-service';
+import { useGraphQLClient } from '../service/contentful-api/contentful-graphql-service';
 import { fetchContentTypes } from '../service/contentful-api/contentful-rest';
+import { useRestClient } from '../service/contentful-api/contentful-rest-client-ctx';
 import { useMappedData } from '../service/schema-connector/content-mapping-service';
 import {
   ContentFeedGql,
@@ -64,8 +64,8 @@ type Props = {
 
 export const ContentfulDataProvider: FunctionComponent<Props> = props => {
   console.log('ContentfulDataProvider', props);
-  const { client: gqlClient } = useContext(GraphQLClientCtx);
-  const { spaceId, apiKey } = useContext(ContentfulApiContext);
+  const { spaceId, apiKey, client: gqlClient } = useGraphQLClient();
+  const { client: restClient } = useRestClient();
   const [listType, listId] = (props.contentFeedId || '').split(':');
 
   type QueryParams = {
@@ -101,6 +101,11 @@ export const ContentfulDataProvider: FunctionComponent<Props> = props => {
         // console.log('appDefinitons', appDefinitions);
         const playlistItems = playlistResponse.screencloudPlaylist.entriesCollection?.items;
 
+        // const restEntries = await Promise.all(
+        //   playlistItems.map(item => restClient.getEntry(item.sys.id))
+        // );
+        // console.log('restEntries', restEntries);
+
         const contentTypeId = uncapitalize(playlistItems[0]?.__typename);
         if (!contentTypeId) {
           console.warn('Content feed has no entries');
@@ -116,7 +121,7 @@ export const ContentfulDataProvider: FunctionComponent<Props> = props => {
         const mapping: any = {};
         appDefinitions?.fields.forEach(field => {
           const ctField = ct.fields.find(ctField => ctField.id === field.name);
-          console.log(`field`, field.name, ctField);
+          // console.log(`field`, field.name, ctField);
           if (!ctField) {
             console.warn(`Content type ${contentTypeId} has no field ${field.name}`);
             return;

@@ -6,7 +6,7 @@ import { ProductLayout } from '../../features/product-layout/components/ProductL
 import { QuoteLayout } from '../../features/quote-layout/components/QuoteLayout';
 import { useScreenCloudPlayer } from '../../features/sc-player/ScreenCloudPlayerProvider';
 import useTimeout from '../../hooks/useTimeout';
-import { useContentfulData } from '../../providers/ContentfulDataProvider';
+import { ContentFeedData, useContentFeedItems } from '../../providers/ContentFeedProvider';
 
 const ITEM_DELAY_SECONDS = DEFAULT_ITEM_DELAY_SECONDS;
 // const ITEM_DELAY_SECONDS = 60 * 60 * 24;
@@ -20,9 +20,9 @@ const components = {
   heroes: React.memo(HeroLayout),
 } as const;
 
-export const SlideShow = () => {
-  // console.log(`SlideShow()`);
-  const { data } = useContentfulData();
+export const SlideShow = (props: { data?: ContentFeedData }) => {
+  const { data } = props;
+  console.log(`SlideShow()`, useContentFeedItems());
   const { config: screencloudConfig } = useScreenCloudPlayer();
   const slideSeconds = useMemo(() => {
     if (!screencloudConfig?.slideDuration) return ITEM_DELAY_SECONDS;
@@ -90,13 +90,14 @@ export const SlideShow = () => {
     !!items?.length
   );
 
-  const Comp = data?.templateName ? components[data.templateName] : undefined;
+
   const item = items?.[currentItemIndex];
+  const Comp = item?.templateName ? components[item.templateName] : undefined;
 
   return item && Comp ? (
     <Comp
       itemDurationSeconds={slideSeconds}
-      item={item as any}
+      item={item.data as any}
       isPortrait={isPortrait}
       companyLogoUrl={companyLogoUrl}
       themedColor={themedColor}

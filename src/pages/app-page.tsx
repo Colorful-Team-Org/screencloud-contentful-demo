@@ -1,15 +1,15 @@
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { createWebStoragePersistor } from 'react-query/createWebStoragePersistor-experimental';
-import { persistQueryClient } from 'react-query/persistQueryClient-experimental';
-import { ContentfulDataProvider } from '../providers/ContentfulDataProvider';
+import App from '../components/AppContainer';
 import {
   ScreenCloudPlayerContext,
-  ScreenCloudPlayerProvider,
+  ScreenCloudPlayerProvider
 } from '../features/sc-player/ScreenCloudPlayerProvider';
+import { ContentFeedItemsProvider } from '../providers/ContentFeedProvider';
+import { ContentfulDataProvider } from '../providers/ContentfulDataProvider';
 import { ContentfulApiContext } from '../service/contentful-api/contentful-api-ctx';
-import styles from './app-page.module.css';
-import App from '../components/AppContainer';
 import { GraphQLClientProvider } from '../service/contentful-api/contentful-graphql-service';
+import { ContentfulRestClientProvider } from '../service/contentful-api/contentful-rest-client-ctx';
+import styles from './app-page.module.css';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,10 +19,10 @@ const queryClient = new QueryClient({
   },
 });
 
-persistQueryClient({
-  queryClient,
-  persistor: createWebStoragePersistor({ storage: window.localStorage }),
-});
+// persistQueryClient({
+//   queryClient,
+//   persistor: createWebStoragePersistor({ storage: window.localStorage }),
+// });
 
 export default function AppPage() {
   return (
@@ -39,18 +39,20 @@ export default function AppPage() {
               }}
             >
               <GraphQLClientProvider>
-                <ContentfulDataProvider
-                  contentFeedId={config?.contentFeed}
-                  appDefinitionName={config?.appDefinitionName}
-                  refetchInterval={config?.fetchInterval || 10000}
-                >
-                  <div className={styles.appPage}>
-                    <App />
-                  </div>
-                  <div style={{ position: 'fixed', bottom: 10, right: 10, color: '#aaa' }}>
-                    v1.2.0
-                  </div>
-                </ContentfulDataProvider>
+                <ContentfulRestClientProvider>
+                  <ContentFeedItemsProvider
+                    contentFeedId={config?.contentFeed}
+                    appDefinitionName={config?.appDefinitionName}
+                    refetchInterval={config?.fetchInterval || 10000}
+                  >
+                    <div className={styles.appPage}>
+                      <App />
+                    </div>
+                    <div style={{ position: 'fixed', bottom: 10, right: 10, color: '#aaa' }}>
+                      v1.2.0
+                    </div>
+                  </ContentFeedItemsProvider>
+                  </ContentfulRestClientProvider>
               </GraphQLClientProvider>
             </ContentfulApiContext.Provider>
           </QueryClientProvider>

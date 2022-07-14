@@ -52,9 +52,11 @@ export function mapContent(
       { sys: dataItem.sys } as any
     );
 
+    const baseUrl = mappedEntries.baseUrl || mappingConfig.constants?.baseUrl;
+
     return {
       ...mappedEntries,
-      ...mapLink(mappingConfig.constants?.baseUrl, mappedEntries.slug),
+      ...mapLink(baseUrl, mappedEntries.slug),
     };
   });
 }

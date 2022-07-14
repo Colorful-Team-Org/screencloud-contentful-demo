@@ -6,12 +6,19 @@ import { styled } from '@mui/material/styles';
 import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
 import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { useQuery } from 'react-query';
 import { AppConfig } from '../../../app-types';
 import NumberField from '../../../components/ui/NumberField';
 import SpinnerBox from '../../../components/ui/SpinnerBox';
+import {
+  gqlRequest
+} from '../../../service/contentful-api/contentful-graphql-service';
 import { useLocalesQuery } from '../../../service/contentful-api/contentful-rest';
+import {
+  ContentFeedsGql,
+  ContentFeedsGqlResponse
+} from '../../../service/schema-connector/content-mapping.queries';
 import { useAppDefinitionsQuery } from '../../../service/use-app-definition';
-import { useContentFeedQuery, useFeedsAndPlaylistsQuery } from '../editor-service';
 import { useScreenCloudEditor } from '../ScreenCloudEditorProvider';
 
 type Props = {
@@ -54,24 +61,41 @@ export default function EditorForm(props: Props) {
 
   const { spaceId, apiKey, previewApiKey, contentFeed, preview } = config;
 
-  const feedsAndPlaylistsQuery = useFeedsAndPlaylistsQuery(spaceId, apiKey, preview, {
-    retry: false,
-  });
-  // console.log('feedsAndPlaylistsQuery', feedsAndPlaylistsQuery);
+  // const contentFeedsQuery = useFeedsAndPlaylistsQuery(spaceId, apiKey, preview, {
+  //   retry: false,
+  // });
+  // /** Contentfeeds loaded from cf after env config is set. */
+  // const contentFeeds = useMemo(() => {
+  //   return [
+  //     ...(contentFeedsQuery.data?.feeds?.map(f => ({
+  //       name: f.name,
+  //       id: `feed:${f.sys.id}`,
+  //     })) || []),
+  //     ...(contentFeedsQuery.data?.playlists?.map(p => ({
+  //       name: p.title,
+  //       id: `playlist:${p.sys.id}`,
+  //     })) || []),
+  //   ];
+  // }, [contentFeedsQuery.data?.feeds, contentFeedsQuery.data?.playlists]);
 
-  /** Contentfeeds loaded from cf after env config is set. */
-  const contentFeeds = useMemo(() => {
-    return [
-      ...(feedsAndPlaylistsQuery.data?.feeds?.map(f => ({
-        name: f.name,
-        id: `feed:${f.sys.id}`,
-      })) || []),
-      ...(feedsAndPlaylistsQuery.data?.playlists?.map(p => ({
-        name: p.title,
-        id: `playlist:${p.sys.id}`,
-      })) || []),
-    ];
-  }, [feedsAndPlaylistsQuery.data?.feeds, feedsAndPlaylistsQuery.data?.playlists]);
+  const contentFeedsQuery = useQuery(
+    [spaceId, apiKey],
+    () => gqlRequest<ContentFeedsGqlResponse>(spaceId!, apiKey!, ContentFeedsGql),
+    {
+      enabled: !!spaceId && !!apiKey,
+      retry: false,
+    }
+  );
+
+  const contentFeeds = useMemo(
+    () =>
+      contentFeedsQuery.data?.contentFeedCollection.items.map(item => ({
+        name: item.name,
+        id: item.sys.id,
+      })) || [],
+    [contentFeedsQuery.data?.contentFeedCollection.items]
+  );
+  // console.log('feedsAndPlaylistsQuery', feedsAndPlaylistsQuery);
 
   const selectedContentFeed = config.contentFeed
     ? contentFeeds.find(feed => feed.id === config.contentFeed)
@@ -82,13 +106,13 @@ export default function EditorForm(props: Props) {
   const localesQuery = useLocalesQuery(config.spaceId, config.apiKey, config.preview);
 
   /** If a contentfeed is selected without a mappingConfig we get the appDefinitions for manual select. */
-  const appDefinitionsQuery = useAppDefinitionsQuery({
-    enabled: appDefinitionNeeded,
-  });
-  const appDefinitions = useMemo(() => {
-    if (!appDefinitionNeeded) return undefined;
-    return appDefinitionsQuery.data?.map(d => ({ name: d.label || d.name, id: d.name }));
-  }, [appDefinitionNeeded, appDefinitionsQuery.data]);
+  // const appDefinitionsQuery = useAppDefinitionsQuery({
+  //   enabled: appDefinitionNeeded,
+  // });
+  // const appDefinitions = useMemo(() => {
+  //   if (!appDefinitionNeeded) return undefined;
+  //   return appDefinitionsQuery.data?.map(d => ({ name: d.label || d.name, id: d.name }));
+  // }, [appDefinitionNeeded, appDefinitionsQuery.data]);
 
   const onEnvChange = (ev: FormEvent) => {
     const target = ev.target as HTMLInputElement;
@@ -256,7 +280,7 @@ export default function EditorForm(props: Props) {
             </TextField>
           </Grid>
 
-          {!!appDefinitions && (
+          {/* {!!appDefinitions && (
             <>
               <Grid item xs={6}>
                 <FormLabel htmlFor="appDefinitionName" required>
@@ -284,7 +308,7 @@ export default function EditorForm(props: Props) {
                 </TextField>
               </Grid>
             </>
-          )}
+          )} */}
 
           <Grid item xs={6}>
             <FormLabel htmlFor="slideDuration" required>
@@ -328,7 +352,7 @@ export default function EditorForm(props: Props) {
               }
             />
           </Grid>
-          {feedsAndPlaylistsQuery.isLoading && <SpinnerBox />}
+          {contentFeedsQuery.isLoading && <SpinnerBox />}
         </FormContainer>
       </form>
     </>
