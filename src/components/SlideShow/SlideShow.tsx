@@ -100,7 +100,7 @@ export const SlideShow = (props: { data?: ContentFeedData }) => {
   // console.log({ item, Comp });
 
   if (item?.templateName && !Comp) {
-    return <NotificationSlide title="Content type not supported." />;
+    return <NotificationSlide title="Content type for this entry is not supported." />;
   }
 
   return item && Comp ? (
