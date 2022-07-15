@@ -25,12 +25,18 @@ export function useRestClient() {
   };
 }
 export function ContentfulRestClientProvider(props: PropsWithChildren<any>) {
-  const { spaceId, apiKey, environment, locale, preview } = useContext(ContentfulApiConfigCtx);
+  const { spaceId, apiKey, previewApiKey, environment, locale, preview } =
+    useContext(ContentfulApiConfigCtx);
 
   const client = useMemo(() => {
-    if (!spaceId || !apiKey) return null;
-    return createClient({ space: spaceId, accessToken: apiKey });
-  }, [apiKey, environment, spaceId]);
+    const accessToken = preview ? apiKey : previewApiKey;
+    if (!spaceId || !accessToken) return null;
+    return createClient({
+      space: spaceId,
+      accessToken,
+      host: preview ? 'preview.contentful.com' : undefined,
+    });
+  }, [apiKey, preview, previewApiKey, spaceId]);
 
   return (
     <ContentfulRestClientCtx.Provider value={{ client, spaceId, apiKey }}>

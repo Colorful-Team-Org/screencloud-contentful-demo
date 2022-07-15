@@ -4,7 +4,6 @@ import { QueryClient, useQuery, UseQueryOptions } from 'react-query';
 const BASE_PATH = `https://cdn.contentful.com`;
 const PREVIEW_BASE_PATH = `https://preview.contentful.com`;
 
-
 export const getSpaceUrl = (space: string, preview = false): string =>
   `${preview === true ? PREVIEW_BASE_PATH : BASE_PATH}/spaces/${space}`;
 
@@ -107,7 +106,11 @@ export function fetchContentTypes(space: string = '', apiKey: string = '') {
   return fetch(url).then(response => response.json() as Promise<ContentTypeCollection>);
 }
 
-export function useContentTypesQuery<R = ContentTypeCollection>(space: string = '', apiKey: string = '', options?: UseQueryOptions<R>) {
+export function useContentTypesQuery<R = ContentTypeCollection>(
+  space: string = '',
+  apiKey: string = '',
+  options?: UseQueryOptions<R>
+) {
   const url = getEndpoint(`content_types`, space, apiKey);
   return useQuery(
     url,

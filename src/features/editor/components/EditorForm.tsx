@@ -16,7 +16,6 @@ import {
   ContentFeedsGql,
   ContentFeedsGqlResponse,
 } from '../../../service/schema-connector/content-mapping.queries';
-import { useAppDefinitionsQuery } from '../../../service/use-app-definition';
 import { useScreenCloudEditor } from '../ScreenCloudEditorProvider';
 
 type Props = {
@@ -104,7 +103,6 @@ export default function EditorForm(props: Props) {
   // const selectedContentFeed = config.contentFeed
   //   ? contentFeeds.find(feed => feed.id === config.contentFeed)
   //   : undefined;
-
 
   // const appDefinitionNeeded = selectedContentFeed && !selectedContentFeed.id.startsWith('feed');
   /** If a contentfeed is selected without a mappingConfig we get the appDefinitions for manual select. */

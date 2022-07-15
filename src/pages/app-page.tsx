@@ -33,6 +33,7 @@ export default function AppPage() {
             <ContentfulApiConfigCtx.Provider
               value={{
                 apiKey: config?.apiKey,
+                previewApiKey: config?.previewApiKey,
                 spaceId: config?.spaceId,
                 locale: config?.locale,
                 preview: config?.preview,
