@@ -93,31 +93,45 @@ export const ContentFeedItemsProvider: FunctionComponent<Props> = props => {
 
       /* Apply mapping config when available: */
       if (mappingConfig) {
-        const assetFieldNames = getAssetKeysFromMapping(mappingConfig.mapping);
-        const queryString = queryStringFromMappingConfig(mappingConfig);
-        const response = await gqlClient.request(queryString, { preview, locale });
-        const contentfulItems = response?.[`${mappingConfig.contentType}Collection`].items;
-        const sorted = filterTruthy(
-          filterItems?.map(({ sys: { id } }) => contentfulItems.find((c: any) => c.sys.id === id))
-        );
-        const items = sorted ? mapContent(mappingConfig, sorted) : [];
+        let assetFieldNames: string[] | undefined;
+        try {
+          assetFieldNames = getAssetKeysFromMapping(mappingConfig.mapping);
+        } catch (err) {
+          console.warn(err);
+        }
+        try {
+          const queryString = queryStringFromMappingConfig(mappingConfig);
+          const response = await gqlClient.request(queryString, { preview, locale });
+          const contentfulItems = response?.[`${mappingConfig.contentType}Collection`].items;
+          const sorted = filterTruthy(
+            filterItems?.map(({ sys: { id } }) => contentfulItems.find((c: any) => c.sys.id === id))
+          );
+          const items = sorted ? mapContent(mappingConfig, sorted) : [];
 
-        return {
-          items: items.map(item => ({ data: item, templateName: mappingConfig.name as any })),
-          assetFieldNames,
-          companyLogo: mappingConfig?.constants?.logoUrl,
-        } as ContentFeedData;
+          return {
+            items: items.map(item => ({ data: item, templateName: mappingConfig.name as any })),
+            assetFieldNames,
+            companyLogo: mappingConfig?.constants?.logoUrl,
+          } as ContentFeedData;
+        } catch (err) {
+          console.warn(err);
+        }
       } else {
         /* if there is no mapping config, we try to map ctype directly */
         /* using REST api to get all required entries */
         const response = await Promise.all(
-          filterItems?.map(item => restClient.getEntry(item.sys.id)) || []
+          filterItems?.map(item =>
+            restClient.getEntry(item.sys.id).catch(err => {
+              console.warn(err);
+              return undefined;
+            })
+          ) || []
         );
         // console.log('response', response);
         const assetFieldNames: string[] = [];
 
         /* maping response to appropriate schema */
-        const items = response.map(res => {
+        const items = filterTruthy(response)?.map(res => {
           const entry: Record<string, any> = {
             sys: {
               ...res.sys,
@@ -156,7 +170,7 @@ export const ContentFeedItemsProvider: FunctionComponent<Props> = props => {
         // console.log('items', items);
 
         return {
-          items,
+          items: items || [],
           assetFieldNames,
         } as ContentFeedData;
       }

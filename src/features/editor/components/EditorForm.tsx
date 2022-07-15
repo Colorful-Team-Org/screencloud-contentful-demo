@@ -14,7 +14,7 @@ import { gqlRequest } from '../../../service/contentful-api/contentful-graphql-s
 import { useLocalesQuery } from '../../../service/contentful-api/contentful-rest';
 import {
   ContentFeedsGql,
-  ContentFeedsGqlResponse,
+  ContentFeedsGqlResponse
 } from '../../../service/schema-connector/content-mapping.queries';
 import { useScreenCloudEditor } from '../ScreenCloudEditorProvider';
 
@@ -99,10 +99,6 @@ export default function EditorForm(props: Props) {
     config[config.preview ? 'previewApiKey' : 'apiKey'],
     config.preview
   );
-
-  // const selectedContentFeed = config.contentFeed
-  //   ? contentFeeds.find(feed => feed.id === config.contentFeed)
-  //   : undefined;
 
   // const appDefinitionNeeded = selectedContentFeed && !selectedContentFeed.id.startsWith('feed');
   /** If a contentfeed is selected without a mappingConfig we get the appDefinitions for manual select. */
@@ -232,7 +228,6 @@ export default function EditorForm(props: Props) {
               value={config.locale || ' '}
               disabled={!contentConfigEnabled || !localesQuery.data?.length}
               onChange={onEnvChange}
-              // onChange={onContentFeedChange}
             >
               {!!localesQuery.data ? (
                 [
@@ -280,36 +275,6 @@ export default function EditorForm(props: Props) {
               )}
             </TextField>
           </Grid>
-
-          {/* {!!appDefinitions && (
-            <>
-              <Grid item xs={6}>
-                <FormLabel htmlFor="appDefinitionName" required>
-                  App definition
-                </FormLabel>
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  select
-                  id="appDefinitionName"
-                  name="appDefinitionName"
-                  fullWidth
-                  value={config.appDefinitionName || ''}
-                  disabled={appDefinitionsQuery.isLoading}
-                  onChange={ev => !!ev.target.value && onEnvChange(ev)}
-                >
-                  <MenuItem value="" disabled>
-                    <em>Select App definition</em>
-                  </MenuItem>
-                  {appDefinitions.map(def => (
-                    <MenuItem key={def.id} value={def.id}>
-                      {def.name}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-            </>
-          )} */}
 
           <Grid item xs={6}>
             <FormLabel htmlFor="slideDuration" required>
