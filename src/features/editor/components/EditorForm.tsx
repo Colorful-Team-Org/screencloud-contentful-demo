@@ -10,13 +10,11 @@ import { useQuery } from 'react-query';
 import { AppConfig } from '../../../app-types';
 import NumberField from '../../../components/ui/NumberField';
 import SpinnerBox from '../../../components/ui/SpinnerBox';
-import {
-  gqlRequest
-} from '../../../service/contentful-api/contentful-graphql-service';
+import { gqlRequest } from '../../../service/contentful-api/contentful-graphql-service';
 import { useLocalesQuery } from '../../../service/contentful-api/contentful-rest';
 import {
   ContentFeedsGql,
-  ContentFeedsGqlResponse
+  ContentFeedsGqlResponse,
 } from '../../../service/schema-connector/content-mapping.queries';
 import { useAppDefinitionsQuery } from '../../../service/use-app-definition';
 import { useScreenCloudEditor } from '../ScreenCloudEditorProvider';
@@ -97,14 +95,18 @@ export default function EditorForm(props: Props) {
   );
   // console.log('feedsAndPlaylistsQuery', feedsAndPlaylistsQuery);
 
-  const selectedContentFeed = config.contentFeed
-    ? contentFeeds.find(feed => feed.id === config.contentFeed)
-    : undefined;
+  const localesQuery = useLocalesQuery(
+    config.spaceId,
+    config[config.preview ? 'previewApiKey' : 'apiKey'],
+    config.preview
+  );
 
-  const appDefinitionNeeded = selectedContentFeed && !selectedContentFeed.id.startsWith('feed');
+  // const selectedContentFeed = config.contentFeed
+  //   ? contentFeeds.find(feed => feed.id === config.contentFeed)
+  //   : undefined;
 
-  const localesQuery = useLocalesQuery(config.spaceId, config.apiKey, config.preview);
 
+  // const appDefinitionNeeded = selectedContentFeed && !selectedContentFeed.id.startsWith('feed');
   /** If a contentfeed is selected without a mappingConfig we get the appDefinitions for manual select. */
   // const appDefinitionsQuery = useAppDefinitionsQuery({
   //   enabled: appDefinitionNeeded,
