@@ -6,7 +6,7 @@ import { ProductLayout } from '../../features/product-layout/components/ProductL
 import { QuoteLayout } from '../../features/quote-layout/components/QuoteLayout';
 import { useScreenCloudPlayer } from '../../features/sc-player/ScreenCloudPlayerProvider';
 import useTimeout from '../../hooks/useTimeout';
-import { ContentFeedData, useContentFeedItems } from '../../providers/ContentFeedProvider';
+import { ContentFeedData } from '../../providers/ContentFeedProvider';
 import { NotificationSlide } from './NotificationSlide';
 
 const ITEM_DELAY_SECONDS = DEFAULT_ITEM_DELAY_SECONDS;
@@ -23,7 +23,7 @@ const components = {
 
 export const SlideShow = (props: { data?: ContentFeedData }) => {
   const { data } = props;
-  console.log(`SlideShow()`, useContentFeedItems());
+  // console.log(`SlideShow()`, useContentFeedItems());
   const { config: screencloudConfig } = useScreenCloudPlayer();
   const slideSeconds = useMemo(() => {
     if (!screencloudConfig?.slideDuration) return ITEM_DELAY_SECONDS;

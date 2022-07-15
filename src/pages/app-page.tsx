@@ -5,7 +5,6 @@ import {
   ScreenCloudPlayerProvider
 } from '../features/sc-player/ScreenCloudPlayerProvider';
 import { ContentFeedItemsProvider } from '../providers/ContentFeedProvider';
-import { ContentfulDataProvider } from '../providers/ContentfulDataProvider';
 import { ContentfulApiConfigCtx } from '../service/contentful-api/contentful-api-ctx';
 import { GraphQLClientProvider } from '../service/contentful-api/contentful-graphql-service';
 import { ContentfulRestClientProvider } from '../service/contentful-api/contentful-rest-client-ctx';

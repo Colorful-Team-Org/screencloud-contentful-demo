@@ -27,7 +27,6 @@ export function useRestClient() {
 export function ContentfulRestClientProvider(props: PropsWithChildren<any>) {
   const { spaceId, apiKey, previewApiKey, environment, locale, preview } =
     useContext(ContentfulApiConfigCtx);
-    console.log('useContext(ContentfulApiConfigCtx)', useContext(ContentfulApiConfigCtx));
 
   const client = useMemo(() => {
     const accessToken = !!preview ? previewApiKey : apiKey;
