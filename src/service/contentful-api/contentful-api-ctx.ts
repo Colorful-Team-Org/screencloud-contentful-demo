@@ -8,5 +8,5 @@ export type ContentfulApiConfig = {
   preview?: boolean;
 };
 
-export const ContentfulApiContext = createContext<ContentfulApiConfig>({});
+export const ContentfulApiConfigCtx = createContext<ContentfulApiConfig>({});
 

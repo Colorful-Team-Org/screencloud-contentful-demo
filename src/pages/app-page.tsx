@@ -6,7 +6,7 @@ import {
 } from '../features/sc-player/ScreenCloudPlayerProvider';
 import { ContentFeedItemsProvider } from '../providers/ContentFeedProvider';
 import { ContentfulDataProvider } from '../providers/ContentfulDataProvider';
-import { ContentfulApiContext } from '../service/contentful-api/contentful-api-ctx';
+import { ContentfulApiConfigCtx } from '../service/contentful-api/contentful-api-ctx';
 import { GraphQLClientProvider } from '../service/contentful-api/contentful-graphql-service';
 import { ContentfulRestClientProvider } from '../service/contentful-api/contentful-rest-client-ctx';
 import styles from './app-page.module.css';
@@ -30,7 +30,7 @@ export default function AppPage() {
       <ScreenCloudPlayerContext.Consumer>
         {({ config }) => (
           <QueryClientProvider client={queryClient}>
-            <ContentfulApiContext.Provider
+            <ContentfulApiConfigCtx.Provider
               value={{
                 apiKey: config?.apiKey,
                 spaceId: config?.spaceId,
@@ -54,7 +54,7 @@ export default function AppPage() {
                   </ContentFeedItemsProvider>
                   </ContentfulRestClientProvider>
               </GraphQLClientProvider>
-            </ContentfulApiContext.Provider>
+            </ContentfulApiConfigCtx.Provider>
           </QueryClientProvider>
         )}
       </ScreenCloudPlayerContext.Consumer>

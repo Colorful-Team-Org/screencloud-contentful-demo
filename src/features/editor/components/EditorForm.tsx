@@ -130,6 +130,7 @@ export default function EditorForm(props: Props) {
     if (!config) return;
     const newConfig: Partial<AppConfig> = {
       ...config,
+      contentFeed: config.contentFeed?.trim(),
       locale: config.locale?.trim(), // `default` locale is represented as ` ` in the form. By triming we set it to falsy.
     };
     if (onChange) {
@@ -261,11 +262,11 @@ export default function EditorForm(props: Props) {
               id="contentFeed"
               name="contentFeed"
               fullWidth
-              value={contentFeed || ''}
+              value={contentFeed || ' '}
               disabled={!contentConfigEnabled}
               onChange={ev => !!ev.target.value && onEnvChange(ev)}
             >
-              <MenuItem value="" disabled>
+              <MenuItem value=" " disabled>
                 <em>Select contentfeed</em>
               </MenuItem>
               {!!contentFeeds.length ? (

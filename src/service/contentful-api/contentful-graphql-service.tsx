@@ -1,7 +1,7 @@
 import { request, GraphQLClient } from 'graphql-request';
 import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
 import { useQuery, UseQueryOptions } from 'react-query';
-import { ContentfulApiContext } from './contentful-api-ctx';
+import { ContentfulApiConfigCtx } from './contentful-api-ctx';
 
 export type ContentfulCollection<CType> = {
   items: CType[];
@@ -38,7 +38,7 @@ export async function gqlRequest<ReturnType>(
 }
 
 type UseGqlQueryOptions<ReturnType> = {
-  key?: string;
+  key?:  UseQueryOptions<ReturnType>['queryKey'];
   input?: { id?: string; preview?: boolean };
   // pipe?: (response: ReturnType) => ReturnType | P | Promise<P>;
   skip?: boolean;
@@ -54,7 +54,7 @@ export function useGqlQuery<ReturnType = any>(
 ) {
   const { client } = useGraphQLClient();
 
-  const { locale, preview } = useContext(ContentfulApiContext);
+  const { locale, preview } = useContext(ContentfulApiConfigCtx);
   const {
     key,
     input,
@@ -108,7 +108,7 @@ export function useGraphQLClient() {
 }
 
 export function GraphQLClientProvider({ children }: PropsWithChildren<any>) {
-  const { spaceId, apiKey, environment } = useContext(ContentfulApiContext);
+  const { spaceId, apiKey, environment } = useContext(ContentfulApiConfigCtx);
 
   const client = useMemo(() => {
     if (!spaceId || !apiKey) return undefined;

@@ -10,6 +10,7 @@ import {
   ContentfulQuoteItem,
   QUOTE_TEMPLATE_NAME,
 } from '../features/quote-layout/quote-layout-types';
+import { ContentfulApiConfigCtx } from '../service/contentful-api/contentful-api-ctx';
 import {
   useGqlQuery,
   useGraphQLClient,
@@ -64,13 +65,15 @@ export const ContentFeedItemsContext = React.createContext({
 
 export const ContentFeedItemsProvider: FunctionComponent<Props> = props => {
   // console.log('ContentFeedProvider', props);
+  const { preview, locale } = useContext(ContentfulApiConfigCtx);
   const { client: gqlClient } = useGraphQLClient();
   const { client: restClient } = useRestClient();
-  
 
   const contentFeedQuery = useGqlQuery<ContentfeedGqlResponse>(ContentFeedGql, {
+    key: [ContentFeedGql, props.contentFeedId, preview],
     input: { id: props.contentFeedId },
     isDataEqual: (prev, curr) => {
+      if (!!preview) return false;
       const isEqual = prev?.contentFeed.sys.publishedAt === curr?.contentFeed.sys.publishedAt;
       // console.log('contentfeed isEqual', isEqual);
       return isEqual;
@@ -81,7 +84,7 @@ export const ContentFeedItemsProvider: FunctionComponent<Props> = props => {
   const contentFeed = contentFeedQuery.data?.contentFeed;
 
   const query = useQuery<ContentFeedData | undefined>(
-    [contentFeed],
+    [contentFeed, preview, locale],
     async () => {
       if (!contentFeed) return undefined;
 
@@ -92,7 +95,7 @@ export const ContentFeedItemsProvider: FunctionComponent<Props> = props => {
       if (mappingConfig) {
         const assetFieldNames = getAssetKeysFromMapping(mappingConfig.mapping);
         const queryString = queryStringFromMappingConfig(mappingConfig);
-        const response = await gqlClient.request(queryString);
+        const response = await gqlClient.request(queryString, { preview, locale });
         const contentfulItems = response?.[`${mappingConfig.contentType}Collection`].items;
         const sorted = filterTruthy(
           filterItems?.map(({ sys: { id } }) => contentfulItems.find((c: any) => c.sys.id === id))
@@ -161,7 +164,7 @@ export const ContentFeedItemsProvider: FunctionComponent<Props> = props => {
     {
       refetchInterval: props.refetchInterval,
       isDataEqual(prev, curr) {
-        if (prev?.items.length !== curr?.items.length) {
+        if (preview || prev?.items.length !== curr?.items.length) {
           return false;
         }
         const changed =

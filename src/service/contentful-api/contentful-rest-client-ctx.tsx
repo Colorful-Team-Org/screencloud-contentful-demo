@@ -1,6 +1,6 @@
 import { createClient } from 'contentful';
 import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
-import { ContentfulApiContext } from './contentful-api-ctx';
+import { ContentfulApiConfigCtx } from './contentful-api-ctx';
 
 type ContentfulRestClient = ReturnType<typeof createClient>;
 
@@ -25,7 +25,7 @@ export function useRestClient() {
   };
 }
 export function ContentfulRestClientProvider(props: PropsWithChildren<any>) {
-  const { spaceId, apiKey, environment, locale, preview } = useContext(ContentfulApiContext);
+  const { spaceId, apiKey, environment, locale, preview } = useContext(ContentfulApiConfigCtx);
 
   const client = useMemo(() => {
     if (!spaceId || !apiKey) return null;
