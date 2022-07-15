@@ -49,9 +49,9 @@ export default function AppPage() {
                     <div className={styles.appPage}>
                       <App />
                     </div>
-                    <div style={{ position: 'fixed', bottom: 10, right: 10, color: '#aaa' }}>
+                    {/* <div style={{ position: 'fixed', bottom: 10, right: 10, color: '#aaa' }}>
                       v1.2.0
-                    </div>
+                    </div> */}
                   </ContentFeedItemsProvider>
                   </ContentfulRestClientProvider>
               </GraphQLClientProvider>

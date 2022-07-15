@@ -7,6 +7,7 @@ import { QuoteLayout } from '../../features/quote-layout/components/QuoteLayout'
 import { useScreenCloudPlayer } from '../../features/sc-player/ScreenCloudPlayerProvider';
 import useTimeout from '../../hooks/useTimeout';
 import { ContentFeedData, useContentFeedItems } from '../../providers/ContentFeedProvider';
+import { NotificationSlide } from './NotificationSlide';
 
 const ITEM_DELAY_SECONDS = DEFAULT_ITEM_DELAY_SECONDS;
 // const ITEM_DELAY_SECONDS = 60 * 60 * 24;
@@ -90,9 +91,17 @@ export const SlideShow = (props: { data?: ContentFeedData }) => {
     !!items?.length
   );
 
+  // if (!items?.length) {
+  //   return <>No stuff</>
+  // }
 
   const item = items?.[currentItemIndex];
   const Comp = item?.templateName ? components[item.templateName] : undefined;
+  // console.log({ item, Comp });
+
+  if (item?.templateName && !Comp) {
+    return <NotificationSlide title="Content type not supported." />;
+  }
 
   return item && Comp ? (
     <Comp
