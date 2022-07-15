@@ -9,6 +9,7 @@ import { configFromUrlParams } from './url-params';
 export type PlayerConfig = {
   spaceId: string;
   apiKey: string;
+  previewApiKey?: string;
   contentFeed: string;
   appDefinitionName?: string;
   locale?: string;
