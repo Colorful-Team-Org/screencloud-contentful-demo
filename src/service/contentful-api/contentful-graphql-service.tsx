@@ -1,5 +1,5 @@
 import { request, GraphQLClient } from 'graphql-request';
-import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
+import { createContext, PropsWithChildren, ReactElement, useContext, useMemo } from 'react';
 import { useQuery, UseQueryOptions } from 'react-query';
 import { ContentfulApiConfigCtx } from './contentful-api-ctx';
 
@@ -38,7 +38,7 @@ export async function gqlRequest<ReturnType>(
 }
 
 type UseGqlQueryOptions<ReturnType> = {
-  key?:  UseQueryOptions<ReturnType>['queryKey'];
+  key?: UseQueryOptions<ReturnType>['queryKey'];
   input?: { id?: string; preview?: boolean };
   // pipe?: (response: ReturnType) => ReturnType | P | Promise<P>;
   skip?: boolean;
@@ -107,7 +107,10 @@ export function useGraphQLClient() {
   };
 }
 
-export function GraphQLClientProvider({ children }: PropsWithChildren<any>) {
+export function GraphQLClientProvider({
+  children,
+  missingConfigFallback,
+}: PropsWithChildren<{ missingConfigFallback?: ReactElement }>) {
   const { spaceId, apiKey, environment } = useContext(ContentfulApiConfigCtx);
 
   const client = useMemo(() => {
@@ -119,7 +122,7 @@ export function GraphQLClientProvider({ children }: PropsWithChildren<any>) {
 
   return (
     <ContentfulGraphQLClientCtx.Provider value={{ client, spaceId, apiKey }}>
-      {children}
+      {!client && missingConfigFallback ? missingConfigFallback : children}
     </ContentfulGraphQLClientCtx.Provider>
   );
 }
