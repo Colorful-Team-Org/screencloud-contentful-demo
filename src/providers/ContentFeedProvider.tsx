@@ -121,7 +121,7 @@ export const ContentFeedItemsProvider: FunctionComponent<Props> = props => {
         /* using REST api to get all required entries */
         const response = await Promise.all(
           filterItems?.map(item =>
-            restClient.getEntry(item.sys.id).catch(err => {
+            restClient.getEntry(item.sys.id, { locale }).catch(err => {
               console.warn(err);
               return undefined;
             })
@@ -191,13 +191,7 @@ export const ContentFeedItemsProvider: FunctionComponent<Props> = props => {
     }
   );
 
-  const isLoading = query.isLoading;
-
-  let error: any = '';
-  // contentFeed === null ? `There is no ContentFeed with id "${props.contentFeedId}"` : undefined;
-  if (!error) error = query.error;
-
-  const { data } = query;
+  const { isLoading, error, data } = query;
 
   const providerValue = useMemo(
     () => ({
