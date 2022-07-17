@@ -2,6 +2,7 @@ import Grid from '@mui/material/Grid';
 import { styled } from '@mui/material/styles';
 import { useState } from 'react';
 import { AppConfig } from '../../../app-types';
+import { useScreenCloudEditor } from '../ScreenCloudEditorProvider';
 import EditorForm from './EditorForm';
 import PreviewFrame from './PreviewFrame';
 
@@ -23,7 +24,9 @@ const PreviewContainer = styled(Grid)(({ theme }) => ({
 }));
 
 export default function Editor() {
-  const [config, setConfig] = useState<AppConfig>();
+  const sc = useScreenCloudEditor();
+  const [config, setConfig] = useState<AppConfig | undefined>(sc.config);
+
   return (
     <Grid container sx={{ height: `100%` }}>
       <EditorContainer item sm={12} md={6} lg={4}>

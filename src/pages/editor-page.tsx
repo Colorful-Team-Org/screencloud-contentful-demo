@@ -10,7 +10,6 @@ const queryClient = new QueryClient();
 
 export default function EditorPage() {
   // console.log('EditorPage', config);
-  console.log('scMuiTheme', scMuiTheme.palette.background);
   return (
     <>
       <Helmet>

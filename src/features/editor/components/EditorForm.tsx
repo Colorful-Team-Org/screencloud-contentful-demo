@@ -5,7 +5,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { styled } from '@mui/material/styles';
 import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
-import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { FormEvent, useCallback, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import { AppConfig } from '../../../app-types';
 import NumberField from '../../../components/ui/NumberField';
@@ -110,6 +110,33 @@ export default function EditorForm(props: Props) {
   //   return appDefinitionsQuery.data?.map(d => ({ name: d.label || d.name, id: d.name }));
   // }, [appDefinitionNeeded, appDefinitionsQuery.data]);
 
+  /** dispatch config changes */
+  const emitConfig = useCallback(
+    (config: Partial<AppConfig>) => {
+      if (!config) return;
+      const newConfig: Partial<AppConfig> = {
+        ...config,
+        contentFeed: config.contentFeed?.trim(),
+        locale: config.locale?.trim(), // `default` locale is represented as ` ` in the form. By triming we set it to falsy.
+      };
+      if (onChange) {
+        if (!newConfig.apiKey || !newConfig.contentFeed || !newConfig.spaceId) {
+          onChange(undefined);
+        } else {
+          onChange(newConfig as any);
+        }
+      }
+      sc.emitConfigUpdateAvailable?.();
+
+      sc.onRequestConfigUpdate?.(() =>
+        Promise.resolve({
+          config: newConfig,
+        })
+      );
+    },
+    [onChange, sc]
+  );
+
   const onEnvChange = (ev: FormEvent) => {
     const target = ev.target as HTMLInputElement;
     // console.log('onEnvChange', target.name, target.checked);
@@ -118,32 +145,8 @@ export default function EditorForm(props: Props) {
       [target.name]: target.type === 'checkbox' ? !!target.checked : target.value || undefined,
     };
     setConfig(newState);
-    sc.emitConfigUpdateAvailable?.();
+    emitConfig(newState);
   };
-
-  /** dispatch config changes */
-  useEffect(() => {
-    if (!config) return;
-    const newConfig: Partial<AppConfig> = {
-      ...config,
-      contentFeed: config.contentFeed?.trim(),
-      locale: config.locale?.trim(), // `default` locale is represented as ` ` in the form. By triming we set it to falsy.
-    };
-    if (onChange) {
-      if (!newConfig.apiKey || !newConfig.contentFeed || !newConfig.spaceId) {
-        onChange(undefined);
-      } else {
-        onChange(newConfig as any);
-      }
-    }
-    sc.emitConfigUpdateAvailable?.();
-
-    sc.onRequestConfigUpdate?.(() =>
-      Promise.resolve({
-        config: newConfig,
-      })
-    );
-  }, [config, onChange, sc]);
 
   const contentConfigEnabled = !!contentFeeds.length;
 
