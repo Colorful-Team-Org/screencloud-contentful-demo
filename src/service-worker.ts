@@ -79,7 +79,7 @@ setCacheNameDetails({
 // so we are using this function to set their cache name
 const mkCacheName = (name: string): string => `${cachePrefix}-${name}`;
 
-const expirationManager = new CacheExpiration(mkCacheName('images'), {
+const imageExpirationManager = new CacheExpiration(mkCacheName('images'), {
   maxEntries: 250, //employs LRU
   maxAgeSeconds: daysInSeconds(14),
   matchOptions: {
@@ -117,14 +117,14 @@ registerQuotaErrorCallback(async () => {
   }
 });
 
-class CachePlugin implements WorkboxPlugin {
+class ImageCachePlugin implements WorkboxPlugin {
   // Update the timestampe on the item that was accessed so that it will extend its life in the cache
   cachedResponseWillBeUsed(
     param: CachedResponseWillBeUsedCallbackParam
   ): Promise<Response | void | null | undefined> {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async resolve => {
-      await expirationManager.updateTimestamp(param.request.url);
+      await imageExpirationManager.updateTimestamp(param.request.url);
       resolve(param.cachedResponse);
     });
   }
@@ -133,7 +133,7 @@ class CachePlugin implements WorkboxPlugin {
   handlerDidComplete(param: HandlerDidCompleteCallbackParam): Promise<void | null | undefined> {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async resolve => {
-      await expirationManager.expireEntries();
+      await imageExpirationManager.expireEntries();
       resolve(undefined);
     });
   }
@@ -146,7 +146,7 @@ class CachePlugin implements WorkboxPlugin {
 const fileExtensionRegexp = new RegExp('/[^/?]+\\.[^/]+$');
 registerRoute(
   // Return false to exempt requests from being fulfilled by index.html.
-  ({ request, url }: { request: Request; url: URL }) => {
+  ({ request, url }) => {
     // If this isn't a navigation, skip.
     if (request.mode !== 'navigate') {
       return false;
@@ -182,7 +182,7 @@ registerRoute(
       new CacheableResponsePlugin({
         statuses: [0, 200],
       }),
-      new CachePlugin(),
+      new ImageCachePlugin(),
     ],
   })
 );
