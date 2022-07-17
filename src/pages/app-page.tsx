@@ -1,9 +1,8 @@
 import { QueryClient, QueryClientProvider } from 'react-query';
 import App from '../components/AppContainer';
-import { NotificationSlide } from '../components/SlideShow/NotificationSlide';
 import {
   ScreenCloudPlayerContext,
-  ScreenCloudPlayerProvider,
+  ScreenCloudPlayerProvider
 } from '../features/sc-player/ScreenCloudPlayerProvider';
 import { ContentFeedItemsProvider } from '../providers/ContentFeedProvider';
 import { ContentfulApiConfigCtx } from '../service/contentful-api/contentful-api-ctx';
@@ -32,6 +31,7 @@ export default function AppPage() {
           <QueryClientProvider client={queryClient}>
             <ContentfulApiConfigCtx.Provider
               value={{
+                // apiKey: '',
                 apiKey: config?.apiKey,
                 previewApiKey: config?.previewApiKey,
                 spaceId: config?.spaceId,
@@ -39,7 +39,7 @@ export default function AppPage() {
                 preview: config?.preview,
               }}
             >
-              <GraphQLClientProvider missingConfigFallback={<></>}>
+              <GraphQLClientProvider MissingConfigFallback={() => <></>}>
                 <ContentfulRestClientProvider>
                   <ContentFeedItemsProvider
                     contentFeedId={config?.contentFeed}
