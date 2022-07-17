@@ -41,7 +41,6 @@ reportWebVitals();
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: http://bit.ly/CRA-PWA
 if (typeof window !== 'undefined') {
-  console.log(`pathname`, window.location.pathname);
   if (window.location.pathname.startsWith(`/editor`)) {
     serviceWorkerRegistration.unregister();
   } else {
