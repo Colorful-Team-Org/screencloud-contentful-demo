@@ -32,8 +32,7 @@ export default function AppPage() {
           <QueryClientProvider client={queryClient}>
             <ContentfulApiConfigCtx.Provider
               value={{
-                // apiKey: config?.apiKey,
-                apiKey: '',
+                apiKey: config?.apiKey,
                 previewApiKey: config?.previewApiKey,
                 spaceId: config?.spaceId,
                 locale: config?.locale,
