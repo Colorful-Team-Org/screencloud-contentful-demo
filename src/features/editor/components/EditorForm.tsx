@@ -16,10 +16,9 @@ import {
   ContentFeedsGql,
   ContentFeedsGqlResponse
 } from '../../../service/schema-connector/content-mapping.queries';
-import { useScreenCloudEditor } from '../ScreenCloudEditorProvider';
 
 type Props = {
-  config?: AppConfig;
+  initialConfig?: AppConfig;
   onChange?: (config?: AppConfig) => any;
 };
 
@@ -44,7 +43,6 @@ const FormContainer = styled(Grid)(({ theme }) => ({
 
 export default function EditorForm(props: Props) {
   const { onChange } = props;
-  const sc = useScreenCloudEditor();
   const [config, setConfig] = useState<Partial<AppConfig>>({
     spaceId: '',
     apiKey: '',
@@ -53,7 +51,7 @@ export default function EditorForm(props: Props) {
     appDefinitionName: '',
     slideDuration: 20000,
     fetchInterval: 60000,
-    ...sc.config,
+    ...props.initialConfig,
   });
 
   const { spaceId, apiKey, previewApiKey, contentFeed, preview } = config;
@@ -126,15 +124,8 @@ export default function EditorForm(props: Props) {
           onChange(newConfig as any);
         }
       }
-      sc.emitConfigUpdateAvailable?.();
-
-      sc.onRequestConfigUpdate?.(() =>
-        Promise.resolve({
-          config: newConfig,
-        })
-      );
     },
-    [onChange, sc]
+    [onChange]
   );
 
   const onEnvChange = (ev: FormEvent) => {
