@@ -13,7 +13,7 @@ LAYOUTS
  - blog
 */
 
-console.log(`version 1.1.0`);
+console.log(`version 1.2.0`);
 
 const Index = lazy(() => import('./pages/app-page'));
 const Editor = lazy(() => import('./pages/editor-page'));
