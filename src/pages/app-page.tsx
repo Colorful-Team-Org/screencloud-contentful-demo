@@ -28,7 +28,7 @@ export default function AppPage() {
     <ScreenCloudPlayerProvider>
       <ScreenCloudPlayerContext.Consumer>
         {({ config }) => {
-          console.log('sc config', config);
+          // console.log('sc config', config);
           return (
             <QueryClientProvider client={queryClient}>
               <ContentfulApiConfigCtx.Provider
