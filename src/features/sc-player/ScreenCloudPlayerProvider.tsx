@@ -43,6 +43,7 @@ export function ScreenCloudPlayerProvider(props: PropsWithChildren<any>) {
         appConfig = devConfig.config;
       }
       appConfig = configFromUrlParams(searchParams, appConfig);
+      console.log('appConfig', appConfig);
 
       const sc = await connectScreenCloud<AppConfig>(appConfig ? { config: appConfig } : undefined);
 
