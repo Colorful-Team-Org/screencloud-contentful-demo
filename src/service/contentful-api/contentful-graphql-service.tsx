@@ -111,14 +111,16 @@ export function GraphQLClientProvider({
   children,
   MissingConfigFallback,
 }: PropsWithChildren<{ MissingConfigFallback?: FunctionComponent<any> }>) {
-  const { spaceId, apiKey, environment } = useContext(ContentfulApiConfigCtx);
+  const { spaceId, apiKey, previewApiKey, preview, environment } =
+    useContext(ContentfulApiConfigCtx);
 
+  const apiToken = !!preview ? previewApiKey : apiKey;
   const client = useMemo(() => {
-    if (!spaceId || !apiKey) return undefined;
-    return new GraphQLClient(getEndpoint({ spaceId, apiKey, env: environment }), {
+    if (!spaceId || !apiToken) return undefined;
+    return new GraphQLClient(getEndpoint({ spaceId, apiKey: apiToken, env: environment }), {
       errorPolicy: 'all',
     });
-  }, [apiKey, environment, spaceId]);
+  }, [apiToken, environment, spaceId]);
 
   return (
     <ContentfulGraphQLClientCtx.Provider value={{ client, spaceId, apiKey }}>
