@@ -25,7 +25,25 @@ const PreviewContainer = styled(Grid)(({ theme }) => ({
 
 export default function Editor() {
   const sc = useScreenCloudEditor();
-  const [config, setConfig] = useState<AppConfig | undefined>(sc.config);
+
+  const emitConfig = useCallback(
+    (config: AppConfig) => {
+      sc.onRequestConfigUpdate?.(() =>
+        Promise.resolve({
+          config,
+        })
+      );
+      sc.emitConfigUpdateAvailable?.();
+    },
+    [sc]
+  );
+
+  const [config, setConfig] = useState<AppConfig | undefined>(() => {
+    if (sc.config && sc.config.spaceId && sc.config.apiKey && sc.config.contentFeed) {
+      emitConfig(sc.config);
+    }
+    return sc.config;
+  });
 
   const onFormChange = useCallback(
     (newConfig: AppConfig | undefined) => {
@@ -33,14 +51,9 @@ export default function Editor() {
 
       if (!newConfig) return;
 
-      sc.onRequestConfigUpdate?.(() =>
-        Promise.resolve({
-          config: newConfig,
-        })
-      );
-      sc.emitConfigUpdateAvailable?.();
+      emitConfig(newConfig);
     },
-    [sc]
+    [emitConfig]
   );
 
   return (
