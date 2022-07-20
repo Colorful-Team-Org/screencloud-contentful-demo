@@ -5,17 +5,16 @@ import { useContentFeedItems } from '../providers/ContentFeedProvider';
 import './AppContainer.css';
 import { NotificationSlide } from './SlideShow/NotificationSlide';
 
-interface Props {}
-
 const SlideShowMemo = memo(SlideShow);
 
-function App(props: Props) {
+function App() {
   const { error, data } = useContentFeedItems();
+  // console.log('App', data);
 
   if (!!error) {
     return <ErrorScreen />;
   }
-  if (data?.items.length === 0) {
+  if (data?.items?.length === 0) {
     return (
       <NotificationSlide
         title="No entries found."

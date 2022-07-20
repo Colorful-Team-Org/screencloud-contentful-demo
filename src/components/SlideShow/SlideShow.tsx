@@ -28,7 +28,7 @@ type Props = {
 export const SlideShow = (props: Props) => {
   const { data } = props;
   // console.log(`SlideShow()`, props);
-  
+
   const { config: screencloudConfig } = useScreenCloudPlayer();
   const slideSeconds = useMemo(() => {
     if (!screencloudConfig?.slideDuration) return ITEM_DELAY_SECONDS;

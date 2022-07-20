@@ -78,7 +78,7 @@ export const ContentFeedItemsProvider: FunctionComponent<Props> = props => {
     input: { id: props.contentFeedId },
     isDataEqual: (prev, curr) => {
       if (!!preview) return false;
-      const isEqual = prev?.contentFeed.sys.publishedAt === curr?.contentFeed.sys.publishedAt;
+      const isEqual = prev?.contentFeed?.sys.publishedAt === curr?.contentFeed?.sys.publishedAt;
       // console.log('contentfeed isEqual', isEqual);
       return isEqual;
     },
@@ -86,12 +86,17 @@ export const ContentFeedItemsProvider: FunctionComponent<Props> = props => {
     notifyOnChangePropsExclusions: ['isFetching', 'isFetchedAfterMount'],
     skip: !props.contentFeedId,
   });
+
+  const contentFeedIsLoading = contentFeedQuery.isLoading;
   const contentFeed = contentFeedQuery.data?.contentFeed;
 
   const query = useQuery<ContentFeedData | undefined>(
     [contentFeed, preview, locale],
     async () => {
-      if (!contentFeed) return undefined;
+      /** actually the whole query is is `enabled: !!contentFeed`, so this is just for ts */
+      if (!contentFeed) {
+        return undefined;
+      }
 
       const filterItems = filterTruthy(contentFeed.entriesCollection.items);
       const mappingConfig = contentFeed.contentMappingConfig?.config;
@@ -104,27 +109,23 @@ export const ContentFeedItemsProvider: FunctionComponent<Props> = props => {
         } catch (err) {
           console.warn(err);
         }
-        try {
-          const queryString = queryStringFromMappingConfig(mappingConfig);
-          const response = await gqlClient.request(queryString, { preview, locale });
-          const contentfulItems = response?.[`${mappingConfig.contentType}Collection`].items;
-          const sorted = filterTruthy(
-            filterItems?.map(({ sys: { id } }) => contentfulItems.find((c: any) => c.sys.id === id))
-          );
-          const items = sorted ? mapContent(mappingConfig, sorted) : [];
+        const queryString = queryStringFromMappingConfig(mappingConfig);
+        const response = await gqlClient.request(queryString, { preview, locale });
+        const contentfulItems = response?.[`${mappingConfig.contentType}Collection`].items;
+        const sorted = filterTruthy(
+          filterItems?.map(({ sys: { id } }) => contentfulItems.find((c: any) => c.sys.id === id))
+        );
+        const items = sorted ? mapContent(mappingConfig, sorted) : [];
 
-          return {
-            items: items.map(item => ({
-              data: item,
-              templateName: mappingConfig.name as any,
-              companyLogo: mappingConfig?.constants?.logoUrl,
-              assetFieldNames,
-            })),
-            // companyLogo: mappingConfig?.constants?.logoUrl,
-          } as ContentFeedData;
-        } catch (err) {
-          console.warn(err);
-        }
+        return {
+          items: items.map(item => ({
+            data: item,
+            templateName: mappingConfig.name as any,
+            companyLogo: mappingConfig?.constants?.logoUrl,
+            assetFieldNames,
+          })),
+          // companyLogo: mappingConfig?.constants?.logoUrl,
+        } as ContentFeedData;
       } else {
         /* if there is no mapping config, we try to map ctype directly */
         /* using REST api to get all required entries */
@@ -191,6 +192,7 @@ export const ContentFeedItemsProvider: FunctionComponent<Props> = props => {
       }
     },
     {
+      enabled: !!contentFeed,
       refetchInterval: props.refetchInterval,
       isDataEqual(prev, curr) {
         if (preview || prev?.items.length !== curr?.items.length) {
@@ -206,16 +208,20 @@ export const ContentFeedItemsProvider: FunctionComponent<Props> = props => {
     }
   );
 
-  const { isLoading, error, data } = query;
+  const { error, data: contentFeedItemsData } = query;
+  const isLoading = contentFeedIsLoading || query.isLoading;
 
-  const providerValue = useMemo(
-    () => ({
+  const providerValue = useMemo(() => {
+    let data: ContentFeedData | undefined = contentFeedItemsData;
+    if (!data && !isLoading && props.contentFeedId) {
+      data = { items: [] };
+    }
+    return {
       isLoading,
       error,
       data,
-    }),
-    [data, error, isLoading]
-  );
+    };
+  }, [contentFeedItemsData, error, isLoading, props.contentFeedId]);
 
   return (
     <ContentFeedItemsContext.Provider value={providerValue}>
