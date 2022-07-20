@@ -9,6 +9,7 @@ export interface ContentfulBlogItem extends ContentfulItem {
   author: string;
   image?: ImageAsset;
   pubDate?: string;
+  companyLogo?: string;
 }
 
 export const BLOG_TEMPLATE_NAME = 'blog' as const;

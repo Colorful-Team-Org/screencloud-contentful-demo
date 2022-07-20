@@ -47,9 +47,12 @@ export type ContentfulItem = {
 };
 
 export type TemplateData<TN extends TemplateName, D> = {
-  items: { templateName?: TN; data: D }[];
-  companyLogo?: string;
-  assetFieldNames: string[];
+  items: {
+    templateName?: TN;
+    companyLogo?: string;
+    assetFieldNames?: string[];
+    data: D;
+  }[];
 };
 
 export type ContentFeedData =
@@ -110,9 +113,13 @@ export const ContentFeedItemsProvider: FunctionComponent<Props> = props => {
           const items = sorted ? mapContent(mappingConfig, sorted) : [];
 
           return {
-            items: items.map(item => ({ data: item, templateName: mappingConfig.name as any })),
-            assetFieldNames,
-            companyLogo: mappingConfig?.constants?.logoUrl,
+            items: items.map(item => ({
+              data: item,
+              templateName: mappingConfig.name as any,
+              companyLogo: mappingConfig?.constants?.logoUrl,
+              assetFieldNames,
+            })),
+            // companyLogo: mappingConfig?.constants?.logoUrl,
           } as ContentFeedData;
         } catch (err) {
           console.warn(err);
@@ -166,11 +173,12 @@ export const ContentFeedItemsProvider: FunctionComponent<Props> = props => {
               entry = {
                 ...entry,
                 ...mapLink(entry.baseUrl, entry.slug),
-              }
+              };
             }
           });
           return {
             templateName: res.sys.contentType.sys.id,
+            companyLogo: (res.fields as any)?.logoUrl,
             data: entry,
           };
         });
@@ -178,7 +186,6 @@ export const ContentFeedItemsProvider: FunctionComponent<Props> = props => {
 
         return {
           items: items || [],
-          assetFieldNames,
         } as ContentFeedData;
       }
     },

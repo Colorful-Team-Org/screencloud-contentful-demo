@@ -21,9 +21,14 @@ const components = {
   heroes: React.memo(HeroLayout),
 } as const;
 
-export const SlideShow = (props: { data?: ContentFeedData }) => {
+type Props = {
+  data?: ContentFeedData;
+};
+
+export const SlideShow = (props: Props) => {
   const { data } = props;
-  // console.log(`SlideShow()`, useContentFeedItems());
+  // console.log(`SlideShow()`, props);
+  
   const { config: screencloudConfig } = useScreenCloudPlayer();
   const slideSeconds = useMemo(() => {
     if (!screencloudConfig?.slideDuration) return ITEM_DELAY_SECONDS;
@@ -31,37 +36,30 @@ export const SlideShow = (props: { data?: ContentFeedData }) => {
   }, [screencloudConfig?.slideDuration]);
 
   const themedColor = '';
-  const companyLogoUrl = data?.companyLogo;
   const isPortrait = false;
   const items = data?.items;
 
   /** All image urls of items[] (for preloading). */
-  const imgSrcs = useMemo(
-    () =>
-      data?.assetFieldNames.reduce((imageFilenames, assetKey) => {
-        if (!Array.isArray(items)) return [];
+  const imgSrcs = useMemo(() => {
+    if (!items) return [];
 
-        const itemImageFileNames = (items as any[]).reduce((collection, item) => {
-          const fileName = item[assetKey]?.fileName;
-          if (!fileName) return collection;
+    const imgSrcs = new Set<string>();
+    items.forEach((item: any) => {
+      item.assetFieldNames?.forEach((assetKey: any) => {
+        const fileName = (item.data as any)[assetKey]?.fileName;
+        if (!fileName) return;
 
-          const fileExt = String(fileName).toLowerCase().split(`.`).pop();
-          if (!fileExt) return collection;
+        const fileExt = String(fileName).toLowerCase().split(`.`).pop();
+        if (!fileExt) return;
 
-          if (fileExt && ['jpg', 'jpeg', 'png'].includes(fileExt)) {
-            return [...collection, fileName];
-          }
-          return collection;
-        }, [] as any[]);
-
-        return [...imageFilenames, ...itemImageFileNames];
-
-        // Object.entries(items).reduce((itemImgSrcs, [itemKey, itemValue]) => (
-        //   itemValue
-        // ), [] as string[])
-      }, [] as string[]),
-    [data?.assetFieldNames, items]
-  );
+        if (fileExt && ['jpg', 'jpeg', 'png'].includes(fileExt)) {
+          imgSrcs.add(fileName);
+        }
+      });
+    });
+    return Array.from(imgSrcs);
+  }, [items]);
+  // console.log('imgSrcs', imgSrcs);
 
   /** preloading all image sources */
   useMemo(
@@ -108,7 +106,7 @@ export const SlideShow = (props: { data?: ContentFeedData }) => {
       itemDurationSeconds={slideSeconds}
       item={item.data as any}
       isPortrait={isPortrait}
-      companyLogoUrl={companyLogoUrl}
+      companyLogoUrl={item.companyLogo}
       themedColor={themedColor}
     />
   ) : (
