@@ -238,7 +238,7 @@ export function useMappedData(
 
 // Utility functions:
 
-function mapLink(baseUrl?: string, slug?: string) {
+export function mapLink(baseUrl?: string, slug?: string) {
   if (!baseUrl) {
     return {};
   }

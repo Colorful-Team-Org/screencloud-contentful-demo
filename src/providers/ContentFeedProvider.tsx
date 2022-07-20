@@ -18,6 +18,7 @@ import {
 import { useRestClient } from '../service/contentful-api/contentful-rest-client-ctx';
 import {
   mapContent,
+  mapLink,
   queryStringFromMappingConfig,
 } from '../service/schema-connector/content-mapping-service';
 import {
@@ -132,7 +133,7 @@ export const ContentFeedItemsProvider: FunctionComponent<Props> = props => {
 
         /* maping response to appropriate schema */
         const items = filterTruthy(response)?.map(res => {
-          const entry: Record<string, any> = {
+          let entry: Record<string, any> = {
             sys: {
               ...res.sys,
               publishedAt: res.sys.updatedAt,
@@ -160,6 +161,12 @@ export const ContentFeedItemsProvider: FunctionComponent<Props> = props => {
               }
             } else {
               entry[name] = value;
+            }
+            if (entry.baseUrl && entry.slug) {
+              entry = {
+                ...entry,
+                ...mapLink(entry.baseUrl, entry.slug),
+              }
             }
           });
           return {
