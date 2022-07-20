@@ -5,17 +5,17 @@ import MenuItem from '@mui/material/MenuItem';
 import { styled } from '@mui/material/styles';
 import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
-import { gql, GraphQLClient } from 'graphql-request';
+import { GraphQLClient } from 'graphql-request';
 import { FormEvent, useCallback, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import { AppConfig } from '../../../app-types';
 import NumberField from '../../../components/ui/NumberField';
 import SpinnerBox from '../../../components/ui/SpinnerBox';
-import { getEndpoint, gqlRequest } from '../../../service/contentful-api/contentful-graphql-service';
+import { getEndpoint } from '../../../service/contentful-api/contentful-graphql-service';
 import { useLocalesQuery } from '../../../service/contentful-api/contentful-rest';
 import {
   ContentFeedsGql,
-  ContentFeedsGqlResponse
+  ContentFeedsGqlResponse,
 } from '../../../service/schema-connector/content-mapping.queries';
 
 type Props = {
@@ -292,12 +292,11 @@ export default function EditorForm(props: Props) {
               min={SLIDE_DUR_RANGE[0]}
               max={SLIDE_DUR_RANGE[1]}
               disabled={!contentConfigEnabled}
-              onBlur={value =>
-                setConfig(state => ({
-                  ...state,
-                  slideDuration: value * 1000,
-                }))
-              }
+              onBlur={value => {
+                const newState = { ...config, slideDuration: value * 1000 };
+                setConfig(newState);
+                emitConfig(newState);
+              }}
             />
           </Grid>
           <Grid item xs={6}>
@@ -313,12 +312,11 @@ export default function EditorForm(props: Props) {
               min={FETCH_INTERVAL_RANGE[0]}
               max={FETCH_INTERVAL_RANGE[1]}
               disabled={!contentConfigEnabled}
-              onBlur={value =>
-                setConfig(state => ({
-                  ...state,
-                  fetchInterval: value * 1000,
-                }))
-              }
+              onBlur={value => {
+                const newState = { ...config, fetchInterval: value * 1000 };
+                setConfig(newState);
+                emitConfig(newState);
+              }}
             />
           </Grid>
           {contentFeedsQuery.isLoading && <SpinnerBox />}
