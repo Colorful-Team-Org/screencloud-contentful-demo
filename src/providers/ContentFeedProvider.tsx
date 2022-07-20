@@ -84,6 +84,7 @@ export const ContentFeedItemsProvider: FunctionComponent<Props> = props => {
     },
     refetchInterval: props.refetchInterval,
     notifyOnChangePropsExclusions: ['isFetching', 'isFetchedAfterMount'],
+    skip: !props.contentFeedId,
   });
   const contentFeed = contentFeedQuery.data?.contentFeed;
 

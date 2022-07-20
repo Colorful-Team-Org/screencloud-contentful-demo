@@ -5,12 +5,13 @@ import MenuItem from '@mui/material/MenuItem';
 import { styled } from '@mui/material/styles';
 import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
+import { gql, GraphQLClient } from 'graphql-request';
 import { FormEvent, useCallback, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import { AppConfig } from '../../../app-types';
 import NumberField from '../../../components/ui/NumberField';
 import SpinnerBox from '../../../components/ui/SpinnerBox';
-import { gqlRequest } from '../../../service/contentful-api/contentful-graphql-service';
+import { getEndpoint, gqlRequest } from '../../../service/contentful-api/contentful-graphql-service';
 import { useLocalesQuery } from '../../../service/contentful-api/contentful-rest';
 import {
   ContentFeedsGql,
@@ -56,6 +57,14 @@ export default function EditorForm(props: Props) {
 
   const { spaceId, apiKey, previewApiKey, contentFeed, preview } = config;
 
+  const gqlClient = useMemo(() => {
+    const _apiKey = !!preview ? previewApiKey : apiKey;
+    if (!spaceId || !_apiKey) return undefined;
+    return new GraphQLClient(getEndpoint({ spaceId, apiKey: _apiKey }), {
+      errorPolicy: 'all',
+    });
+  }, [apiKey, preview, previewApiKey, spaceId]);
+
   // const contentFeedsQuery = useFeedsAndPlaylistsQuery(spaceId, apiKey, preview, {
   //   retry: false,
   // });
@@ -75,7 +84,7 @@ export default function EditorForm(props: Props) {
 
   const contentFeedsQuery = useQuery(
     [spaceId, apiKey],
-    () => gqlRequest<ContentFeedsGqlResponse>(spaceId!, apiKey!, ContentFeedsGql),
+    () => gqlClient?.request<ContentFeedsGqlResponse>(ContentFeedsGql),
     {
       enabled: !!spaceId && !!apiKey,
       retry: false,
