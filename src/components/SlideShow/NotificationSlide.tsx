@@ -9,7 +9,12 @@ export function NotificationSlide(props: Props) {
     <ContentWrapper backgroundColor={theme.colors.white}>
       <Flex height="100%" flexDirection="column" justifyContent="center" alignItems="center">
         {props.title && (
-          <Text type={TextSizes.H2} textAlign="center" style={{ marginBottom: 24 }}>
+          <Text
+            type={TextSizes.H2}
+            textAlign="center"
+            fontWeight="bold"
+            style={{ marginBottom: 24 }}
+          >
             {props.title}
           </Text>
         )}
