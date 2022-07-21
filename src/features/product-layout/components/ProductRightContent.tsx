@@ -135,7 +135,7 @@ export const ProductRightContent: FunctionComponent<Props> = (
                 fontWeight={theme.fontWeights.bold}
                 color="#2d313b"
               >
-                {item.price} €
+                {item.price}
               </Text>
               {item.comparePrice && item.comparePrice !== item.price && (
                 <Text
@@ -146,7 +146,7 @@ export const ProductRightContent: FunctionComponent<Props> = (
                   color="#999"
                   style={{ marginLeft: 25, textDecoration: 'line-through' }}
                 >
-                  {item.comparePrice} €
+                  {item.comparePrice}
                 </Text>
               )}
             </Flex>

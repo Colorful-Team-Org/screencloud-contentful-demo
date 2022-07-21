@@ -98,7 +98,7 @@
   {
     "name": "products",
     "label": "Products",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "fields": [
       {
         "name": "id",
@@ -128,12 +128,12 @@
       {
         "name": "price",
         "label": "Price",
-        "type": "number"
+        "type": "string"
       },
       {
         "name": "comparePrice",
         "label": "Compare at price ",
-        "type": "number"
+        "type": "string"
       },
       {
         "name": "image",

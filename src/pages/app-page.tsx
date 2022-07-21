@@ -10,6 +10,9 @@ import { GraphQLClientProvider } from '../service/contentful-api/contentful-grap
 import { ContentfulRestClientProvider } from '../service/contentful-api/contentful-rest-client-ctx';
 import styles from './app-page.module.css';
 
+import { persistQueryClient } from 'react-query/persistQueryClient-experimental'
+import { createWebStoragePersistor } from 'react-query/createWebStoragePersistor-experimental'
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -18,10 +21,10 @@ const queryClient = new QueryClient({
   },
 });
 
-// persistQueryClient({
-//   queryClient,
-//   persistor: createWebStoragePersistor({ storage: window.localStorage }),
-// });
+persistQueryClient({
+  queryClient,
+  persistor: createWebStoragePersistor({ storage: window.localStorage }),
+});
 
 export default function AppPage() {
   return (
