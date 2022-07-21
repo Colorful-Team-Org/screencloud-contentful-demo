@@ -1,3 +1,4 @@
+import { Typography } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import FormLabel from '@mui/material/FormLabel';
 import Grid from '@mui/material/Grid';
@@ -157,6 +158,10 @@ export default function EditorForm(props: Props) {
       </Box> */}
       <form noValidate autoComplete="off">
         <FormContainer container gap={0} rowGap={2} alignItems="center">
+          <Grid item xs={12}>
+            <Typography variant="h6">Content source</Typography>
+          </Grid>
+
           <Grid item xs={6}>
             <FormLabel htmlFor="spaceId" required>
               Space ID
@@ -174,7 +179,7 @@ export default function EditorForm(props: Props) {
 
           <Grid item xs={6}>
             <FormLabel htmlFor="apiKey" required>
-              API Key
+              Delivery API key (CDA)
             </FormLabel>
           </Grid>
           <Grid item xs={6}>
@@ -188,7 +193,7 @@ export default function EditorForm(props: Props) {
           </Grid>
 
           <Grid item xs={6}>
-            <FormLabel htmlFor="apiKey">Preview API Key</FormLabel>
+            <FormLabel htmlFor="previewApiKey">Preview API key (CPA)</FormLabel>
           </Grid>
           <Grid item xs={6}>
             <TextField
@@ -198,55 +203,6 @@ export default function EditorForm(props: Props) {
               fullWidth
               onChange={onEnvChange}
             />
-          </Grid>
-
-          <Grid item xs={6}>
-            <FormLabel htmlFor="preview" disabled={!previewApiKey}>
-              Preview
-            </FormLabel>
-          </Grid>
-          <Grid item xs={6} textAlign="right">
-            <Switch
-              id="preview"
-              name="preview"
-              color="primary"
-              disabled={!previewApiKey}
-              value={!!previewApiKey && preview}
-              onChange={onEnvChange}
-            />
-          </Grid>
-
-          <Grid item xs={12}>
-            <Divider sx={{ my: 2 }} />
-          </Grid>
-          <Grid item xs={6}>
-            <FormLabel htmlFor="locale">Locale</FormLabel>
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              select
-              id="locale"
-              name="locale"
-              fullWidth
-              value={config.locale || ' '}
-              disabled={!contentConfigEnabled || !localesQuery.data?.length}
-              onChange={onEnvChange}
-            >
-              {!!localesQuery.data ? (
-                [
-                  <MenuItem key="default" value=" ">
-                    Default
-                  </MenuItem>,
-                  localesQuery.data.map(locale => (
-                    <MenuItem key={locale.code} value={locale.code}>
-                      {locale.name}
-                    </MenuItem>
-                  )),
-                ]
-              ) : (
-                <MenuItem value=" ">Default</MenuItem>
-              )}
-            </TextField>
           </Grid>
 
           <Grid item xs={6}>
@@ -279,9 +235,63 @@ export default function EditorForm(props: Props) {
             </TextField>
           </Grid>
 
+          <Grid item xs={12}>
+            <Divider sx={{ my: 2 }} />
+          </Grid>
+
+          <Grid item xs={12}>
+            <Typography variant="h6">Presentation settings</Typography>
+          </Grid>
+
+          <Grid item xs={6}>
+            <FormLabel htmlFor="preview" disabled={!previewApiKey}>
+              Preview mode
+            </FormLabel>
+          </Grid>
+          <Grid item xs={6} textAlign="right">
+            <Switch
+              id="preview"
+              name="preview"
+              color="primary"
+              disabled={!previewApiKey}
+              value={!!previewApiKey && preview}
+              onChange={onEnvChange}
+            />
+          </Grid>
+
+          <Grid item xs={6}>
+            <FormLabel htmlFor="locale">Locale</FormLabel>
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              select
+              id="locale"
+              name="locale"
+              fullWidth
+              value={config.locale || ' '}
+              disabled={!contentConfigEnabled || !localesQuery.data?.length}
+              onChange={onEnvChange}
+            >
+              {!!localesQuery.data ? (
+                [
+                  <MenuItem key="default" value=" ">
+                    Default
+                  </MenuItem>,
+                  localesQuery.data.map(locale => (
+                    <MenuItem key={locale.code} value={locale.code}>
+                      {locale.name}
+                    </MenuItem>
+                  )),
+                ]
+              ) : (
+                <MenuItem value=" ">Default</MenuItem>
+              )}
+            </TextField>
+          </Grid>
+
           <Grid item xs={6}>
             <FormLabel htmlFor="slideDuration" required>
-              Slide duration sec.
+              Slide duration (in seconds)
             </FormLabel>
           </Grid>
           <Grid item xs={6}>
@@ -301,7 +311,7 @@ export default function EditorForm(props: Props) {
           </Grid>
           <Grid item xs={6}>
             <FormLabel htmlFor="fetchInterval" required>
-              Refetch interval sec.
+              Polling frequency (in seconds)
             </FormLabel>
           </Grid>
           <Grid item xs={6}>
