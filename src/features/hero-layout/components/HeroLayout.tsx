@@ -1,5 +1,6 @@
 import { FullScreenImage, SplitLayoutContainer, theme } from '@screencloud/alfie-alpha';
 import { FunctionComponent, ReactElement } from 'react';
+import FullGrey from '../../../components/styling/FullGrey';
 import { ContentfulHeroItem } from '../hero-layout-types';
 import { HeroRightContent } from './HeroRightContent';
 
@@ -33,10 +34,14 @@ export const HeroLayout: FunctionComponent<Props> = (props: Props): ReactElement
         />
       }
       rightContent={
-        <FullScreenImage
-          url={item.image?.url ? `${item.image?.url}?w=2048` : ''}
-          itemDurationSeconds={itemDurationSeconds}
-        />
+        item.image?.url ? (
+          <FullScreenImage
+            url={item.image.url ? `${item.image.url}?w=2048` : ''}
+            itemDurationSeconds={itemDurationSeconds}
+          />
+        ) : (
+          <FullGrey />
+        )
       }
     />
   );

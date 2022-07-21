@@ -1,5 +1,6 @@
 import { FullScreenImage, SplitLayoutContainer, theme } from '@screencloud/alfie-alpha';
 import { FunctionComponent, ReactElement, useMemo } from 'react';
+import FullGrey from '../../../components/styling/FullGrey';
 import { ContentfulQuoteItem } from '../quote-layout-types';
 import { QuoteRightContent } from './QuoteRightContent';
 
@@ -21,7 +22,7 @@ export const QuoteLayout: FunctionComponent<Props> = (props: Props): ReactElemen
 
   const imageContent = useMemo(() => {
     const url = item.image?.url;
-    if (!url) return undefined;
+    if (!url) return <FullGrey />;
 
     return <FullScreenImage url={`${url}?w=2048`} itemDurationSeconds={itemDurationSeconds} />;
   }, [item.image?.url, itemDurationSeconds]);

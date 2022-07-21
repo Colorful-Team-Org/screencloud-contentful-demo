@@ -1,5 +1,6 @@
 import { FullScreenImage, SplitLayoutContainer, theme } from '@screencloud/alfie-alpha';
 import { FunctionComponent, ReactElement } from 'react';
+import FullGrey from '../../../components/styling/FullGrey';
 import { ContentfulProductItem } from '../product-layout-types';
 import { ProductRightContent } from './ProductRightContent';
 
@@ -26,10 +27,14 @@ export const ProductLayout: FunctionComponent<Props> = (props: Props): ReactElem
       borderColor={themeColor}
       leftContent={
         // <Flex justifyContent="center" alignItems="center" height="100%" style={{ background: 'white' }}>
-        <FullScreenImage
-          url={item.image?.url ? `${item.image?.url}?w=2048` : ''}
-          itemDurationSeconds={itemDurationSeconds}
-        />
+        item.image?.url ? (
+          <FullScreenImage
+            url={item.image?.url ? `${item.image?.url}?w=2048` : ''}
+            itemDurationSeconds={itemDurationSeconds}
+          />
+        ) : (
+          <FullGrey />
+        )
         // <img
         //   src={item.image?.url ? `${item.image?.url}?w=2048` : ''}
         //   style={{ width: '100%', height: '100%', objectFit: 'contain', background: 'white' }}
