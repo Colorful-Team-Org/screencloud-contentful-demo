@@ -84,7 +84,7 @@ export default function EditorForm(props: Props) {
   // }, [contentFeedsQuery.data?.feeds, contentFeedsQuery.data?.playlists]);
 
   const contentFeedsQuery = useQuery(
-    [spaceId, apiKey],
+    [`EditorForm.contentFeedsQuery`, spaceId, apiKey],
     () => gqlClient?.request<ContentFeedsGqlResponse>(ContentFeedsGql),
     {
       enabled: !!spaceId && !!apiKey,
@@ -110,9 +110,8 @@ export default function EditorForm(props: Props) {
 
   // const appDefinitionNeeded = selectedContentFeed && !selectedContentFeed.id.startsWith('feed');
   /** If a contentfeed is selected without a mappingConfig we get the appDefinitions for manual select. */
-  // const appDefinitionsQuery = useAppDefinitionsQuery({
-  //   enabled: appDefinitionNeeded,
-  // });
+  // const appDefinitionsQuery = useAppDefinitionsQuery();
+  // console.log('appDefinitionsQuery', appDefinitionsQuery.data);
   // const appDefinitions = useMemo(() => {
   //   if (!appDefinitionNeeded) return undefined;
   //   return appDefinitionsQuery.data?.map(d => ({ name: d.label || d.name, id: d.name }));
