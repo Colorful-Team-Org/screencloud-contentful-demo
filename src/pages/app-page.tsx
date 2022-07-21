@@ -21,10 +21,10 @@ const queryClient = new QueryClient({
   },
 });
 
-persistQueryClient({
-  queryClient,
-  persistor: createWebStoragePersistor({ storage: window.localStorage }),
-});
+// persistQueryClient({
+//   queryClient,
+//   persistor: createWebStoragePersistor({ storage: window.localStorage }),
+// });
 
 export default function AppPage() {
   return (
