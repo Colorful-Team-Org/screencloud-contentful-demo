@@ -22,13 +22,13 @@ type Props = {
 export function LabeledGridItem(props: PropsWithChildren<Props>) {
   return (
     <LabeledGridItemRoot item xs={12}>
-      <Box display="flex" justifyContent="space-between" alignItems="center">
+      <Box display="flex" alignItems="center">
         <FormLabel htmlFor={props.id} required={props.required}>
           {props.label}
         </FormLabel>
         {props.tooltip && (
           <Tooltip placement="top" arrow title={props.tooltip}>
-            <InfoIcon color="disabled" fontSize="small" />
+            <InfoIcon sx={{ ml: '4px' }} color="disabled" fontSize="small" />
           </Tooltip>
         )}
       </Box>

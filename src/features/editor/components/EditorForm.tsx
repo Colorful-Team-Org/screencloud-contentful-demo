@@ -159,7 +159,12 @@ export default function EditorForm(props: Props) {
             />
           </LabeledGridItem>
 
-          <LabeledGridItem id="apiKey" label="Delivery API key (CDA)" required>
+          <LabeledGridItem
+            id="apiKey"
+            label="Delivery API key (CDA)"
+            tooltip="CDA and CPA keys can be obtained in the settings section of a Contentful space."
+            required
+          >
             <TextField
               id="apiKey"
               name="apiKey"
@@ -170,7 +175,12 @@ export default function EditorForm(props: Props) {
             />
           </LabeledGridItem>
 
-          <LabeledGridItem id="previewApiKey" label="Preview API key (CPA)" required>
+          <LabeledGridItem
+            id="previewApiKey"
+            label="Preview API key (CPA)"
+            tooltip="CDA and CPA keys can be obtained in the settings section of a Contentful space."
+            required
+          >
             <TextField
               id="previewApiKey"
               name="previewApiKey"
