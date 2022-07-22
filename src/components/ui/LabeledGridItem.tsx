@@ -7,8 +7,8 @@ import Tooltip from '@mui/material/Tooltip';
 import Box from '@mui/material/Box';
 
 const LabeledGridItemRoot = styled(Grid)(({ theme }) => ({
-  marginBottom: theme.spacing(2),
-  '& > label': {
+  // marginBottom: theme.spacing(2),
+  '& label': {
     lineHeight: `2.5em`,
   },
 }));
@@ -22,7 +22,7 @@ type Props = {
 export function LabeledGridItem(props: PropsWithChildren<Props>) {
   return (
     <LabeledGridItemRoot item xs={12}>
-      <Box display="flex" justifyContent="space-between">
+      <Box display="flex" justifyContent="space-between" alignItems="center">
         <FormLabel htmlFor={props.id} required={props.required}>
           {props.label}
         </FormLabel>
