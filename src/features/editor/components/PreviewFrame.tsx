@@ -1,4 +1,5 @@
 import { styled, Typography } from '@mui/material';
+import Box from '@mui/system/Box';
 import { debounce } from 'lodash';
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { AppConfig } from '../../../app-types';
@@ -95,8 +96,14 @@ export default function PreviewFrame(props: Props) {
         ) : (
           <Empty>
             <EmptySvg style={{ width: `25%`, height: 'auto', marginBottom: 40 }} />
-            <Typography fontWeight="bold">App instance preview</Typography>
-            <Typography>Edit the configuration to preview this app instance.</Typography>
+            <Box mx={2}>
+              <Typography textAlign="center" fontWeight="bold">
+                App instance preview
+              </Typography>
+              <Typography textAlign="center">
+                Edit the configuration to preview this app instance.
+              </Typography>
+            </Box>
           </Empty>
         )}
       </IFrameContainer>
