@@ -3,6 +3,7 @@ import { theme, SplitLayoutContainer, FullScreenImage } from '@screencloud/alfie
 import { BlogPostRightContent } from './BlogPostRightContent';
 import FullGrey from '../../../components/styling/FullGrey';
 import { ContentfulBlogItem } from '../blog-layout-types';
+import { ImagePlaceholder } from '../../../components/ImagePlaceholder';
 
 interface Props {
   itemDurationSeconds: number;
@@ -34,7 +35,7 @@ export const BlogPostLayout: FunctionComponent<Props> = (props: Props) => {
             itemDurationSeconds={itemDurationSeconds}
           />
         ) : (
-          <FullGrey />
+          <ImagePlaceholder  />
         )
       }
       rightContent={
