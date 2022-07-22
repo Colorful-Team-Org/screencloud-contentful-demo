@@ -1,4 +1,3 @@
-import { Typography } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import FormLabel from '@mui/material/FormLabel';
 import Grid from '@mui/material/Grid';
@@ -19,11 +18,10 @@ import {
   ContentFeedsGql,
   ContentFeedsGqlResponse,
 } from '../../../service/schema-connector/content-mapping.queries';
-
-type Props = {
-  initialConfig?: AppConfig;
-  onChange?: (config?: AppConfig) => any;
-};
+import InfoIcon from '@mui/icons-material/InfoOutlined';
+import Typography from '@mui/material/Typography';
+import Tooltip from '@mui/material/Tooltip';
+import Box from '@mui/material/Box';
 
 const SLIDE_DUR_RANGE = [3, 300];
 const FETCH_INTERVAL_RANGE = [3, 3600];
@@ -44,6 +42,11 @@ const FormContainer = styled(Grid)(({ theme }) => ({
   },
 }));
 
+type Props = {
+  initialConfig?: AppConfig;
+  onChange?: (config?: AppConfig) => any;
+  onError?: (error?: { title?: string; message: string }) => any;
+};
 export default function EditorForm(props: Props) {
   const { onChange } = props;
   const [config, setConfig] = useState<Partial<AppConfig>>({
@@ -67,31 +70,27 @@ export default function EditorForm(props: Props) {
     });
   }, [apiKey, preview, previewApiKey, spaceId]);
 
-  // const contentFeedsQuery = useFeedsAndPlaylistsQuery(spaceId, apiKey, preview, {
-  //   retry: false,
-  // });
-  // /** Contentfeeds loaded from cf after env config is set. */
-  // const contentFeeds = useMemo(() => {
-  //   return [
-  //     ...(contentFeedsQuery.data?.feeds?.map(f => ({
-  //       name: f.name,
-  //       id: `feed:${f.sys.id}`,
-  //     })) || []),
-  //     ...(contentFeedsQuery.data?.playlists?.map(p => ({
-  //       name: p.title,
-  //       id: `playlist:${p.sys.id}`,
-  //     })) || []),
-  //   ];
-  // }, [contentFeedsQuery.data?.feeds, contentFeedsQuery.data?.playlists]);
-
   const contentFeedsQuery = useQuery(
     [`EditorForm.contentFeedsQuery`, spaceId, apiKey],
     () => gqlClient?.request<ContentFeedsGqlResponse>(ContentFeedsGql),
     {
       enabled: !!spaceId && !!apiKey,
       retry: false,
+      onError: (error: any) => {
+        if ((error as any).response?.status === 400) {
+          const errorMsg = {
+            title: 'Missing content',
+            message:
+              'Failed to detect a valid content feed and/or entries. Make sure the source space has a "Content feed" content type installed and there are valid entries published',
+          };
+          console.warn(errorMsg);
+          props.onError?.(errorMsg);
+        }
+      },
+      onSuccess: () => props.onError?.(),
     }
   );
+  // console.log('contentFeedsQuery', contentFeedsQuery);
 
   const contentFeeds = useMemo(
     () =>
@@ -108,15 +107,6 @@ export default function EditorForm(props: Props) {
     config[config.preview ? 'previewApiKey' : 'apiKey'],
     config.preview
   );
-
-  // const appDefinitionNeeded = selectedContentFeed && !selectedContentFeed.id.startsWith('feed');
-  /** If a contentfeed is selected without a mappingConfig we get the appDefinitions for manual select. */
-  // const appDefinitionsQuery = useAppDefinitionsQuery();
-  // console.log('appDefinitionsQuery', appDefinitionsQuery.data);
-  // const appDefinitions = useMemo(() => {
-  //   if (!appDefinitionNeeded) return undefined;
-  //   return appDefinitionsQuery.data?.map(d => ({ name: d.label || d.name, id: d.name }));
-  // }, [appDefinitionNeeded, appDefinitionsQuery.data]);
 
   /** dispatch config changes */
   const emitConfig = useCallback(
@@ -153,9 +143,6 @@ export default function EditorForm(props: Props) {
 
   return (
     <>
-      {/* <Box>
-        <Logo src={logo} alt="Logo" />
-      </Box> */}
       <form noValidate autoComplete="off">
         <FormContainer container gap={0} rowGap={1} alignItems="center">
           <Grid item xs={12}>
@@ -228,9 +215,18 @@ export default function EditorForm(props: Props) {
           </Grid>
 
           <Grid item xs={6}>
-            <FormLabel htmlFor="preview" disabled={!previewApiKey}>
-              Preview mode
-            </FormLabel>
+            <Box display="flex" alignItems="center">
+              <FormLabel htmlFor="preview" disabled={!previewApiKey}>
+                Preview mode
+              </FormLabel>
+              <Tooltip
+                placement="top"
+                arrow
+                title="When the Preview mode is activated, the app will display draft entries and unpublished changes alongside the published content. This may increase the risk of errors, especially when draft entries are missing required values."
+              >
+                <InfoIcon sx={{ ml: `5px`, mt: `3px` }} color="disabled" fontSize="small" />
+              </Tooltip>
+            </Box>
           </Grid>
           <Grid item xs={6} textAlign="right">
             <Switch
@@ -286,7 +282,12 @@ export default function EditorForm(props: Props) {
             />
           </LabeledGridItem>
 
-          <LabeledGridItem id="fetchInterval" label="Polling frequency (in seconds)" required>
+          <LabeledGridItem
+            id="fetchInterval"
+            label="Polling frequency (in seconds)"
+            tooltip="The polling frequency setting determines how often the content is refreshed. Minimum setting is 3 seconds, maximum 3,600 seconds or 1 hour."
+            required
+          >
             <NumberField
               id="fetchInterval"
               name="fetchInterval"

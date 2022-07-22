@@ -45,6 +45,8 @@ export default function Editor() {
     return sc.config;
   });
 
+  const [formError, setFormError] = useState<{ title?: string; message: string }>();
+
   const onFormChange = useCallback(
     (newConfig: AppConfig | undefined) => {
       setConfig(newConfig);
@@ -59,10 +61,10 @@ export default function Editor() {
   return (
     <Grid container sx={{ height: `100%` }}>
       <EditorContainer item sm={12} md={6} lg={4}>
-        <EditorForm initialConfig={config} onChange={onFormChange} />
+        <EditorForm initialConfig={config} onChange={onFormChange} onError={setFormError} />
       </EditorContainer>
       <PreviewContainer item sm={12} md={6} lg={8}>
-        <PreviewFrame config={config} />
+        <PreviewFrame config={config} error={formError} />
       </PreviewContainer>
     </Grid>
   );

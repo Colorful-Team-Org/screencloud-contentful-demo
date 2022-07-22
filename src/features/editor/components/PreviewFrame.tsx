@@ -36,7 +36,7 @@ const IFrame = styled('iframe')({
   transformOrigin: '0 0',
 });
 
-const Empty = styled('div')({
+const EmptyRoot = styled('div')({
   width: '100%',
   height: '100%',
   display: 'flex',
@@ -47,13 +47,17 @@ const Empty = styled('div')({
 
 type Props = {
   config?: AppConfig;
+  error?: {
+    title?: string;
+    message: string;
+  };
 };
 
 export default function PreviewFrame(props: Props) {
   // console.log('PreviewFrame', props);
   const [iFrameScale, setIFrameScale] = useState(1);
 
-  const { config } = props;
+  const { config, error } = props;
   const rootref = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => {
     const onResize = debounce(() => {
@@ -73,7 +77,7 @@ export default function PreviewFrame(props: Props) {
   }, [config]); // need `config` as a dependency because `rootRef.current` depends on it.
 
   const src = useMemo(() => {
-    if (!config) return undefined;
+    if (!config?.spaceId || config.apiKey || config.contentFeed) return undefined;
     const previewConfig = {
       ...config,
       fetchInterval: 5000,
@@ -84,7 +88,9 @@ export default function PreviewFrame(props: Props) {
   return (
     <PreviewFrameRoot>
       <IFrameContainer ref={rootref}>
-        {!!config?.spaceId && !!config.apiKey && !!config.contentFeed ? (
+        {error ? (
+          <Empty {...error} />
+        ) : src ? (
           // {false ? (
           <IFrame
             style={{
@@ -94,19 +100,29 @@ export default function PreviewFrame(props: Props) {
             src={src}
           />
         ) : (
-          <Empty>
-            <EmptySvg style={{ width: `25%`, height: 'auto', marginBottom: 40 }} />
-            <Box mx={2}>
-              <Typography textAlign="center" fontWeight="bold">
-                App instance preview
-              </Typography>
-              <Typography textAlign="center">
-                Edit the configuration to preview this app instance.
-              </Typography>
-            </Box>
-          </Empty>
+          <Empty
+            title="App instance preview"
+            message="Edit the configuration to preview this app instance."
+            showIcon
+          />
         )}
       </IFrameContainer>
     </PreviewFrameRoot>
+  );
+}
+
+function Empty(props: { message: string; title?: string; showIcon?: boolean }) {
+  return (
+    <EmptyRoot>
+      {!!props.showIcon && <EmptySvg style={{ width: `25%`, height: 'auto', marginBottom: 40 }} />}
+      <Box mx={2}>
+        {props.title && (
+          <Typography textAlign="center" fontWeight="bold">
+            {props.title}
+          </Typography>
+        )}
+        {props.message && <Typography textAlign="center">{props.message}</Typography>}
+      </Box>
+    </EmptyRoot>
   );
 }

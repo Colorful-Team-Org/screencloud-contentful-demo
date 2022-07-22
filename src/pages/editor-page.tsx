@@ -6,7 +6,14 @@ import Editor from '../features/editor/components/Editor';
 import { scMuiTheme } from '../features/editor/screencloud-mui-theme';
 import { ScreenCloudEditorProvider } from '../features/editor/ScreenCloudEditorProvider';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 export default function EditorPage() {
   // console.log('EditorPage', config);
