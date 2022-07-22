@@ -162,7 +162,7 @@ export default function EditorForm(props: Props) {
           <LabeledGridItem
             id="apiKey"
             label="Delivery API key (CDA)"
-            tooltip="CDA and CPA keys can be obtained in the settings section (https://app.contentful.com/deeplink?link=api) of a Contentful space."
+            tooltip="CDA and CPA keys can be obtained in the settings section of a Contentful space (https://app.contentful.com/deeplink?link=api)."
             required
           >
             <TextField
@@ -178,7 +178,7 @@ export default function EditorForm(props: Props) {
           <LabeledGridItem
             id="previewApiKey"
             label="Preview API key (CPA)"
-            tooltip="CDA and CPA keys can be obtained in the settings section ((https://app.contentful.com/deeplink?link=api)) of a Contentful space."
+            tooltip="CDA and CPA keys can be obtained in the settings section of a Contentful space (https://app.contentful.com/deeplink?link=api)."
             required
           >
             <TextField
