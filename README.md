@@ -7,9 +7,9 @@ To run the app locally:
 2. Create a file `./.env.local` with:
 
 ```
-REACT_APP_API_KEY = XXX
 REACT_APP_SPACE_ID = XXX
-REACT_APP_MAP_NAME = XXX
+REACT_APP_API_KEY = XXX
+REACT_APP_PREVIEW_API_KEY = XXX
 REACT_APP_PLAYLIST_ID = XXX
 ```
 
@@ -17,6 +17,10 @@ REACT_APP_PLAYLIST_ID = XXX
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+
+## Screencloud Editor app
+
+This app is also used as the Screencloud Editor app. Visit http://localhost:3000/editor to launch the editor when running locally.
 
 ## Hosting
 
