@@ -94,7 +94,7 @@ export default function PreviewFrame(props: Props) {
           />
         ) : (
           <Empty>
-            <EmptySvg style={{ width: `25%`, marginBottom: 40 }} />
+            <EmptySvg style={{ width: `25%`, height: 'auto', marginBottom: 40 }} />
             <Typography fontWeight="bold">App instance preview</Typography>
             <Typography>Edit the configuration to preview this app instance.</Typography>
           </Empty>
