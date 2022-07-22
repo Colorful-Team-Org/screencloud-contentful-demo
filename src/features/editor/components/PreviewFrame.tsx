@@ -1,17 +1,9 @@
 import { styled, Typography } from '@mui/material';
 import { debounce } from 'lodash';
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { AppConfig } from '../../../app-types';
 import { urlParamsFrom } from '../../sc-player/url-params';
 import { ReactComponent as EmptySvg } from '../assets/empty-app-config.svg';
-
-type Props = {
-  config?: {
-    spaceId: string;
-    apiKey: string;
-    contentFeed: string;
-    appDefinitionName?: string;
-  };
-};
 
 const previewSize = [1920, 1080];
 const previewPadding = 40;
@@ -52,6 +44,10 @@ const Empty = styled('div')({
   alignItems: 'center',
 });
 
+type Props = {
+  config?: AppConfig;
+};
+
 export default function PreviewFrame(props: Props) {
   // console.log('PreviewFrame', props);
   const [iFrameScale, setIFrameScale] = useState(1);
@@ -75,7 +71,14 @@ export default function PreviewFrame(props: Props) {
     };
   }, [config]); // need `config` as a dependency because `rootRef.current` depends on it.
 
-  const src = useMemo(() => (config ? `/?${urlParamsFrom(config)}` : undefined), [config]);
+  const src = useMemo(() => {
+    if (!config) return undefined;
+    const previewConfig = {
+      ...config,
+      fetchInterval: 5000,
+    };
+    return `/?${urlParamsFrom(previewConfig)}`;
+  }, [config]);
 
   return (
     <PreviewFrameRoot>
