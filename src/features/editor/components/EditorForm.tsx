@@ -24,7 +24,7 @@ import Tooltip from '@mui/material/Tooltip';
 import Box from '@mui/material/Box';
 
 const SLIDE_DUR_RANGE = [3, 300];
-const FETCH_INTERVAL_RANGE = [3, 3600];
+const FETCH_INTERVAL_RANGE = [3, 60 * 60 * 48];
 
 // const Logo = styled('img')({
 //   maxWidth: 200,
@@ -295,7 +295,7 @@ export default function EditorForm(props: Props) {
           <LabeledGridItem
             id="fetchInterval"
             label="Polling frequency (in seconds)"
-            tooltip="The polling frequency setting determines how often the content is refreshed. Minimum setting is 3 seconds, maximum 3,600 seconds or 1 hour."
+            tooltip="The polling frequency setting determines how often the content is refreshed. Minimum setting is 3 seconds, maximum 172.800 seconds or 48 hour."
             required
           >
             <NumberField
