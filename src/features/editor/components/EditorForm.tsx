@@ -162,7 +162,7 @@ export default function EditorForm(props: Props) {
           <LabeledGridItem
             id="apiKey"
             label="Delivery API key (CDA)"
-            tooltip="CDA and CPA keys can be obtained in the settings section of a Contentful space."
+            tooltip="CDA and CPA keys can be obtained in the settings section (https://app.contentful.com/deeplink?link=api) of a Contentful space."
             required
           >
             <TextField
@@ -178,7 +178,7 @@ export default function EditorForm(props: Props) {
           <LabeledGridItem
             id="previewApiKey"
             label="Preview API key (CPA)"
-            tooltip="CDA and CPA keys can be obtained in the settings section of a Contentful space."
+            tooltip="CDA and CPA keys can be obtained in the settings section ((https://app.contentful.com/deeplink?link=api)) of a Contentful space."
             required
           >
             <TextField
@@ -295,7 +295,7 @@ export default function EditorForm(props: Props) {
           <LabeledGridItem
             id="fetchInterval"
             label="Polling frequency (in seconds)"
-            tooltip="The polling frequency setting determines how often the content is refreshed. Minimum setting is 3 seconds, maximum 172.800 seconds or 48 hour."
+            tooltip="The polling frequency setting determines how often the content is refreshed. Minimum setting is 3 seconds, maximum 172,800 seconds or 48 hour."
             required
           >
             <NumberField
