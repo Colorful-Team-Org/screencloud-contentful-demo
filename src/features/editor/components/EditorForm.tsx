@@ -10,6 +10,7 @@ import { GraphQLClient } from 'graphql-request';
 import { FormEvent, useCallback, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import { AppConfig } from '../../../app-types';
+import { LabeledGridItem } from '../../../components/ui/LabeledGridItem';
 import NumberField from '../../../components/ui/NumberField';
 import SpinnerBox from '../../../components/ui/SpinnerBox';
 import { getEndpoint } from '../../../service/contentful-api/contentful-graphql-service';
@@ -156,17 +157,12 @@ export default function EditorForm(props: Props) {
         <Logo src={logo} alt="Logo" />
       </Box> */}
       <form noValidate autoComplete="off">
-        <FormContainer container gap={0} rowGap={2} alignItems="center">
+        <FormContainer container gap={0} rowGap={1} alignItems="center">
           <Grid item xs={12}>
             <Typography variant="h6">Content source</Typography>
           </Grid>
 
-          <Grid item xs={6}>
-            <FormLabel htmlFor="spaceId" required>
-              Space ID
-            </FormLabel>
-          </Grid>
-          <Grid item xs={6}>
+          <LabeledGridItem id="spaceId" label="Space ID" required>
             <TextField
               id="spaceId"
               name="spaceId"
@@ -174,42 +170,31 @@ export default function EditorForm(props: Props) {
               fullWidth
               onChange={onEnvChange}
             />
-          </Grid>
+          </LabeledGridItem>
 
-          <Grid item xs={6}>
-            <FormLabel htmlFor="apiKey" required>
-              Delivery API key (CDA)
-            </FormLabel>
-          </Grid>
-          <Grid item xs={6}>
+          <LabeledGridItem id="apiKey" label="Delivery API key (CDA)" required>
             <TextField
               id="apiKey"
               name="apiKey"
+              type="password"
               value={apiKey || ''}
               fullWidth
               onChange={onEnvChange}
             />
-          </Grid>
+          </LabeledGridItem>
 
-          <Grid item xs={6}>
-            <FormLabel htmlFor="previewApiKey">Preview API key (CPA)</FormLabel>
-          </Grid>
-          <Grid item xs={6}>
+          <LabeledGridItem id="previewApiKey" label="Preview API key (CPA)" required>
             <TextField
               id="previewApiKey"
               name="previewApiKey"
+              type="password"
               value={previewApiKey || ''}
               fullWidth
               onChange={onEnvChange}
             />
-          </Grid>
+          </LabeledGridItem>
 
-          <Grid item xs={6}>
-            <FormLabel htmlFor="contentFeed" required>
-              Content feed
-            </FormLabel>
-          </Grid>
-          <Grid item xs={6}>
+          <LabeledGridItem id="contentFeed" label="Content feed" required>
             <TextField
               select
               id="contentFeed"
@@ -232,7 +217,7 @@ export default function EditorForm(props: Props) {
                 <MenuItem value="" />
               )}
             </TextField>
-          </Grid>
+          </LabeledGridItem>
 
           <Grid item xs={12}>
             <Divider sx={{ my: 2 }} />
@@ -258,10 +243,7 @@ export default function EditorForm(props: Props) {
             />
           </Grid>
 
-          <Grid item xs={6}>
-            <FormLabel htmlFor="locale">Locale</FormLabel>
-          </Grid>
-          <Grid item xs={6}>
+          <LabeledGridItem id="locale" label="Locale">
             <TextField
               select
               id="locale"
@@ -286,14 +268,9 @@ export default function EditorForm(props: Props) {
                 <MenuItem value=" ">Default</MenuItem>
               )}
             </TextField>
-          </Grid>
+          </LabeledGridItem>
 
-          <Grid item xs={6}>
-            <FormLabel htmlFor="slideDuration" required>
-              Slide duration (in seconds)
-            </FormLabel>
-          </Grid>
-          <Grid item xs={6}>
+          <LabeledGridItem id="slideDuration" label="Slide duration (in seconds)" required>
             <NumberField
               id="slideDuration"
               name="slideDuration"
@@ -307,13 +284,9 @@ export default function EditorForm(props: Props) {
                 emitConfig(newState);
               }}
             />
-          </Grid>
-          <Grid item xs={6}>
-            <FormLabel htmlFor="fetchInterval" required>
-              Polling frequency (in seconds)
-            </FormLabel>
-          </Grid>
-          <Grid item xs={6}>
+          </LabeledGridItem>
+
+          <LabeledGridItem id="fetchInterval" label="Polling frequency (in seconds)" required>
             <NumberField
               id="fetchInterval"
               name="fetchInterval"
@@ -327,7 +300,8 @@ export default function EditorForm(props: Props) {
                 emitConfig(newState);
               }}
             />
-          </Grid>
+          </LabeledGridItem>
+
           {contentFeedsQuery.isLoading && <SpinnerBox />}
         </FormContainer>
       </form>
