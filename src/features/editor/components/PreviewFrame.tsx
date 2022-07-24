@@ -77,7 +77,7 @@ export default function PreviewFrame(props: Props) {
   }, [config]); // need `config` as a dependency because `rootRef.current` depends on it.
 
   const src = useMemo(() => {
-    if (!config?.spaceId || config.apiKey || config.contentFeed) return undefined;
+    if (!config?.spaceId || !config.apiKey || !config.contentFeed) return undefined;
     const previewConfig = {
       ...config,
       fetchInterval: 5000,
